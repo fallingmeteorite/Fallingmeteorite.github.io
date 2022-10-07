@@ -1,2 +1,2 @@
-# -Fallingmeteorites.github.io
+# Fallingmeteorites.github.io
 Fallingmeteorites
