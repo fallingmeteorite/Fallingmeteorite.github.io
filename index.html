@@ -1,0 +1,341 @@
+<html lang="zh-CN">
+<head> 
+    <meta charset="utf-8">
+
+  <meta name="viewport" content="initial-scale=0.9, maximum-scale=1.0, minimum-scale=0.9, user-scalable=0, width=device-width">
+    
+
+    <meta itemprop="name" content="Fallingmeteoritesの个人主页">
+
+ 
+<meta itemprop="image" content="https://q1.qlogo.cn/headimg_dl?dst_uin=68213803&spec=100" />
+<meta name="description" itemprop="description" content="我只是呆呆地等一场雪，心生欢喜" />
+ 
+
+   
+	<meta name="keywords" content="Fallingmeteoritesの个人主页,程序设计师">
+	
+	<meta name="description" content=""所谓的奇迹，要真的发生才有价值。"">
+    <title>
+Fallingmeteoritesの个人主页      
+    </title>
+ 
+    <meta property="og:type" content="website">
+
+    <meta property="og:url" content="#">
+
+    <meta property="og:image" content="https://q1.qlogo.cn/headimg_dl?dst_uin=68213803&spec=100">
+
+    <meta property="og:title" content="Fallingmeteoritesの个人主页">
+
+    <meta property="og:description" content="Fallingmeteoritesの个人主页">
+
+    <link rel="canonical" href="#">
+
+    <link rel="shortcut icon" href="https://q1.qlogo.cn/headimg_dl?dst_uin=68213803&spec=100">
+
+    <link rel="bookmark" href="https://q1.qlogo.cn/headimg_dl?dst_uin=68213803&spec=100">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://q1.qlogo.cn/headimg_dl?dst_uin=68213803&spec=100">
+	
+    <link rel="stylesheet" type="text/css" href="css/dark.css" id="css">
+    <link rel="stylesheet" href="css/style.css" media="screen" type="text/css">
+    <script src="js/script.js" type="text/javascript"></script>
+    <script src="js/dark.js"  type="text/javascript"></script>
+    
+    
+    
+    
+    
+    
+    
+ <!-----------------------------------------测试-------------------------------------------------->
+ 
+
+
+
+<script>
+	jQuery(document).ready(function() {
+	var QRBox	=	$('#QRBox');
+	var MainBox	=	$('#MainBox');
+	var AliPayQR	=	"http://www.zwwhl.com//zfb.png"; //支付宝二维码
+	var WeChanQR	=	"http://www.zwwhl.com//wx.png"; //微信二维码
+	var QQQR     	=	"http://www.zwwhl.com/qq.png"; //QQ二维码
+
+	
+
+	function showQR(QR) {
+		if (QR) {
+			MainBox.css('background-image','url(' + QR + ')');
+		}
+		$('#DonateText,#donateBox,#github').addClass('blur');
+		QRBox.fadeIn(300,function(argument) {
+			MainBox.addClass('showQR');
+		});
+	}
+
+	$('#donateBox>li').click(function(event) {
+		var thisID	=	$(this).attr('id');
+	if (thisID === 'AliPay') {
+			showQR(AliPayQR);
+		} else if (thisID === 'WeChat') {
+			showQR(WeChanQR);
+		} else if (thisID === 'QQ') {
+			showQR(QQQR);
+		
+		}
+	});
+
+	MainBox.click(function(event) {
+		MainBox.removeClass('showQR').addClass('hideQR');
+		setTimeout (function(a) {
+			QRBox.fadeOut(300,function(argument) {
+				MainBox.removeClass('hideQR');
+			});
+			$('#DonateText,#donateBox,#github').removeClass('blur');
+		},600);
+
+	});
+});
+</script>
+
+   <style>
+        .zuobiao i {
+            line-height: 1.8;
+            margin-right: 6px;
+            vertical-align: middle;
+            background-image: url(images/zuobiao.svg);
+            background-size: 100%;
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            margin-top: -2px;
+        }
+       
+    </style>
+    <style>
+     .user-warp img {
+            width:70px;
+            border-radius:30%;
+           }
+	    
+/*.dark-theme .user-warp img {
+            width:70px;
+            border-radius:100%;
+            animation: light 5s ease-in-out infinite;
+            transition: 0.5s;}*/
+
+
+	
+	    @keyframes light {
+ 0%{box-shadow: 0 0 4px #f00;}
+ 25%{box-shadow: 0 0 5px #0f0;} 
+ 50%{box-shadow: 0 0 4px #00f;}
+ 75%{box-shadow: 0 0 5px #0f0;} 
+ 100%{box-shadow: 0 0 4px #f00;}
+}
+      </style>
+
+</head>
+
+<body>
+	 
+<div class="wrapper">
+<header>
+    <nav class="navbar" id="mobile-toggle-theme">
+        <div class="container"></div>
+    </nav>
+
+    <!------------------------------------------------------------------------------------------->
+    
+     
+</header> 
+
+    <div class="main">
+
+        <div class="container">
+            <div class="intro" style=" line-height: 50px">
+                <div class="user-warp img"><a href="#" target="_blank"><img src="https://q1.qlogo.cn/headimg_dl?dst_uin=68213803&spec=100" alt="Fallingmeteoritesの个人主页"></a></div>
+                <div class="nickname">Fallingmeteorites</div>
+                <div class="description">
+                    <p>“所谓的奇迹，要真的发生才有价值。”</p>
+
+                </div>
+
+
+                <div class="zuobiao">
+                    <i class="ico_map"></i>中国 · 四川
+                    <span style="margin-left: 30px">
+					
+                            <input id="switch_default" type="checkbox" class="switch_default">
+                            <label for="switch_default" class="toggleBtn"></label></span>
+                </div>
+
+
+                
+                <div class="menu navbar-right links">
+
+                    <!-- 获取页面列表 -->
+
+                    <a class="menu-item" href="https://github.com/Fallingmeteorites" target="_blank">
+                    主页</a> · 
+
+                    <a class="menu-item" href="http://www.zwwhl.com/" target="_blank">
+                    资源网</a> ·
+			
+		    <a class="menu-item" href="https://www.zhiyinz.com/" target="_blank">
+                    织音云</a> ·
+
+                    <a href="https://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=3402674724@qq.com" target="_blank">
+                    邮箱</a> 
+<center>
+
+<div id="header">
+</div>
+<div id="main">
+	<div class="demo">
+		
+		
+		
+        <div id="player3" class="aplayer">
+            <pre class="aplayer-lrc-content">
+                [00:00.00]
+                [04.11.00]
+            </pre>
+        </div>
+	</div>
+</div>
+<script>
+	var ap3 = new APlayer({
+		element: document.getElementById('player3'),//样式1
+		narrow: false,
+		autoplay: false,
+		showlrc: true,
+		music: {
+            title: '只要平凡',
+			author: '',
+			url: './zypf.mp3',
+			pic: 'http://p2.music.126.net/CjGoliP3xOB0gcCUaeTTBg==/109951163375727336.jpg?param=130y130'
+        }
+	});
+	ap3.init();
+</script>
+
+	</center>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+ 
+ 
+ 
+ 
+ 
+    <!------------------------------------------------------------------------------------------->
+    
+   
+
+
+
+
+
+	<!------------------------------------------------------------------------------------------->
+                </div><br>
+	           <div style=" line-height: 20px;font-size: 9pt;">
+                    <p>"出言有尺，嬉闹有度，做事有余，说话有德。"</p>
+                        <p style="margin-left: 8rem;font-size: 8pt;"><small>—— 宁</small></p>
+			
+			
+                </div>
+                
+        <br>
+                 <center>
+	<ul id="donateBox" class="list pos-f tr3">
+		<li id="AliPay">AliPay</li>
+		<li id="WeChat">WeChat</li>
+		<li id="QQ">QQ</li>
+		
+	</ul>
+	<div id="QRBox" class="pos-f left-100">
+		<div id="MainBox"></div>
+	</div>
+</center>
+               
+            </div>
+            
+            
+        </div>
+
+</div>
+
+<footer id="footer" class="footer">
+         	
+		 <div class="stars">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+    
+    	<!------------------------------------------------------------------------------------------->
+		
+	
+	
+</footer>
+
+</div>
+
+
+</html>
