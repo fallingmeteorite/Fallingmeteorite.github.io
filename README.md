@@ -1,2 +1,0 @@
-# Fallingmeteorites.github.io
-Fallingmeteorite
