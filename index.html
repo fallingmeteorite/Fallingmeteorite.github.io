@@ -1,18 +1,8 @@
 <!DOCTYPE html>
 <html>
-<script type="text/javascript">
-    window.onload = function(){
-             setInterval("toggleSound()",1);
-        }
-
-    function toggleSound() {
-                var music = document.getElementById("background_music.mp3");//获取ID  
-                if (music.paused) { //判读是否播放  
-                    music.paused=false;
-                    music.play(); //没有就播放 
-                }    
-        }
-</script>
+<audio preload autoplay loop id="music">
+     <source src="background_music.mp3" type="audio/mpeg">
+</audio>
 <head>
 	<meta charset="utf-8">
 	<!--网站收录数据抓取-->
