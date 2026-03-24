@@ -387,11 +387,11 @@
         
         const bigStars = worksData.map(d => new BigStar(d));
         
-        // ================= 4. 小星星系统 =================
+        // ================= 4. 小星星系统 - 修复吸入问题 =================
         const TOTAL_STARS = 2800;
         const ORBIT_RADIUS_MIN = 24;
         const ORBIT_RADIUS_MAX = 52;
-        const ATTRACT_RADIUS = 7.0;
+        const ATTRACT_RADIUS = 7.5;  // 吸引半径
         
         class SmallStar {
             constructor() {
@@ -404,11 +404,12 @@
                 this.z = Math.sin(this.orbitAngle) * this.orbitRadius;
                 this.y = this.yOffset + Math.sin(this.orbitAngle * 2) * 0.3;
                 
-                this.state = 'orbit';
+                this.state = 'orbit';  // 'orbit' 或 'attracted'
                 this.targetBranch = null;
                 this.spiralProgress = 0;
                 this.spiralStartAngle = 0;
                 this.spiralStartRadius = 0;
+                this.isBeingAttracted = false;
                 
                 const geom = Math.random() > 0.6 ? 
                     new THREE.IcosahedronGeometry(0.12 + Math.random() * 0.09, 0) : 
@@ -431,19 +432,24 @@
                 this.rotSpeedY = 0.02 + Math.random() * 0.03;
             }
             
+            // 检查是否应该被吸引
             checkAttraction() {
                 if (this.state !== 'orbit') return false;
                 const distToCenter = Math.sqrt(this.x * this.x + this.z * this.z);
-                if (distToCenter <= ATTRACT_RADIUS) {
+                // 当距离小于吸引半径时，开始被吸引
+                if (distToCenter <= ATTRACT_RADIUS && !this.isBeingAttracted) {
                     this.startAttraction();
                     return true;
                 }
                 return false;
             }
             
+            // 开始被吸引，进入螺旋支路
             startAttraction() {
                 this.state = 'attracted';
+                this.isBeingAttracted = true;
                 const currentAngle = Math.atan2(this.z, this.x);
+                // 选择最近的支路
                 let bestBranch = 0;
                 let minAngleDiff = Math.PI;
                 for (let i = 0; i < BRANCH_ANGLES.length; i++) {
@@ -460,24 +466,30 @@
                 this.spiralProgress = 0;
             }
             
+            // 更新螺旋位置 - 沿螺旋路径坠入黑洞
             updateSpiralPosition() {
-                this.spiralProgress += 0.022 + Math.random() * 0.01;
+                // 螺旋进度增加，速度适中确保在四分之一圆弧内完成坠落
+                this.spiralProgress += 0.022;
                 
+                // 到达黑洞中心，销毁并重生
                 if (this.spiralProgress >= 1.0) {
                     this.destroy();
                     return false;
                 }
                 
+                // 半径从起始半径线性下降到 2.5
                 const startR = Math.min(this.spiralStartRadius, 20);
-                const endR = 2.6;
+                const endR = 2.5;
                 const radius = startR * (1 - this.spiralProgress) + endR * this.spiralProgress;
                 
+                // 螺旋角度：从起始角度平滑过渡到目标支路角度 + 90度偏移
                 const branchAngle = BRANCH_ANGLES[this.targetBranch];
                 let angleDiff = (branchAngle + Math.PI / 1.8) - this.spiralStartAngle;
                 while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
                 while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
                 const spiralAngle = this.spiralStartAngle + angleDiff * this.spiralProgress;
                 
+                // 计算位置，添加自然摆动
                 let x = Math.cos(spiralAngle) * radius;
                 let z = Math.sin(spiralAngle) * radius;
                 const sway = Math.sin(this.spiralProgress * Math.PI * 2 + this.phase) * 0.35;
@@ -492,8 +504,9 @@
                 this.y = y;
                 this.mesh.position.set(x, y, z);
                 
+                // 靠近黑洞时变红变亮
                 const proximity = Math.max(0, Math.min(1, (radius - 2.2) / 10));
-                this.mesh.material.emissiveIntensity = 0.5 + (1 - proximity) * 1.0;
+                this.mesh.material.emissiveIntensity = 0.5 + (1 - proximity) * 1.2;
                 
                 if (radius < 5.5) {
                     const hotMix = 1 - (radius - 2.2) / 3.5;
@@ -505,6 +518,7 @@
                 return true;
             }
             
+            // 更新圆周运动位置
             updateOrbitPosition() {
                 this.orbitAngle += this.orbitSpeed;
                 if (this.orbitAngle > Math.PI * 2) this.orbitAngle -= Math.PI * 2;
@@ -536,13 +550,15 @@
                 this.active = false;
                 createDestructionEffect(this.mesh.position.clone(), BRANCH_COLORS[this.targetBranch || 0]);
                 scene.remove(this.mesh);
+                // 重生一个新的星星在圆周轨道上
                 setTimeout(() => {
                     const newStar = new SmallStar();
                     smallStars.push(newStar);
-                }, 35);
+                }, 40);
             }
         }
         
+        // 销毁特效
         function createDestructionEffect(position, color) {
             const particleCount = 80;
             const geom = new THREE.BufferGeometry();
@@ -643,7 +659,7 @@
         // 吸引范围指示环
         const attractRing = new THREE.Mesh(
             new THREE.RingGeometry(ATTRACT_RADIUS - 0.4, ATTRACT_RADIUS + 0.4, 64),
-            new THREE.MeshBasicMaterial({ color: 0xff66aa, transparent: true, opacity: 0.12, side: THREE.DoubleSide })
+            new THREE.MeshBasicMaterial({ color: 0xff66aa, transparent: true, opacity: 0.15, side: THREE.DoubleSide })
         );
         attractRing.rotation.x = -Math.PI / 2;
         attractRing.position.y = -0.15;
@@ -746,7 +762,7 @@
             labelRenderer.setSize(window.innerWidth, window.innerHeight);
         });
         
-        console.log("%c✨ 大范围圆周轨道 (24-52) | 星星进入半径7内被吸引 | 沿螺旋支路坠入黑洞 ✨", "color: #ffaa88; font-size: 14px");
+        console.log("%c✨ 修复完成！小星星现在会被吸入黑洞 | 半径7.5内被吸引 | 沿螺旋支路坠落并重生 ✨", "color: #ffaa88; font-size: 14px");
     </script>
 </body>
 </html>
