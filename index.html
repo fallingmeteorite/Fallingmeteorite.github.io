@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>星云漩涡 | 真实引力吸引 · 螺旋坠星</title>
+    <title>星云漩涡 | 快速引力吸引 · 螺旋坠星</title>
     <style>
         body { margin: 0; overflow: hidden; font-family: 'Segoe UI', 'Poppins', sans-serif; color: white; }
         .info-panel {
@@ -53,10 +53,10 @@
 </head>
 <body>
     <div class="info-panel">
-        <h1>🌀 真实引力吸引 · 螺旋坠星</h1>
+        <h1>🌀 快速引力吸引 · 螺旋坠星</h1>
         <p>✨ 高中开发者 | 星辰造物主 ✨</p>
-        <p>🔴 红色星星受引力影响半径逐渐缩小 → 进入引力阱(半径18) → 沿螺旋支路坠入黑洞 → 重生回归</p>
-        <div class="quote" id="hitokoto-display">🌠 红色星星正被黑洞引力捕获，沿螺旋线坠入深渊...</div>
+        <p>🔴 红色星星受引力影响半径快速缩小 → 进入引力阱(半径18) → 沿螺旋支路坠入黑洞 → 重生回归</p>
+        <div class="quote" id="hitokoto-display">🌠 红色星星正在被黑洞引力快速捕获，沿螺旋线坠入深渊...</div>
     </div>
     <div class="controls-hint">🖱️ 鼠标拖拽旋转视角 | 滚动缩放 | ✨ 点击大星星探索作品 ✨ | 🔴 红色星星会被吸引，蓝色星星永续圆周</div>
     <div class="music-btn" id="musicToggleBtn">🎵 星渊旋律 🔇</div>
@@ -129,13 +129,13 @@
         const eventHorizonGlow = new THREE.Mesh(new THREE.SphereGeometry(2.2, 64, 64), new THREE.MeshBasicMaterial({ color: 0xaa44ff, transparent: true, opacity: 0.3, blending: THREE.AdditiveBlending }));
         scene.add(eventHorizonGlow);
         
-        // 引力阱可视化
-        const gravityWell = new THREE.Mesh(new THREE.SphereGeometry(18, 64, 64), new THREE.MeshBasicMaterial({ color: 0xff4488, transparent: true, opacity: 0.08 }));
+        // 引力阱可视化（紫圈）
+        const gravityWell = new THREE.Mesh(new THREE.SphereGeometry(18, 64, 64), new THREE.MeshBasicMaterial({ color: 0xff44aa, transparent: true, opacity: 0.12, wireframe: false }));
         scene.add(gravityWell);
         
-        const attractRing = new THREE.Mesh(new THREE.RingGeometry(17.5, 18.5, 64), new THREE.MeshBasicMaterial({ color: 0xff66aa, transparent: true, opacity: 0.3, side: THREE.DoubleSide }));
+        const attractRing = new THREE.Mesh(new THREE.RingGeometry(17.8, 18.2, 64), new THREE.MeshBasicMaterial({ color: 0xff66cc, transparent: true, opacity: 0.5, side: THREE.DoubleSide }));
         attractRing.rotation.x = -Math.PI / 2;
-        attractRing.position.y = -0.2;
+        attractRing.position.y = -0.1;
         scene.add(attractRing);
         
         // 周围粒子
@@ -269,27 +269,27 @@
         
         const bigStars = worksData.map(d => new BigStar(d));
         
-        // ================= 4. 星星系统：蓝色永驻星 + 红色坠落星 =================
-        const TOTAL_STARS = 2200;
+        // ================= 4. 星星系统：蓝色永驻星 + 红色坠落星（快速吸引） =================
+        const TOTAL_STARS = 2000;
         const FALLING_RATIO = 0.55;   // 55% 红色坠落星
-        const ATTRACT_RADIUS = 18;     // 进入此半径即开始坠落
-        const GRAVITY_STRENGTH = 0.00022; // 半径缩小速度
+        const ATTRACT_RADIUS = 18;     // 引力阱半径
+        const GRAVITY_STRENGTH = 0.0012; // 引力强度（显著加快半径缩小，几秒内进入紫圈）
         
         class SmallStar {
             constructor(type, customRadius = null) {
                 this.type = type; // 'orbit-only' 或 'falling'
                 
                 if (type === 'orbit-only') {
-                    this.orbitRadius = 28 + Math.random() * 26; // 28-54 稳定轨道
+                    this.orbitRadius = 30 + Math.random() * 28; // 30-58 稳定轨道
                     this.gravityInfluence = false;
                 } else {
-                    // 坠落星初始半径 30~48，保证在外围可见
-                    this.orbitRadius = customRadius !== null ? customRadius : 32 + Math.random() * 22;
+                    // 坠落星初始半径 26~48，保证较快进入紫圈
+                    this.orbitRadius = customRadius !== null ? customRadius : 28 + Math.random() * 24;
                     this.gravityInfluence = true;
                 }
                 
                 this.orbitAngle = Math.random() * Math.PI * 2;
-                this.orbitSpeed = 0.0007 + Math.random() * 0.0012;
+                this.orbitSpeed = 0.0008 + Math.random() * 0.0015;
                 this.yOffset = (Math.random() - 0.5) * 2.8;
                 
                 this.x = Math.cos(this.orbitAngle) * this.orbitRadius;
@@ -327,10 +327,10 @@
                 this.rotSpeedY = 0.02 + Math.random() * 0.03;
             }
             
-            // 圆周运动更新（坠落星半径会缩小）
+            // 圆周运动更新（坠落星半径会快速缩小）
             updateOrbitPosition() {
                 if (this.gravityInfluence && this.state === 'orbit') {
-                    // 半径逐渐缩小，模拟被黑洞吸引
+                    // 半径快速缩小
                     this.orbitRadius -= GRAVITY_STRENGTH;
                     
                     // 进入引力阱，触发坠落
@@ -339,12 +339,12 @@
                         return true;
                     }
                     
-                    // 半径不能小于吸引半径（防止直接穿过）
+                    // 防止半径变成负数
                     if (this.orbitRadius < ATTRACT_RADIUS) this.orbitRadius = ATTRACT_RADIUS;
                     
-                    // 靠近时加速角速度
+                    // 靠近时角速度加快
                     if (this.orbitRadius < 28) {
-                        this.orbitSpeed = 0.0012 + (30 - this.orbitRadius) * 0.00012;
+                        this.orbitSpeed = 0.0015 + (30 - this.orbitRadius) * 0.00015;
                     }
                 }
                 
@@ -358,8 +358,8 @@
                 
                 // 坠落星靠近时亮度增加
                 if (this.gravityInfluence && this.orbitRadius < 28) {
-                    const intensity = 0.7 + (30 - this.orbitRadius) * 0.08;
-                    this.mesh.material.emissiveIntensity = Math.min(1.4, intensity);
+                    const intensity = 0.7 + (30 - this.orbitRadius) * 0.1;
+                    this.mesh.material.emissiveIntensity = Math.min(1.8, intensity);
                 } else {
                     this.mesh.material.emissiveIntensity = this.type === 'falling' ? 0.65 : 0.45;
                 }
@@ -383,11 +383,12 @@
                 this.spiralProgress = 0;
             }
             
-            // 沿螺旋支路坠落
+            // 沿螺旋支路快速坠落
             updateSpiralPosition() {
-                let delta = 0.022;
-                if (this.spiralProgress > 0.6) delta = 0.034;
-                if (this.spiralProgress > 0.85) delta = 0.048;
+                // 坠落速度逐段加快
+                let delta = 0.03;
+                if (this.spiralProgress > 0.5) delta = 0.045;
+                if (this.spiralProgress > 0.8) delta = 0.07;
                 this.spiralProgress += delta;
                 
                 if (this.spiralProgress >= 1.0) {
@@ -417,7 +418,7 @@
                 
                 // 坠落时变红发光
                 const hot = Math.min(1, (radius - 2) / 12);
-                this.mesh.material.emissiveIntensity = 0.9 + (1 - hot) * 2.0;
+                this.mesh.material.emissiveIntensity = 1.0 + (1 - hot) * 2.2;
                 if (radius < 7) {
                     this.mesh.material.color.setRGB(1.0, 0.2 + (1 - hot) * 0.5, 0.1);
                 } else {
@@ -443,10 +444,10 @@
                 createDestructionEffect(this.mesh.position.clone(), BRANCH_COLORS[this.targetBranch]);
                 scene.remove(this.mesh);
                 
-                // 重生一颗新的红色坠落星，放在外围轨道（半径 32~50）
+                // 重生一颗新的红色坠落星，放在外围轨道
                 if (this.type === 'falling') {
                     setTimeout(() => {
-                        const newStar = new SmallStar('falling', 34 + Math.random() * 20);
+                        const newStar = new SmallStar('falling', 34 + Math.random() * 22);
                         smallStars.push(newStar);
                     }, 40);
                 }
@@ -501,9 +502,9 @@
             const type = Math.random() < FALLING_RATIO ? 'falling' : 'orbit-only';
             smallStars.push(new SmallStar(type));
         }
-        // 额外增加一些已经接近黑洞的红色星星，让效果立即可见
-        for (let i = 0; i < 50; i++) {
-            const radius = 19 + Math.random() * 4;
+        // 大量增加已经接近紫圈的红色星星，让用户立即看到吸引效果
+        for (let i = 0; i < 120; i++) {
+            const radius = 18.2 + Math.random() * 4;
             const star = new SmallStar('falling', radius);
             star.orbitRadius = radius;
             star.orbitAngle = Math.random() * Math.PI * 2;
@@ -588,7 +589,7 @@
             midAcc.rotation.z -= 0.01;
             outerAcc.rotation.z += 0.008;
             dustRing.rotation.y += 0.008;
-            attractRing.rotation.z += 0.002;
+            attractRing.rotation.z += 0.003;
             
             const pulse = 1 + Math.sin(time * 0.004) * 0.013;
             blackHoleCore.scale.set(pulse, pulse, pulse);
