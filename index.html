@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>宇宙大爆炸 · 极致震撼 | fallingmeteorite</title>
+    <title>宇宙大爆炸 · 黑洞深渊 | fallingmeteorite</title>
     <style>
         body {
             margin: 0;
@@ -71,7 +71,7 @@
             transition: transform 0.55s cubic-bezier(0.7, 0, 0.3, 1), opacity 0.45s ease !important;
         }
         
-        /* UI面板 - 升级为高亮紫色半透明，文字清晰 */
+        /* UI面板 - 高亮紫色半透明 */
         .info-panel {
             position: absolute; top: 20px; left: 20px;
             background: rgba(80, 40, 140, 0.85);
@@ -266,7 +266,7 @@
         resizeCanvas();
         drawDust();
         
-        // ================= 2. Three.js 场景（极致震撼版）=================
+        // ================= 2. Three.js 场景（黑洞极致震撼版）=================
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x010004);
         scene.fog = new THREE.FogExp2(0x010004, 0.000028);
@@ -281,7 +281,7 @@
         renderer.toneMappingExposure = 1.4;
         document.body.appendChild(renderer.domElement);
         
-        // 后期特效增强
+        // 后期特效
         const renderScene = new RenderPass(scene, camera);
         const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.6, 0.45, 0.95);
         bloomPass.threshold = 0.06;
@@ -320,54 +320,140 @@
             return obj;
         }
         
-        // ========= 3. 宇宙天体（极致华丽版）=========
-        // 黑洞核心
+        // ========= 3. 黑洞极致优化 =========
+        // 黑洞核心（增强自发光）
         const blackHoleCore = new THREE.Mesh(
-            new THREE.SphereGeometry(1.95, 180, 180),
-            new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.01, metalness: 0.99, emissive: 0xcc44ff, emissiveIntensity: 2.0 })
+            new THREE.SphereGeometry(2.0, 256, 256),
+            new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.01, metalness: 0.99, emissive: 0xcc44ff, emissiveIntensity: 2.2 })
         );
         addToUniverse(blackHoleCore);
         
-        // 多层吸积盘
+        // 事件视界光晕（多层）
+        const eventHorizonGlow1 = new THREE.Mesh(new THREE.SphereGeometry(2.4, 128, 128), new THREE.MeshBasicMaterial({ color: 0xff44aa, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending }));
+        addToUniverse(eventHorizonGlow1);
+        const eventHorizonGlow2 = new THREE.Mesh(new THREE.SphereGeometry(2.7, 128, 128), new THREE.MeshBasicMaterial({ color: 0xaa66ff, transparent: true, opacity: 0.25, blending: THREE.AdditiveBlending }));
+        addToUniverse(eventHorizonGlow2);
+        
+        // 吸积盘（5层，更密集，颜色渐变）
         const accLayers = [];
-        const accParams = [
-            { radius: 2.6, width: 0.2, color: 0xff44cc, intensity: 2.2, tilt: 0.22 },
-            { radius: 3.45, width: 0.22, color: 0xff88ee, intensity: 1.8, tilt: -0.06 },
-            { radius: 4.35, width: 0.24, color: 0xdd99ff, intensity: 1.5, tilt: 0.14 }
-        ];
-        accParams.forEach(p => {
-            const torus = new THREE.Mesh(new THREE.TorusGeometry(p.radius, p.width, 160, 460), new THREE.MeshStandardMaterial({ color: p.color, emissive: p.color, emissiveIntensity: p.intensity, transparent: true }));
-            torus.rotation.x = Math.PI / 2 + p.tilt;
+        const accColors = [0xff44aa, 0xff66cc, 0xff88ee, 0xcc88ff, 0xaa66ff];
+        const accRadii = [2.55, 3.2, 3.95, 4.8, 5.7];
+        const accWidths = [0.18, 0.2, 0.22, 0.24, 0.26];
+        const accIntensities = [2.2, 1.9, 1.7, 1.5, 1.3];
+        for (let i = 0; i < 5; i++) {
+            const torus = new THREE.Mesh(
+                new THREE.TorusGeometry(accRadii[i], accWidths[i], 180, 520),
+                new THREE.MeshStandardMaterial({ color: accColors[i], emissive: accColors[i], emissiveIntensity: accIntensities[i], transparent: true, side: THREE.DoubleSide })
+            );
+            torus.rotation.x = Math.PI / 2 + (i % 2 === 0 ? 0.18 : -0.08);
             addToUniverse(torus);
             accLayers.push(torus);
-        });
+        }
         
-        // 能量光环（更多层）
+        // 高速旋转的能量环（3层）
         const energyRings = [];
-        const ringParams = [
-            { rad: 2.95, width: 0.12, color: 0xff66cc, opacity: 0.9, rot: 0 },
-            { rad: 3.65, width: 0.1, color: 0x88aaff, opacity: 0.85, rot: 0.5 },
-            { rad: 4.45, width: 0.11, color: 0xffaa88, opacity: 0.8, rot: 0.8 }
-        ];
-        ringParams.forEach((p, idx) => {
-            const ring = new THREE.Mesh(new THREE.TorusGeometry(p.rad, p.width, 100, 360), new THREE.MeshBasicMaterial({ color: p.color, transparent: true, opacity: p.opacity, blending: THREE.AdditiveBlending }));
-            if (idx === 1) ring.rotation.x = Math.PI / 2.4;
-            else if (idx === 2) ring.rotation.z = 0.6;
+        const ringRadii = [3.1, 3.9, 4.7];
+        const ringColors = [0xff66aa, 0x88aaff, 0xffaa88];
+        ringRadii.forEach((rad, idx) => {
+            const ring = new THREE.Mesh(new THREE.TorusGeometry(rad, 0.12, 120, 400), new THREE.MeshBasicMaterial({ color: ringColors[idx], transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending }));
+            if (idx === 1) ring.rotation.x = Math.PI / 2.3;
+            else if (idx === 2) ring.rotation.z = 0.7;
             else ring.rotation.x = Math.PI / 2;
             addToUniverse(ring);
             energyRings.push(ring);
         });
         
-        const eventGlow = new THREE.Mesh(new THREE.SphereGeometry(2.5, 100, 100), new THREE.MeshBasicMaterial({ color: 0xe080ff, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending }));
-        addToUniverse(eventGlow);
+        // 引力透镜扭曲球体（模拟时空弯曲）
+        const lensGeometry = new THREE.SphereGeometry(5.5, 64, 64);
+        const lensMaterial = new THREE.MeshBasicMaterial({ color: 0xaa88ff, transparent: true, opacity: 0.08, wireframe: true });
+        const lensSphere = new THREE.Mesh(lensGeometry, lensMaterial);
+        addToUniverse(lensSphere);
         
-        // 引力光环扩大
-        const gravityRing = new THREE.Mesh(new THREE.RingGeometry(16.5, 19.5, 120), new THREE.MeshBasicMaterial({ color: 0xff88cc, transparent: true, opacity: 0.65, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
-        gravityRing.rotation.x = -Math.PI / 2;
-        gravityRing.position.y = -0.2;
-        addToUniverse(gravityRing);
+        // 黑洞两极喷流（粒子流）
+        const jetParticleCount = 1800;
+        const jetGeometry = new THREE.BufferGeometry();
+        const jetPositions = [];
+        for (let i = 0; i < jetParticleCount; i++) {
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.random() < 0.5 ? Math.random() * 0.5 : Math.PI - Math.random() * 0.5;
+            const r = 2.5 + Math.random() * 8;
+            const x = Math.sin(phi) * Math.cos(theta) * r;
+            const z = Math.sin(phi) * Math.sin(theta) * r;
+            const y = Math.cos(phi) * r;
+            jetPositions.push(x, y, z);
+        }
+        jetGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(jetPositions), 3));
+        const jetMaterial = new THREE.PointsMaterial({ color: 0xff88aa, size: 0.12, blending: THREE.AdditiveBlending, transparent: true });
+        const jetParticles = new THREE.Points(jetGeometry, jetMaterial);
+        addToUniverse(jetParticles);
         
-        // 螺旋支路（更多粒子）
+        // 粒子漩涡（吸积盘内部快速旋转粒子）
+        const vortexCount = 8000;
+        const vortexGeo = new THREE.BufferGeometry();
+        const vortexPos = [];
+        for (let i = 0; i < vortexCount; i++) {
+            const rad = 2.8 + Math.random() * 5.2;
+            const ang = Math.random() * Math.PI * 2;
+            const yoff = (Math.random() - 0.5) * 2.2;
+            vortexPos.push(Math.cos(ang) * rad, yoff, Math.sin(ang) * rad);
+        }
+        vortexGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(vortexPos), 3));
+        const vortexPoints = new THREE.Points(vortexGeo, new THREE.PointsMaterial({ color: 0xffaa99, size: 0.1, blending: THREE.AdditiveBlending }));
+        addToUniverse(vortexPoints);
+        
+        // 吸入粒子流（更多粒子，动态旋转）
+        const inflowCount = 7500;
+        const inflowGeo = new THREE.BufferGeometry();
+        const inflowPos = [];
+        for (let i = 0; i < inflowCount; i++) {
+            const rad = 4 + Math.random() * 14;
+            const ang = Math.random() * Math.PI * 2;
+            const yoff = (Math.random() - 0.5) * 5;
+            inflowPos.push(Math.cos(ang) * rad, yoff, Math.sin(ang) * rad);
+        }
+        inflowGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(inflowPos), 3));
+        const inflowPoints = new THREE.Points(inflowGeo, new THREE.PointsMaterial({ color: 0xff8866, size: 0.13, blending: THREE.AdditiveBlending }));
+        addToUniverse(inflowPoints);
+        
+        // 黑洞周围的光晕粒子云
+        const haloCount = 4000;
+        const haloGeo = new THREE.BufferGeometry();
+        const haloPos = [];
+        for (let i = 0; i < haloCount; i++) {
+            const rad = 2.0 + Math.random() * 4.5;
+            const ang = Math.random() * Math.PI * 2;
+            const yoff = (Math.random() - 0.5) * 3;
+            haloPos.push(Math.cos(ang) * rad, yoff, Math.sin(ang) * rad);
+        }
+        haloGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(haloPos), 3));
+        const haloPoints = new THREE.Points(haloGeo, new THREE.PointsMaterial({ color: 0xffaacc, size: 0.08, blending: THREE.AdditiveBlending }));
+        addToUniverse(haloPoints);
+        
+        // 光源（增强）
+        const coreLight = new THREE.PointLight(0xff44cc, 2.8, 90);
+        coreLight.position.set(0, 0, 0);
+        addToUniverse(coreLight);
+        const fillLights = [
+            new THREE.PointLight(0xaa88ff, 1.4), new THREE.PointLight(0xff77aa, 1.2)
+        ];
+        fillLights[0].position.set(8, 7, 9);
+        fillLights[1].position.set(-6, 5, 12);
+        fillLights.forEach(l => addToUniverse(l));
+        const ambient = new THREE.AmbientLight(0x201530);
+        scene.add(ambient);
+        
+        // 黑洞CSS标签
+        const blackLabelDiv = document.createElement('div');
+        blackLabelDiv.className = 'star-label';
+        blackLabelDiv.innerHTML = `🌀 奇点深渊 · 引力奇点 🌀`;
+        blackLabelDiv.style.background = "rgba(0,0,0,0.85)";
+        blackLabelDiv.style.border = "2px solid #ff44aa";
+        blackLabelDiv.style.fontSize = "14px";
+        const blackLabel = new CSS2DObject(blackLabelDiv);
+        blackLabel.position.set(0, 3.0, 0);
+        addToUniverse(blackLabel);
+        
+        // ========= 4. 其他宇宙组件（星云、星星、螺旋支路等）保持不变，但优化数量 =========
         const BRANCH_ANGLES = [Math.PI / 4, 3 * Math.PI / 4, 5 * Math.PI / 4, 7 * Math.PI / 4];
         const BRANCH_COLORS = [0xff77bb, 0x77ffbb, 0x88aaff, 0xffaa77];
         BRANCH_ANGLES.forEach((angle, idx) => {
@@ -397,7 +483,7 @@
             addToUniverse(trailPoints);
         });
         
-        // 星云粒子（大幅增加）
+        // 星云粒子
         const nebulaCount = 8000;
         const nebulaGeom = new THREE.BufferGeometry();
         const nebulaPos = [];
@@ -411,7 +497,7 @@
         const nebulaPoints = new THREE.Points(nebulaGeom, new THREE.PointsMaterial({ color: 0x99aaff, size: 0.22, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending }));
         addToUniverse(nebulaPoints);
         
-        // 繁星背景（超多）
+        // 繁星背景
         const starCount = 15000;
         const starGeom = new THREE.BufferGeometry();
         const starPos = [];
@@ -420,44 +506,7 @@
         const starsField = new THREE.Points(starGeom, new THREE.PointsMaterial({ color: 0xcceeff, size: 0.16, transparent: true, opacity: 0.75 }));
         addToUniverse(starsField);
         
-        // 黑洞吸入粒子流（动态）
-        const inflowCount = 5500;
-        const inflowGeom = new THREE.BufferGeometry();
-        const inflowPos = [];
-        for (let i = 0; i < inflowCount; i++) {
-            const rad = 4.5 + Math.random() * 14;
-            const ang = Math.random() * Math.PI * 2;
-            const yoff = (Math.random() - 0.5) * 4.5;
-            inflowPos.push(Math.cos(ang) * rad, yoff, Math.sin(ang) * rad);
-        }
-        inflowGeom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(inflowPos), 3));
-        const inflowPoints = new THREE.Points(inflowGeom, new THREE.PointsMaterial({ color: 0xffaa99, size: 0.14, blending: THREE.AdditiveBlending }));
-        addToUniverse(inflowPoints);
-        
-        // 光源（更强）
-        const coreLight = new THREE.PointLight(0xff44cc, 2.5, 80);
-        coreLight.position.set(0, 0, 0);
-        addToUniverse(coreLight);
-        const fillLights = [
-            new THREE.PointLight(0xaa88ff, 1.2), new THREE.PointLight(0xff77aa, 1.0)
-        ];
-        fillLights[0].position.set(8, 7, 9);
-        fillLights[1].position.set(-6, 5, 12);
-        fillLights.forEach(l => addToUniverse(l));
-        const ambient = new THREE.AmbientLight(0x201530);
-        scene.add(ambient);
-        
-        // 黑洞标签
-        const blackLabelDiv = document.createElement('div');
-        blackLabelDiv.className = 'star-label';
-        blackLabelDiv.innerHTML = `🌀 奇点深渊 🌀`;
-        blackLabelDiv.style.background = "rgba(0,0,0,0.85)";
-        blackLabelDiv.style.border = "2px solid #ff44aa";
-        const blackLabel = new CSS2DObject(blackLabelDiv);
-        blackLabel.position.set(0, 2.7, 0);
-        addToUniverse(blackLabel);
-        
-        // 作品大星星
+        // 大星星作品集（保持不变）
         const worksData = [
             { name: "task_scheduling", desc: "⚙️ 高级Python调度器", link: "https://github.com/fallingmeteorite/task_scheduling", color: 0x7cafff, icon: "✨" },
             { name: "BilBil 主页", desc: "🎬 创意空间", link: "https://space.bilibili.com/1484690146", color: 0x99eeff, icon: "📺" },
@@ -627,7 +676,7 @@
         }
         for (let i = 0; i < 220; i++) smallStars.push(new SmallStar('falling', 16.5 + Math.random() * 6.5));
         
-        // 流星雨（更多更长）
+        // 流星雨
         class Meteor {
             constructor() { this.active = true; this.reset(); }
             reset() {
@@ -677,7 +726,7 @@
         let meteors = [];
         function spawnMeteor() { if (explosionPlayed && meteors.length < 18 && Math.random() < 0.035) meteors.push(new Meteor()); }
         
-        // ========= 极致震撼爆炸特效 =========
+        // ========= 爆炸特效（保持原样）=========
         function createShockwave(color, size, duration) {
             const ringGeo = new THREE.RingGeometry(0.5, 1.2, 48);
             const ringMat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.9, side: THREE.DoubleSide, blending: THREE.AdditiveBlending });
@@ -685,9 +734,7 @@
             ring.position.set(0, 0, 0);
             scene.add(ring);
             let scale = 1;
-            let frames = 0;
             function expand() {
-                frames++;
                 scale += 0.22;
                 ring.scale.set(scale, scale, 1);
                 ring.material.opacity = 0.9 - (scale - 1) * 0.04;
@@ -715,7 +762,6 @@
         }
         
         function createBigBang() {
-            // 主粒子云（三层）
             const layers = [
                 { count: 3500, color: 0xffaa66, size: 0.42, scaleSpeed: 0.7 },
                 { count: 2500, color: 0xff6644, size: 0.38, scaleSpeed: 0.65 },
@@ -737,7 +783,6 @@
                 particlesList.push({ obj: pts, mat: mat, scaleSpeed: layer.scaleSpeed });
             });
             
-            // 全屏闪光（更亮）
             const flash = document.createElement('div');
             flash.style.position = 'fixed';
             flash.style.top = '0';
@@ -753,7 +798,6 @@
             setTimeout(() => flash.style.opacity = '0', 150);
             setTimeout(() => flash.remove(), 700);
             
-            // 彩色闪烁（紫色/红色）
             const colorFlash = document.createElement('div');
             colorFlash.style.position = 'fixed';
             colorFlash.style.top = '0';
@@ -769,13 +813,10 @@
             setTimeout(() => colorFlash.style.opacity = '0', 100);
             setTimeout(() => colorFlash.remove(), 500);
             
-            // 多重冲击波
             for (let i = 0; i < 5; i++) {
                 setTimeout(() => createShockwave(0xffaa66, 18 + i * 2, 40), i * 70);
                 setTimeout(() => createShockwave(0xff44aa, 14 + i * 2, 35), i * 90);
             }
-            
-            // 屏幕剧烈震动
             screenShake(0.45, 35);
             
             let frame = 0;
@@ -794,7 +835,6 @@
             }
             requestAnimationFrame(boomAnim);
             
-            // 黑洞周围粒子爆发
             const burstCount = 1200;
             const burstGeom = new THREE.BufferGeometry();
             const burstPos = [];
@@ -818,7 +858,6 @@
             }
             requestAnimationFrame(burstAnim);
             
-            // 震撼低频音效
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const now = audioCtx.currentTime;
@@ -871,7 +910,6 @@
         
         document.getElementById('bigbangTriggerBtn').addEventListener('click', startCompressionAndBang);
         
-        // 音乐本地
         const bgMusic = new Audio();
         bgMusic.loop = true;
         bgMusic.volume = 0.3;
@@ -906,20 +944,30 @@
             for (let i = meteors.length-1; i >= 0; i--) if (!meteors[i].update()) meteors.splice(i,1);
             
             if (explosionPlayed) {
+                // 黑洞动态效果
                 nebulaPoints.rotation.y += 0.00028;
-                inflowPoints.rotation.y -= 0.005;
-                gravityRing.rotation.z += 0.0035;
-                energyRings.forEach((r, idx) => {
-                    r.rotation.z += 0.008;
-                    if (idx === 1) r.rotation.x += 0.003;
-                });
+                vortexPoints.rotation.y -= 0.007;
+                inflowPoints.rotation.y -= 0.006;
+                haloPoints.rotation.y += 0.005;
+                jetParticles.rotation.y += 0.003;
+                jetParticles.rotation.x = Math.sin(time * 0.001) * 0.2;
+                
+                // 吸积盘高速旋转
                 accLayers.forEach((a, i) => {
-                    a.rotation.z += i === 0 ? 0.016 : (i === 1 ? -0.014 : 0.012);
+                    a.rotation.z += i === 0 ? 0.022 : (i === 1 ? -0.018 : (i === 2 ? 0.015 : (i === 3 ? -0.012 : 0.01)));
                 });
-                const pulse = 1 + Math.sin(time * 0.0048) * 0.022;
+                energyRings.forEach((r, idx) => {
+                    r.rotation.z += 0.012;
+                    if (idx === 1) r.rotation.x += 0.004;
+                });
+                lensSphere.rotation.y += 0.0005;
+                lensSphere.rotation.x += 0.0003;
+                
+                const pulse = 1 + Math.sin(time * 0.005) * 0.025;
                 blackHoleCore.scale.set(pulse, pulse, pulse);
-                eventGlow.scale.setScalar(1 + Math.sin(time * 0.0065) * 0.045);
-                coreLight.intensity = 1.7 + Math.sin(time * 0.0042) * 0.7;
+                eventHorizonGlow1.scale.setScalar(1 + Math.sin(time * 0.006) * 0.05);
+                eventHorizonGlow2.scale.setScalar(1 + Math.sin(time * 0.004) * 0.04);
+                coreLight.intensity = 1.9 + Math.sin(time * 0.0045) * 0.8;
             }
             controls.update();
             effectComposer.render();
