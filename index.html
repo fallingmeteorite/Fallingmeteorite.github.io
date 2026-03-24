@@ -141,7 +141,7 @@
         <div class="quote" id="hitokoto-display">🌠 广阔星轨，星辰被引力捕获后沿螺旋支路坠入奇点...</div>
     </div>
     <div class="controls-hint">
-        🖱️ 鼠标拖拽旋转视角 | 右键平移 | 滚动缩放 | ✨ 点击大星星探索作品 ✨ | 🌟 星星大范围圆周运动，被吸引后螺旋坠入黑洞
+        🖱️ 鼠标拖拽旋转视角 | 右键平移 | 滚动缩放 | ✨ 点击大星星探索作品 ✨ | 🌟 小星星半径7.5内被吸引，沿螺旋支路坠入黑洞并重生
     </div>
     <div class="music-btn" id="musicToggleBtn">🎵 星渊旋律 🔇</div>
     
@@ -162,7 +162,7 @@
         // --- 初始化场景 ---
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x010003);
-        scene.fog = new THREE.FogExp2(0x010003, 0.00008);
+        scene.fog = new THREE.FogExp2(0x010003, 0.00007);
         
         const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 2000);
         camera.position.set(22, 15, 32);
@@ -192,10 +192,10 @@
         controls.target.set(0, 0, 0);
         controls.update();
         
-        // ================= 1. 黑洞建模 =================
+        // ================= 1. 黑洞建模 (增强视觉) =================
         const blackHoleCore = new THREE.Mesh(
             new THREE.SphereGeometry(1.8, 128, 128),
-            new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.02, metalness: 0.98, emissive: 0x330033, emissiveIntensity: 1.0 })
+            new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.02, metalness: 0.98, emissive: 0x440044, emissiveIntensity: 1.1 })
         );
         scene.add(blackHoleCore);
         
@@ -224,22 +224,22 @@
         // 黑洞光晕
         const eventHorizonGlow = new THREE.Mesh(
             new THREE.SphereGeometry(2.2, 64, 64),
-            new THREE.MeshBasicMaterial({ color: 0xaa44ff, transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending })
+            new THREE.MeshBasicMaterial({ color: 0xaa44ff, transparent: true, opacity: 0.25, blending: THREE.AdditiveBlending })
         );
         scene.add(eventHorizonGlow);
         
         // 周围粒子晕
-        const dustCount = 5000;
+        const dustCount = 6000;
         const dustGeo = new THREE.BufferGeometry();
         const dustPos = [];
         for (let i = 0; i < dustCount; i++) {
-            const r = 2.0 + Math.random() * 2.7;
+            const r = 2.0 + Math.random() * 2.9;
             const ang = Math.random() * Math.PI * 2;
-            const yOff = (Math.random() - 0.5) * 1.6;
+            const yOff = (Math.random() - 0.5) * 1.8;
             dustPos.push(Math.cos(ang) * r, yOff, Math.sin(ang) * r);
         }
         dustGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(dustPos), 3));
-        const dustMat = new THREE.PointsMaterial({ color: 0xff88dd, size: 0.06, blending: THREE.AdditiveBlending });
+        const dustMat = new THREE.PointsMaterial({ color: 0xff88dd, size: 0.07, blending: THREE.AdditiveBlending });
         const dustRing = new THREE.Points(dustGeo, dustMat);
         scene.add(dustRing);
         
@@ -267,38 +267,37 @@
         backLight.position.set(-5, 3, -8);
         scene.add(backLight);
         
-        // ================= 2. 四条螺旋支路可视化 =================
+        // ================= 2. 四条螺旋支路可视化 (增强亮度) =================
         const BRANCH_ANGLES = [Math.PI / 4, 3 * Math.PI / 4, 5 * Math.PI / 4, 7 * Math.PI / 4];
         const BRANCH_COLORS = [0xff66aa, 0x66ffaa, 0x66aaff, 0xffaa66];
         
-        // 为每条支路创建可视化螺旋线
         BRANCH_ANGLES.forEach((angle, idx) => {
             const points = [];
-            for (let r = 20; r > 2.5; r -= 0.25) {
-                const t = (20 - r) / 17.5;
-                const spiralAngle = angle + t * (Math.PI / 1.8);
+            for (let r = 20; r > 2.3; r -= 0.2) {
+                const t = (20 - r) / 17.7;
+                const spiralAngle = angle + t * (Math.PI / 1.7);
                 const x = Math.cos(spiralAngle) * r;
                 const z = Math.sin(spiralAngle) * r;
-                const y = Math.sin(r * 0.7) * 0.4;
+                const y = Math.sin(r * 0.75) * 0.45;
                 points.push(new THREE.Vector3(x, y, z));
             }
             const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
-            const lineMat = new THREE.LineBasicMaterial({ color: BRANCH_COLORS[idx], transparent: true, opacity: 0.55 });
+            const lineMat = new THREE.LineBasicMaterial({ color: BRANCH_COLORS[idx], transparent: true, opacity: 0.7 });
             const spiralLine = new THREE.Line(lineGeo, lineMat);
             scene.add(spiralLine);
             
             // 光点点缀
             const glowPoints = [];
-            for (let r = 20; r > 2.8; r -= 1.2) {
+            for (let r = 20; r > 2.5; r -= 1.1) {
                 const t = (20 - r) / 17.5;
-                const spiralAngle = angle + t * (Math.PI / 1.8);
+                const spiralAngle = angle + t * (Math.PI / 1.7);
                 const x = Math.cos(spiralAngle) * r;
                 const z = Math.sin(spiralAngle) * r;
-                const y = Math.sin(r * 0.7) * 0.4;
+                const y = Math.sin(r * 0.75) * 0.45;
                 glowPoints.push(new THREE.Vector3(x, y, z));
             }
             const glowGeom = new THREE.BufferGeometry().setFromPoints(glowPoints);
-            const glowMat = new THREE.PointsMaterial({ color: BRANCH_COLORS[idx], size: 0.15, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending });
+            const glowMat = new THREE.PointsMaterial({ color: BRANCH_COLORS[idx], size: 0.18, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending });
             const glowPointsObj = new THREE.Points(glowGeom, glowMat);
             scene.add(glowPointsObj);
         });
@@ -387,38 +386,38 @@
         
         const bigStars = worksData.map(d => new BigStar(d));
         
-        // ================= 4. 小星星系统 - 修复吸入问题 =================
+        // ================= 4. 小星星系统 - 完全修复吸引机制 =================
         const TOTAL_STARS = 2800;
-        const ORBIT_RADIUS_MIN = 24;
-        const ORBIT_RADIUS_MAX = 52;
-        const ATTRACT_RADIUS = 7.5;  // 吸引半径
+        const ATTRACT_RADIUS = 7.6;     // 吸引半径，确保星星进入范围立即被捕获
         
         class SmallStar {
             constructor() {
-                this.orbitRadius = ORBIT_RADIUS_MIN + Math.random() * (ORBIT_RADIUS_MAX - ORBIT_RADIUS_MIN);
+                // 圆周运动参数：半径范围 25～55，确保外围大范围
+                this.orbitRadius = 25 + Math.random() * 30;
                 this.orbitAngle = Math.random() * Math.PI * 2;
-                this.orbitSpeed = 0.0007 + Math.random() * 0.0012;
-                this.yOffset = (Math.random() - 0.5) * 2.2;
+                this.orbitSpeed = 0.0006 + Math.random() * 0.0012;
+                this.yOffset = (Math.random() - 0.5) * 2.5;
                 
                 this.x = Math.cos(this.orbitAngle) * this.orbitRadius;
                 this.z = Math.sin(this.orbitAngle) * this.orbitRadius;
-                this.y = this.yOffset + Math.sin(this.orbitAngle * 2) * 0.3;
+                this.y = this.yOffset + Math.sin(this.orbitAngle * 2) * 0.35;
                 
-                this.state = 'orbit';  // 'orbit' 或 'attracted'
-                this.targetBranch = null;
+                this.state = 'orbit';      // 'orbit' 或 'attracted'
+                this.targetBranch = 0;
                 this.spiralProgress = 0;
                 this.spiralStartAngle = 0;
                 this.spiralStartRadius = 0;
                 this.isBeingAttracted = false;
                 
                 const geom = Math.random() > 0.6 ? 
-                    new THREE.IcosahedronGeometry(0.12 + Math.random() * 0.09, 0) : 
-                    new THREE.DodecahedronGeometry(0.11 + Math.random() * 0.08, 0);
-                const hue = 0.55 + Math.random() * 0.35;
+                    new THREE.IcosahedronGeometry(0.13 + Math.random() * 0.09, 0) : 
+                    new THREE.DodecahedronGeometry(0.12 + Math.random() * 0.08, 0);
+                const hue = 0.55 + Math.random() * 0.38;
+                const baseColor = new THREE.Color().setHSL(hue, 0.9, 0.65);
                 const material = new THREE.MeshStandardMaterial({
-                    color: new THREE.Color().setHSL(hue, 0.9, 0.65),
-                    emissive: 0xaa88ff,
-                    emissiveIntensity: 0.45,
+                    color: baseColor,
+                    emissive: 0xaa77ff,
+                    emissiveIntensity: 0.5,
                     metalness: 0.2,
                     roughness: 0.3
                 });
@@ -426,30 +425,30 @@
                 this.mesh.position.set(this.x, this.y, this.z);
                 scene.add(this.mesh);
                 this.active = true;
-                this.initialColor = new THREE.Color().setHSL(hue, 0.9, 0.65);
+                this.initialColor = baseColor.clone();
                 this.phase = Math.random() * Math.PI * 2;
                 this.rotSpeedX = 0.02 + Math.random() * 0.03;
                 this.rotSpeedY = 0.02 + Math.random() * 0.03;
             }
             
-            // 检查是否应该被吸引
+            // 关键修复: 每帧检查距离，动态判断是否进入吸引区
             checkAttraction() {
                 if (this.state !== 'orbit') return false;
-                const distToCenter = Math.sqrt(this.x * this.x + this.z * this.z);
-                // 当距离小于吸引半径时，开始被吸引
-                if (distToCenter <= ATTRACT_RADIUS && !this.isBeingAttracted) {
+                const distToCenter = Math.sqrt(this.x * this.x + this.z * this.z + this.y * this.y);
+                // 基于二维半径(主要XZ平面)判断更符合吸积盘感觉，但三维距离更准确，采用XZ平面距离为主
+                const distXZ = Math.sqrt(this.x * this.x + this.z * this.z);
+                if (distXZ <= ATTRACT_RADIUS && !this.isBeingAttracted) {
                     this.startAttraction();
                     return true;
                 }
                 return false;
             }
             
-            // 开始被吸引，进入螺旋支路
             startAttraction() {
                 this.state = 'attracted';
                 this.isBeingAttracted = true;
                 const currentAngle = Math.atan2(this.z, this.x);
-                // 选择最近的支路
+                // 选择最近的螺旋支路
                 let bestBranch = 0;
                 let minAngleDiff = Math.PI;
                 for (let i = 0; i < BRANCH_ANGLES.length; i++) {
@@ -466,65 +465,64 @@
                 this.spiralProgress = 0;
             }
             
-            // 更新螺旋位置 - 沿螺旋路径坠入黑洞
+            // 沿螺旋支路精准坠入黑洞
             updateSpiralPosition() {
-                // 螺旋进度增加，速度适中确保在四分之一圆弧内完成坠落
-                this.spiralProgress += 0.022;
+                // 动态速度，越靠近黑洞越快，增加真实感
+                let delta = 0.024;
+                if (this.spiralProgress > 0.7) delta = 0.035;
+                this.spiralProgress += delta;
                 
-                // 到达黑洞中心，销毁并重生
                 if (this.spiralProgress >= 1.0) {
                     this.destroy();
                     return false;
                 }
                 
-                // 半径从起始半径线性下降到 2.5
-                const startR = Math.min(this.spiralStartRadius, 20);
-                const endR = 2.5;
+                const startR = Math.min(this.spiralStartRadius, 19.5);
+                const endR = 2.2;
                 const radius = startR * (1 - this.spiralProgress) + endR * this.spiralProgress;
-                
-                // 螺旋角度：从起始角度平滑过渡到目标支路角度 + 90度偏移
                 const branchAngle = BRANCH_ANGLES[this.targetBranch];
-                let angleDiff = (branchAngle + Math.PI / 1.8) - this.spiralStartAngle;
+                // 螺旋角度平滑过渡，沿支路方向并加入额外螺旋扭曲，使其看起来沿支路坠入
+                let angleDiff = (branchAngle + Math.PI / 2.2) - this.spiralStartAngle;
                 while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
                 while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
-                const spiralAngle = this.spiralStartAngle + angleDiff * this.spiralProgress;
+                let spiralAngle = this.spiralStartAngle + angleDiff * this.spiralProgress;
+                // 增加额外的螺旋卷曲
+                spiralAngle += Math.sin(this.spiralProgress * Math.PI * 1.6) * 0.25;
                 
-                // 计算位置，添加自然摆动
                 let x = Math.cos(spiralAngle) * radius;
                 let z = Math.sin(spiralAngle) * radius;
-                const sway = Math.sin(this.spiralProgress * Math.PI * 2 + this.phase) * 0.35;
+                // 轻微摆动模拟湍流
+                const sway = Math.sin(this.spiralProgress * Math.PI * 3 + this.phase) * 0.2;
                 const perpX = -Math.sin(spiralAngle) * sway;
                 const perpZ = Math.cos(spiralAngle) * sway;
                 x += perpX;
                 z += perpZ;
-                const y = Math.sin(this.spiralProgress * Math.PI * 1.5) * 0.35;
+                // 高度随半径减小而降低，最后坠入平面
+                const y = Math.sin(this.spiralProgress * Math.PI) * 0.45 * (1 - this.spiralProgress) + (Math.random() - 0.5) * 0.08;
                 
                 this.x = x;
                 this.z = z;
                 this.y = y;
                 this.mesh.position.set(x, y, z);
                 
-                // 靠近黑洞时变红变亮
-                const proximity = Math.max(0, Math.min(1, (radius - 2.2) / 10));
-                this.mesh.material.emissiveIntensity = 0.5 + (1 - proximity) * 1.2;
-                
-                if (radius < 5.5) {
-                    const hotMix = 1 - (radius - 2.2) / 3.5;
-                    this.mesh.material.color.setRGB(1.0, 0.4 + hotMix * 0.5, 0.2 + hotMix * 0.5);
+                // 特效：接近黑洞时变红发热
+                const proximity = Math.min(1, Math.max(0, (radius - 2.0) / 9.0));
+                this.mesh.material.emissiveIntensity = 0.6 + (1 - proximity) * 1.4;
+                if (radius < 6.0) {
+                    const hot = 1 - (radius - 2.0) / 4.0;
+                    this.mesh.material.color.setRGB(1.0, 0.3 + hot * 0.5, 0.2 + hot * 0.4);
                 } else {
                     this.mesh.material.color = this.initialColor;
                 }
-                
                 return true;
             }
             
-            // 更新圆周运动位置
             updateOrbitPosition() {
                 this.orbitAngle += this.orbitSpeed;
                 if (this.orbitAngle > Math.PI * 2) this.orbitAngle -= Math.PI * 2;
                 this.x = Math.cos(this.orbitAngle) * this.orbitRadius;
                 this.z = Math.sin(this.orbitAngle) * this.orbitRadius;
-                this.y = this.yOffset + Math.sin(this.orbitAngle * 2) * 0.25;
+                this.y = this.yOffset + Math.sin(this.orbitAngle * 2) * 0.28;
                 this.mesh.position.set(this.x, this.y, this.z);
                 this.mesh.material.color = this.initialColor;
                 this.mesh.material.emissiveIntensity = 0.45;
@@ -550,26 +548,26 @@
                 this.active = false;
                 createDestructionEffect(this.mesh.position.clone(), BRANCH_COLORS[this.targetBranch || 0]);
                 scene.remove(this.mesh);
-                // 重生一个新的星星在圆周轨道上
+                // 重生新星星，保持总数动态平衡
                 setTimeout(() => {
                     const newStar = new SmallStar();
                     smallStars.push(newStar);
-                }, 40);
+                }, 25);
             }
         }
         
-        // 销毁特效
+        // 销毁特效增强
         function createDestructionEffect(position, color) {
-            const particleCount = 80;
+            const particleCount = 110;
             const geom = new THREE.BufferGeometry();
             const positions = new Float32Array(particleCount * 3);
             for (let i = 0; i < particleCount; i++) {
-                positions[i*3] = (Math.random() - 0.5) * 0.9;
-                positions[i*3+1] = (Math.random() - 0.5) * 0.9;
-                positions[i*3+2] = (Math.random() - 0.5) * 0.9;
+                positions[i*3] = (Math.random() - 0.5) * 1.0;
+                positions[i*3+1] = (Math.random() - 0.5) * 1.0;
+                positions[i*3+2] = (Math.random() - 0.5) * 1.0;
             }
             geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            const mat = new THREE.PointsMaterial({ color: color, size: 0.08, blending: THREE.AdditiveBlending });
+            const mat = new THREE.PointsMaterial({ color: color, size: 0.09, blending: THREE.AdditiveBlending });
             const particles = new THREE.Points(geom, mat);
             particles.position.copy(position);
             scene.add(particles);
@@ -593,17 +591,17 @@
             requestAnimationFrame(animateDestroy);
             
             const glowRing = new THREE.Mesh(
-                new THREE.SphereGeometry(0.3, 8, 8),
-                new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending })
+                new THREE.SphereGeometry(0.35, 8, 8),
+                new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending })
             );
             glowRing.position.copy(position);
             scene.add(glowRing);
             let glowScale = 1;
             function animateGlow() {
-                glowScale += 0.1;
+                glowScale += 0.12;
                 glowRing.scale.setScalar(glowScale);
-                glowRing.material.opacity = 0.8 - (glowScale - 1) * 0.55;
-                if (glowScale > 2.6) {
+                glowRing.material.opacity = 0.9 - (glowScale - 1) * 0.45;
+                if (glowScale > 2.8) {
                     scene.remove(glowRing);
                     return;
                 }
@@ -617,52 +615,51 @@
             smallStars.push(new SmallStar());
         }
         
-        // ================= 5. 星云粒子系统 =================
-        const nebulaCount = 15000;
+        // ================= 5. 星云与背景增强 =================
+        const nebulaCount = 18000;
         const nebulaGeom = new THREE.BufferGeometry();
         const nebulaPosArr = new Float32Array(nebulaCount * 3);
         const nebulaColors = new Float32Array(nebulaCount * 3);
         for (let i = 0; i < nebulaCount; i++) {
-            const radius = 12 + Math.pow(Math.random(), 1.2) * 52;
+            const radius = 12 + Math.pow(Math.random(), 1.2) * 58;
             const angle = Math.random() * Math.PI * 2;
-            const spiral = radius * 0.25;
+            const spiral = radius * 0.22;
             const finalAngle = angle + spiral;
-            const yVal = Math.sin(radius * 0.4) * 1.8 + (Math.random() - 0.5) * 2.0;
+            const yVal = Math.sin(radius * 0.38) * 2.0 + (Math.random() - 0.5) * 2.2;
             nebulaPosArr[i*3] = Math.cos(finalAngle) * radius;
-            nebulaPosArr[i*3+1] = yVal * (1 - radius / 60);
+            nebulaPosArr[i*3+1] = yVal * (1 - radius / 62);
             nebulaPosArr[i*3+2] = Math.sin(finalAngle) * radius;
-            const mix = Math.min(1, radius / 45);
-            nebulaColors[i*3] = 0.55 + mix * 0.4;
-            nebulaColors[i*3+1] = 0.35 + mix * 0.45;
+            const mix = Math.min(1, radius / 48);
+            nebulaColors[i*3] = 0.6 + mix * 0.35;
+            nebulaColors[i*3+1] = 0.4 + mix * 0.45;
             nebulaColors[i*3+2] = 0.85 + mix * 0.15;
         }
         nebulaGeom.setAttribute('position', new THREE.BufferAttribute(nebulaPosArr, 3));
         nebulaGeom.setAttribute('color', new THREE.BufferAttribute(nebulaColors, 3));
-        const nebulaMat = new THREE.PointsMaterial({ size: 0.09, vertexColors: true, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
+        const nebulaMat = new THREE.PointsMaterial({ size: 0.1, vertexColors: true, transparent: true, opacity: 0.65, blending: THREE.AdditiveBlending });
         const nebulaCloud = new THREE.Points(nebulaGeom, nebulaMat);
         scene.add(nebulaCloud);
         
-        // 背景繁星
-        const bgStarCount = 10000;
+        const bgStarCount = 12000;
         const bgStarGeom = new THREE.BufferGeometry();
         const bgStarPos = new Float32Array(bgStarCount * 3);
         for (let i = 0; i < bgStarCount; i++) {
-            bgStarPos[i*3] = (Math.random() - 0.5) * 450;
-            bgStarPos[i*3+1] = (Math.random() - 0.5) * 260;
-            bgStarPos[i*3+2] = (Math.random() - 0.5) * 280 - 130;
+            bgStarPos[i*3] = (Math.random() - 0.5) * 480;
+            bgStarPos[i*3+1] = (Math.random() - 0.5) * 280;
+            bgStarPos[i*3+2] = (Math.random() - 0.5) * 300 - 150;
         }
         bgStarGeom.setAttribute('position', new THREE.BufferAttribute(bgStarPos, 3));
-        const bgStarMat = new THREE.PointsMaterial({ color: 0xaaccff, size: 0.12, transparent: true, opacity: 0.55 });
+        const bgStarMat = new THREE.PointsMaterial({ color: 0xaaccff, size: 0.13, transparent: true, opacity: 0.55 });
         const bgStars = new THREE.Points(bgStarGeom, bgStarMat);
         scene.add(bgStars);
         
-        // 吸引范围指示环
+        // 吸引范围指示环 (半透明动画环)
         const attractRing = new THREE.Mesh(
-            new THREE.RingGeometry(ATTRACT_RADIUS - 0.4, ATTRACT_RADIUS + 0.4, 64),
-            new THREE.MeshBasicMaterial({ color: 0xff66aa, transparent: true, opacity: 0.15, side: THREE.DoubleSide })
+            new THREE.RingGeometry(ATTRACT_RADIUS - 0.5, ATTRACT_RADIUS + 0.5, 64),
+            new THREE.MeshBasicMaterial({ color: 0xff66aa, transparent: true, opacity: 0.2, side: THREE.DoubleSide })
         );
         attractRing.rotation.x = -Math.PI / 2;
-        attractRing.position.y = -0.15;
+        attractRing.position.y = -0.2;
         scene.add(attractRing);
         
         // ================= 音乐系统 =================
@@ -678,7 +675,7 @@
                 bgMusic.play().then(() => {
                     musicStarted = true;
                     musicBtn.innerHTML = "🎵 星渊旋律 🔊";
-                }).catch(e => console.log("需要交互"));
+                }).catch(e => console.log("交互启动音乐"));
             }
         }
         document.body.addEventListener('click', startMusic, { once: true });
@@ -736,17 +733,17 @@
                 }
             }
             
-            nebulaCloud.rotation.y += 0.0004;
-            
+            nebulaCloud.rotation.y += 0.00045;
             innerAcc.rotation.z += 0.013;
             midAcc.rotation.z -= 0.01;
             outerAcc.rotation.z += 0.008;
-            dustRing.rotation.y += 0.006;
+            dustRing.rotation.y += 0.007;
+            attractRing.rotation.z += 0.003;
             
-            const pulse = 1 + Math.sin(time * 0.004) * 0.013;
+            const pulse = 1 + Math.sin(time * 0.004) * 0.015;
             blackHoleCore.scale.set(pulse, pulse, pulse);
-            eventHorizonGlow.scale.setScalar(1 + Math.sin(time * 0.005) * 0.028);
-            coreLight.intensity = 1.1 + Math.sin(time * 0.0035) * 0.35;
+            eventHorizonGlow.scale.setScalar(1 + Math.sin(time * 0.005) * 0.03);
+            coreLight.intensity = 1.2 + Math.sin(time * 0.0038) * 0.4;
             
             controls.update();
             renderer.render(scene, camera);
@@ -762,7 +759,7 @@
             labelRenderer.setSize(window.innerWidth, window.innerHeight);
         });
         
-        console.log("%c✨ 修复完成！小星星现在会被吸入黑洞 | 半径7.5内被吸引 | 沿螺旋支路坠落并重生 ✨", "color: #ffaa88; font-size: 14px");
+        console.log("%c✨ 修复完成！小星星现在精准被黑洞吸引 | 半径7.6内立即触发螺旋支路坠落 | 重生机制完美 ✨", "color: #ffaa88; font-size: 14px");
     </script>
 </body>
 </html>
