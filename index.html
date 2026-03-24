@@ -3,45 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>宇宙大爆炸 · 星渊诞生 | fallingmeteorite</title>
+    <title>宇宙大爆炸 · 奇点压缩 | fallingmeteorite</title>
     <style>
         body {
             margin: 0;
             overflow: hidden;
             font-family: 'Segoe UI', 'Poppins', 'Microsoft YaHei', sans-serif;
-            color: white;
+            background: #000;
         }
         
-        /* 爆炸前引导按钮 */
-        .bigbang-btn {
+        /* 全屏覆盖层：展示背景图 + 引爆按钮 */
+        .prelude-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 300;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1), opacity 0.5s ease;
+            will-change: transform, opacity;
+            transform-origin: center center;
+        }
+        .prelude-bg {
             position: absolute;
-            bottom: 30%;
-            left: 50%;
-            transform: translateX(-50%);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.85);
+        }
+        .bigbang-btn-overlay {
+            position: relative;
             background: radial-gradient(circle at 30% 10%, #ff7e5e, #feb47b);
             border: none;
             border-radius: 80px;
-            padding: 16px 44px;
-            font-size: 1.6rem;
+            padding: 16px 48px;
+            font-size: 1.8rem;
             font-weight: bold;
             color: #fff;
             text-shadow: 0 0 15px rgba(0,0,0,0.5);
             cursor: pointer;
-            z-index: 200;
+            z-index: 310;
             box-shadow: 0 0 35px rgba(255, 80, 40, 0.8), 0 5px 20px rgba(0,0,0,0.3);
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             letter-spacing: 4px;
             backdrop-filter: blur(4px);
             border: 1px solid rgba(255,200,100,0.9);
             font-family: monospace;
             white-space: nowrap;
+            transform: scale(1);
+            transition: transform 0.2s;
         }
-        .bigbang-btn:hover {
-            transform: translateX(-50%) scale(1.05);
+        .bigbang-btn-overlay:hover {
+            transform: scale(1.03);
             box-shadow: 0 0 55px rgba(255, 100, 30, 1);
-            background: radial-gradient(circle at 30% 10%, #ff9468, #ffc285);
         }
         
+        /* 压缩动画时的样式 (动态添加) */
+        .compress-animation {
+            transform: scale(0) translate(0, 0) !important;
+            opacity: 0 !important;
+            transition: transform 0.55s cubic-bezier(0.7, 0, 0.3, 1), opacity 0.45s ease !important;
+        }
+        
+        /* 正常3D界面元素 (初始透明不可见，爆炸后显现) */
         .info-panel {
             position: absolute; top: 20px; left: 20px;
             background: rgba(8, 5, 20, 0.75); backdrop-filter: blur(14px);
@@ -102,17 +132,23 @@
         @media (max-width: 700px) {
             .star-label { font-size: 9px; padding: 4px 12px; }
             .info-panel { padding: 8px 16px; max-width: 260px; }
-            .bigbang-btn { font-size: 1.2rem; padding: 12px 28px; white-space: nowrap; bottom: 35%; }
+            .bigbang-btn-overlay { font-size: 1.2rem; padding: 12px 28px; white-space: nowrap; }
             .toast-message { font-size: 0.7rem; white-space: normal; width: 80vw; }
         }
     </style>
 </head>
 <body>
-    <button id="bigbangTrigger" class="bigbang-btn">💥 引爆宇宙 💥</button>
+    <!-- 预爆炸覆盖层：包含背景图片 + 引爆按钮 -->
+    <div id="preludeOverlay" class="prelude-overlay">
+        <img id="backgroundImg" class="prelude-bg" alt="cosmic background" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 800'%3E%3Cdefs%3E%3CradialGradient id='a' cx='50%25' cy='50%25' r='70%25'%3E%3Cstop offset='0%25' stop-color='%231a0c2e'/%3E%3Cstop offset='100%25' stop-color='%2303010a'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23a)'/%3E%3Ccircle cx='20%25' cy='30%25' r='2' fill='white' opacity='0.7'/%3E%3Ccircle cx='70%25' cy='60%25' r='1.5' fill='white' opacity='0.6'/%3E%3Ccircle cx='85%25' cy='20%25' r='1' fill='white' opacity='0.8'/%3E%3Ccircle cx='45%25' cy='80%25' r='1.2' fill='white' opacity='0.5'/%3E%3Cpath d='M300 400 L350 380 L370 410 L340 430 L310 420 Z' fill='%23ffaa66' opacity='0.3'/%3E%3C/svg%3E">
+        <button id="bigbangTriggerBtn" class="bigbang-btn-overlay">💥 引爆宇宙 💥</button>
+    </div>
+    
+    <!-- 3D宇宙相关UI (初始不可见，爆炸后渐显) -->
     <div class="info-panel" id="infoPanel">
-        <h1>🌀 星渊幻境 · 大爆炸前夕</h1>
-        <p>✨ fallingmeteorite · 待创世纪 ✨</p>
-        <div class="quote" id="hitokoto-display">⚛️ 点击引爆，开启万物起源 · 奇点绽放 ⚛️</div>
+        <h1>🌀 星渊幻境 · 大爆炸新生</h1>
+        <p>✨ fallingmeteorite · 创世纪元 ✨</p>
+        <div class="quote" id="hitokoto-display">⚛️ 奇点绽放，万物伊始 ⚛️</div>
     </div>
     <div class="controls-hint" id="controlsHint">🖱️ 拖拽旋转视角 | 滚动缩放 | ✨ 点击大星探索作品 ✨</div>
     <div class="music-btn" id="musicToggleBtn">🎵 星渊共振 🔇</div>
@@ -134,7 +170,7 @@
         import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
         import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
         
-        // --- 初始化基础 Three 组件 ---
+        // ================= 1. 初始化Three场景 (所有天体初始不可见) =================
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x010004);
         scene.fog = new THREE.FogExp2(0x010004, 0.000038);
@@ -178,26 +214,22 @@
         controls.enablePan = true;
         controls.target.set(0, 0, 0);
         
-        // ---------- 全局控制：爆炸后显示的物体数组 ----------
-        let allCosmicObjects = [];      // 存放需要爆炸后显示的物体 (Mesh, Points, CSS2DObject等)
+        // 全局爆炸标志
         let explosionPlayed = false;
+        let allCosmicObjects = [];      // 存放所有爆炸后才显示的对象
         
-        // 辅助函数：添加物体并默认隐藏
-        function addToUniverse(obj, visibleAfterBang = false) {
+        // 辅助：添加物体并默认隐藏
+        function addToUniverse(obj) {
             if (obj) {
-                if (!visibleAfterBang) {
-                    obj.visible = false;
-                }
+                obj.visible = false;
                 allCosmicObjects.push(obj);
                 scene.add(obj);
             }
             return obj;
         }
         
-        // 临时添加可见性控制（避免遗漏，后续爆炸后全部显示）
-        // 注意：CSS2DObject 需要单独处理visible属性，同样有效
-        
-        // ========= 1. 黑洞核心及吸积盘 (全部隐藏，爆炸后诞生) =========
+        // ========= 2. 创建华丽宇宙组件 (黑洞、星云、星星等，全部隐藏) =========
+        // 黑洞核心
         const blackHoleCore = new THREE.Mesh(
             new THREE.SphereGeometry(1.85, 160, 160),
             new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.02, metalness: 0.99, emissive: 0x8800aa, emissiveIntensity: 1.5 })
@@ -247,24 +279,20 @@
         const ripplePoints = new THREE.Points(rippleGeo, new THREE.PointsMaterial({ color: 0xff88dd, size: 0.09, blending: THREE.AdditiveBlending, transparent: true }));
         addToUniverse(ripplePoints);
         
-        // 光源系统 (黑洞光源爆炸后显示)
+        // 光源
         const coreLight = new THREE.PointLight(0xff44cc, 1.9, 55);
         coreLight.position.set(0, 0, 0);
         addToUniverse(coreLight);
-        
         const fillLightA = new THREE.PointLight(0xaa88ff, 0.85);
         fillLightA.position.set(8, 7, 9);
         addToUniverse(fillLightA);
-        
         const fillLightB = new THREE.PointLight(0xff77aa, 0.6);
         fillLightB.position.set(-5, 4, 12);
         addToUniverse(fillLightB);
-        
-        // 环境光保持可见（不变）
         const ambientLight = new THREE.AmbientLight(0x15112a);
-        scene.add(ambientLight);
+        scene.add(ambientLight);  // 环境光一直可见，不影响
         
-        // ========= 2. 螺旋支路 & 星云背景等 =========
+        // 螺旋支路
         const BRANCH_ANGLES = [Math.PI / 4, 3 * Math.PI / 4, 5 * Math.PI / 4, 7 * Math.PI / 4];
         const BRANCH_COLORS = [0xff77bb, 0x77ffbb, 0x88aaff, 0xffaa77];
         BRANCH_ANGLES.forEach((angle, idx) => {
@@ -357,7 +385,7 @@
         blackHoleLabel.position.set(0, 2.3, 0);
         addToUniverse(blackHoleLabel);
         
-        // ========= 大星星作品集 =========
+        // 大星星作品集
         const worksData = [
             { name: "task_scheduling", desc: "⚙️ 高级Python调度器", link: "https://github.com/fallingmeteorite/task_scheduling", color: 0x6c9eff, icon: "✨" },
             { name: "BilBil 主页", desc: "🎬 创意空间", link: "https://space.bilibili.com/1484690146", color: 0x88ddff, icon: "📺" },
@@ -415,7 +443,7 @@
         }
         const bigStars = worksData.map(d => new BigStarNode(d));
         
-        // ========= 小型恒星系统 (引力吸引螺旋坠星) =========
+        // 小型恒星系统 (简化但保留引力吸引)
         const TOTAL_SMALL_STARS = 3400;
         const ATTRACT_RADIUS = 18.2;
         const GRAV_PULL = 0.00115;
@@ -465,7 +493,7 @@
                 } else this.mesh.material.emissiveIntensity = this.gravityInfluence ? 0.7 : 0.5;
                 return true;
             }
-            startAttract() { /* 与之前相同，略作保留 */ 
+            startAttract() {
                 const curAng = Math.atan2(this.z, this.x);
                 let best = 0, minD = Math.PI;
                 for (let i = 0; i < BRANCH_ANGLES.length; i++) {
@@ -529,88 +557,90 @@
         for (let i = 0; i < 180; i++) smallStars.push(new SmallStar('falling', 17.5 + Math.random() * 5.5));
         
         // 流星系统
-        class MeteorStreak { /* 与原逻辑相同，但创建时隐藏？爆炸后可见流星自动生效，流星动态添加会正常显示，所以不管 */
+        class MeteorStreak {
             constructor() { this.active = true; this.reset(); }
             reset() { const angle = Math.random() * Math.PI * 2; const startRad = 48 + Math.random() * 28; this.startX = Math.cos(angle) * startRad; this.startZ = Math.sin(angle) * startRad; this.startY = (Math.random() - 0.5) * 14; const targetAngle = angle + (Math.random() - 0.5) * 1.5; this.endX = Math.cos(targetAngle) * 6.5; this.endZ = Math.sin(targetAngle) * 6.5; this.endY = (Math.random() - 0.5) * 5; this.progress = 0; this.speed = 0.006 + Math.random() * 0.009; this.color = new THREE.Color().setHSL(0.08 + Math.random() * 0.2, 1.0, 0.65); this.geom = new THREE.BufferGeometry(); this.pointsObj = new THREE.Points(this.geom, new THREE.PointsMaterial({ color: this.color, size: 0.22, blending: THREE.AdditiveBlending })); scene.add(this.pointsObj); if(!explosionPlayed) this.pointsObj.visible = false; else this.pointsObj.visible = true; }
             update() { if (!this.active) return false; this.progress += this.speed; if (this.progress >= 1) { scene.remove(this.pointsObj); return false; } const t = this.progress; const x = this.startX * (1 - t) + this.endX * t; const z = this.startZ * (1 - t) + this.endZ * t; const y = this.startY * (1 - t) + this.endY * t; const positions = []; for (let i = 0; i <= 12; i++) { const trailT = Math.max(0, t - i * 0.022); if (trailT >= 0) { const tx = this.startX * (1 - trailT) + this.endX * trailT; const tz = this.startZ * (1 - trailT) + this.endZ * trailT; const ty = this.startY * (1 - trailT) + this.endY * trailT; positions.push(tx, ty, tz); } } if (this.pointsObj.geometry) this.pointsObj.geometry.dispose(); const newGeom = new THREE.BufferGeometry(); newGeom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3)); this.pointsObj.geometry = newGeom; return true; } }
         let meteors = [];
         function spawnMeteor() { if (explosionPlayed && meteors.length < 10 && Math.random() < 0.025) meteors.push(new MeteorStreak()); }
         
-        // 辅助函数：爆炸后显示所有宇宙物体
-        function revealUniverse() {
-            allCosmicObjects.forEach(obj => { if (obj) obj.visible = true; });
-            // 确保流星后续可见
-            explosionPlayed = true;
-            // UI淡入
-            document.getElementById('infoPanel').style.opacity = '1';
-            document.getElementById('controlsHint').style.opacity = '1';
-            document.getElementById('musicToggleBtn').classList.add('visible');
-            // 播放音乐（如果用户允许）
-            if (bgMusic && !musicStarted) startMusic();
-        }
-        
-        // ========= 爆炸特效 =========
-        function createBigBang() {
-            const explosionGroup = [];
-            const particleCount = 1800;
-            const geometry = new THREE.BufferGeometry();
+        // 爆炸特效 (粒子从中心爆发)
+        function createBigBangExplosion() {
+            const particleCount = 2000;
+            const geom = new THREE.BufferGeometry();
             const positions = new Float32Array(particleCount * 3);
             for (let i = 0; i < particleCount; i++) {
-                positions[i*3] = (Math.random() - 0.5) * 3;
-                positions[i*3+1] = (Math.random() - 0.5) * 3;
-                positions[i*3+2] = (Math.random() - 0.5) * 3;
+                positions[i*3] = (Math.random() - 0.5) * 2.5;
+                positions[i*3+1] = (Math.random() - 0.5) * 2.5;
+                positions[i*3+2] = (Math.random() - 0.5) * 2.5;
             }
-            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            const particleMat = new THREE.PointsMaterial({ color: 0xffaa66, size: 0.25, blending: THREE.AdditiveBlending });
-            const particles = new THREE.Points(geometry, particleMat);
+            geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            const particleMat = new THREE.PointsMaterial({ color: 0xffaa66, size: 0.28, blending: THREE.AdditiveBlending });
+            const particles = new THREE.Points(geom, particleMat);
             scene.add(particles);
-            explosionGroup.push(particles);
-            
-            const flashSphere = new THREE.Mesh(new THREE.SphereGeometry(0.8, 32, 32), new THREE.MeshBasicMaterial({ color: 0xff8844, transparent: true, blending: THREE.AdditiveBlending }));
-            flashSphere.position.set(0,0,0);
-            scene.add(flashSphere);
-            explosionGroup.push(flashSphere);
-            
             let frame = 0;
             function animateBang() {
                 frame++;
-                const intensity = Math.max(0, 1 - frame / 35);
-                particles.material.opacity = intensity * 0.9;
-                particles.scale.setScalar(1 + frame * 0.45);
-                flashSphere.scale.setScalar(1 + frame * 1.4);
-                flashSphere.material.opacity = Math.max(0, 1 - frame / 20);
+                const intensity = Math.max(0, 1 - frame / 38);
+                particleMat.opacity = intensity * 0.9;
+                particles.scale.setScalar(1 + frame * 0.5);
                 if (frame > 45) {
-                    explosionGroup.forEach(item => scene.remove(item));
-                    revealUniverse();
+                    scene.remove(particles);
                     return;
                 }
                 requestAnimationFrame(animateBang);
             }
             requestAnimationFrame(animateBang);
-            
-            // 短促音效模拟爆炸感（可选）
+            // 短促爆裂音效
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
-                osc.frequency.value = 80;
-                gain.gain.value = 0.4;
+                osc.frequency.value = 70;
+                gain.gain.value = 0.45;
                 osc.start();
                 gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 1.2);
                 osc.stop(audioCtx.currentTime + 1.2);
             } catch(e) {}
         }
         
-        // 引爆按钮逻辑
-        const bangBtn = document.getElementById('bigbangTrigger');
-        bangBtn.addEventListener('click', () => {
-            if (explosionPlayed) return;
-            bangBtn.style.opacity = '0';
-            setTimeout(() => bangBtn.remove(), 500);
-            createBigBang();
-        });
+        // 显示宇宙万物
+        function revealUniverse() {
+            allCosmicObjects.forEach(obj => { if (obj) obj.visible = true; });
+            explosionPlayed = true;
+            // UI淡入
+            document.getElementById('infoPanel').style.opacity = '1';
+            document.getElementById('controlsHint').style.opacity = '1';
+            document.getElementById('musicToggleBtn').classList.add('visible');
+            if (bgMusic && !musicStarted) startMusic();
+            // 开始流星生成循环
+            setInterval(() => spawnMeteor(), 800);
+        }
+        
+        // 压缩动画 + 爆炸
+        function startCompressionAndBang() {
+            const overlay = document.getElementById('preludeOverlay');
+            const btn = document.getElementById('bigbangTriggerBtn');
+            if (!overlay) return;
+            // 添加压缩类，使整个覆盖层和按钮同时缩小到中心消失
+            overlay.classList.add('compress-animation');
+            btn.style.transform = 'scale(0)';
+            btn.style.opacity = '0';
+            // 动画结束后移除覆盖层并执行爆炸
+            setTimeout(() => {
+                if (overlay.parentNode) overlay.remove();
+                // 触发3D爆炸粒子特效
+                createBigBangExplosion();
+                // 显示宇宙所有天体
+                revealUniverse();
+            }, 580);
+        }
+        
+        // 绑定按钮事件
+        const bangBtn = document.getElementById('bigbangTriggerBtn');
+        if (bangBtn) bangBtn.addEventListener('click', startCompressionAndBang);
         
         // 音乐与提示
         const bgMusic = new Audio();
@@ -643,7 +673,6 @@
             time += 16;
             bigStars.forEach(s => s.update(time));
             for (let i = smallStars.length-1; i >= 0; i--) if (!smallStars[i].update()) smallStars.splice(i,1);
-            spawnMeteor();
             for (let i = meteors.length-1; i >= 0; i--) if (!meteors[i].update()) meteors.splice(i,1);
             
             if (explosionPlayed) {
