@@ -4,18 +4,15 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>Fallingmeteorite | 流星轨迹 · 创意空间</title>
-    <meta name="description" content="一名高中生的技术站台，求知若饥，虚心若愚">
-    <meta name="keywords" content="Python, Unreal Engine, 逆向工程, 个人博客, 流星">
-    <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌠</text></svg>">
+    <title>星辰集· Fallingmeteorite</title>
+    <meta name="description" content="星穹之下，少年与代码的银河漫游">
+    <meta name="keywords" content="星空, 作品集, 高中生, 流星, 创意开发">
+    <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>">
     
     <!-- 字体与图标库 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
-    <!-- Fancybox 光效 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
-    <!-- APlayer 音乐 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
     
     <style>
         * {
@@ -25,26 +22,24 @@
         }
 
         body {
-            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-            background: #0a0f1e;
-            color: #eef4ff;
+            font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+            background: #030518;
+            color: #eef5ff;
             overflow-x: hidden;
-            position: relative;
+            min-height: 100vh;
         }
 
-        /* 动态星空 + 流星特效背景 */
-        #stars-canvas {
+        /* ========= 深邃星空画布 ========= */
+        #universe {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
             z-index: 0;
-            opacity: 0.7;
+            background: radial-gradient(ellipse at 30% 40%, #0a0f2a, #02010a);
         }
-
-        #meteor-shower {
+        #stars-layer, #twinkling-layer, #meteor-canvas {
             position: fixed;
             top: 0;
             left: 0;
@@ -53,640 +48,616 @@
             pointer-events: none;
             z-index: 1;
         }
+        #meteor-canvas { z-index: 2; }
 
-        #body-wrap {
+        /* 主容器磨砂玻璃星空效果 */
+        .main-container {
             position: relative;
-            z-index: 2;
-            background: rgba(10, 15, 30, 0.65);
+            z-index: 10;
+            background: rgba(3, 8, 28, 0.55);
             backdrop-filter: blur(3px);
             min-height: 100vh;
         }
 
-        /* 导航区 磨砂玻璃效果 */
-        #nav {
+        /* 星轨导航区 — 如银河飘带 */
+        .star-orbit-nav {
             position: relative;
-            background-size: cover;
-            background-position: center 30%;
-            background-attachment: fixed;
-            min-height: 62vh;
+            min-height: 70vh;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
-            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.5);
-            border-bottom: 1px solid rgba(255,255,255,0.15);
+            background: radial-gradient(circle at 50% 20%, rgba(30, 40, 80, 0.3) 0%, transparent 80%);
+            border-bottom: 1px solid rgba(255,215,140,0.3);
+            overflow: hidden;
         }
-        #nav::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 30% 20%, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.7) 100%);
-            backdrop-filter: brightness(0.85);
-            z-index: 0;
-        }
-        #page_site-info {
+        .constellation-title {
             position: relative;
-            z-index: 2;
+            z-index: 5;
             padding: 2rem;
         }
-        .blogtitle {
-            font-size: 3.5rem;
+        .glow-name {
+            font-size: 4.2rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #F9F3B0, #FFB347, #FF6B6B);
+            background: linear-gradient(135deg, #FFE6B0, #FFB347, #E08E3A);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
-            text-shadow: 0 2px 15px rgba(0,0,0,0.3);
+            text-shadow: 0 0 20px rgba(255,180,70,0.5);
             letter-spacing: -0.02em;
         }
+        .sub-star {
+            font-size: 1.3rem;
+            margin-top: 1rem;
+            opacity: 0.9;
+            letter-spacing: 2px;
+            font-weight: 300;
+            backdrop-filter: blur(4px);
+            display: inline-block;
+            padding: 0.4rem 1.2rem;
+            border-radius: 60px;
+            background: rgba(10,20,40,0.4);
+            border: 1px solid rgba(255,200,100,0.3);
+        }
         .typed-cursor {
-            font-size: 3rem;
+            font-size: 2rem;
             color: #ffbc6e;
         }
 
-        /* 主布局 */
-        #content-outer {
-            max-width: 1280px;
+        /* 主内容区 — 星尘卡片布局 */
+        .cosmic-wrapper {
+            max-width: 1300px;
             margin: 0 auto;
-            padding: 2rem 1.5rem 3rem;
+            padding: 3rem 2rem 4rem;
         }
-        #content-inner {
+        .star-grid {
             display: flex;
-            gap: 2rem;
+            gap: 2.5rem;
             flex-wrap: wrap;
         }
-        .aside_content {
-            flex: 1;
+        /* 左侧星云简介区 */
+        .nebula-sidebar {
+            flex: 1.2;
             min-width: 260px;
         }
-        #page {
-            flex: 2.5;
-            background: rgba(18, 25, 45, 0.6);
-            backdrop-filter: blur(8px);
-            border-radius: 2rem;
-            padding: 1.8rem 2rem;
-            border: 1px solid rgba(255,255,255,0.12);
-            box-shadow: 0 25px 40px -18px rgba(0,0,0,0.4);
-            transition: transform 0.3s ease, box-shadow 0.3s;
-        }
-        #page:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 30px 45px -15px rgba(0,0,0,0.5);
-            border-color: rgba(255,180,80,0.3);
+        /* 右侧作品星河 */
+        .galaxy-works {
+            flex: 2.8;
         }
 
-        /* 卡片通用样式 */
-        .card-widget {
-            background: rgba(22, 32, 55, 0.7);
+        /* 星光卡片 */
+        .star-card {
+            background: rgba(12, 20, 38, 0.65);
             backdrop-filter: blur(12px);
-            border-radius: 1.8rem;
-            padding: 1.2rem 1.2rem;
-            margin-bottom: 1.8rem;
-            border: 1px solid rgba(255,255,240,0.1);
-            transition: all 0.25s;
+            border-radius: 2rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 200, 120, 0.25);
+            transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            box-shadow: 0 15px 35px -12px rgba(0,0,0,0.4);
         }
-        .card-widget:hover {
-            background: rgba(30, 42, 70, 0.8);
-            border-color: rgba(255,200,100,0.4);
-            box-shadow: 0 12px 20px -10px rgba(0,0,0,0.3);
+        .star-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(255, 180, 70, 0.7);
+            background: rgba(20, 32, 55, 0.75);
+            box-shadow: 0 25px 40px -14px rgba(255,160,50,0.2);
         }
-        .card-info-avatar {
+        .avatar-star {
             text-align: center;
         }
         .avatar-img {
-            width: 110px;
-            height: 110px;
+            width: 130px;
+            height: 130px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid #ffb347;
-            box-shadow: 0 0 0 4px rgba(255,180,71,0.3);
-            transition: 0.3s;
+            border: 3px solid #ffbc6e;
+            box-shadow: 0 0 0 5px rgba(255,180,70,0.3), 0 0 20px rgba(255,200,100,0.3);
+            transition: 0.4s;
         }
         .avatar-img:hover {
             transform: scale(1.02);
-            box-shadow: 0 0 0 6px rgba(255,180,71,0.5);
+            box-shadow: 0 0 0 8px rgba(255,180,70,0.5);
         }
-        .author-info__name {
-            font-size: 1.7rem;
+        .star-name {
+            font-size: 1.8rem;
             font-weight: 700;
-            margin-top: 0.8rem;
-            background: linear-gradient(120deg, #fff, #ffd966);
+            margin-top: 1rem;
+            background: linear-gradient(120deg, #FFF2D0, #FFD966);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
         }
-        .author-info__description {
+        .star-bio {
             font-size: 0.9rem;
             opacity: 0.85;
-            margin-top: 0.3rem;
+            margin-top: 0.5rem;
         }
-        .social-icon {
-            display: inline-block;
-            font-size: 2rem;
-            color: #ddd;
+        .social-orbit {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        .social-link {
+            font-size: 1.8rem;
+            color: #cddcff;
             transition: 0.2s;
-            margin-top: 12px;
         }
-        .social-icon:hover {
+        .social-link:hover {
             color: #ffb347;
-            transform: scale(1.1);
+            transform: scale(1.15);
         }
-        .item-headline {
-            font-size: 1.2rem;
+        .stardust-headline {
+            font-size: 1.3rem;
             font-weight: 600;
             margin-bottom: 1rem;
             border-left: 4px solid #ffb347;
-            padding-left: 12px;
+            padding-left: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .item-headline i {
-            margin-right: 8px;
-            color: #ffb347;
-        }
-        #hitokoto, #jinrishici-sentence {
-            font-style: italic;
+        .hitokoto-box, .poetry-box {
+            font-style: normal;
+            line-height: 1.55;
             font-size: 0.95rem;
-            line-height: 1.45;
-            color: #e0e7ff;
-            padding: 0.2rem 0;
+            color: #e5edff;
         }
-        .webinfo-item {
+        .visitor-stats {
             display: flex;
             justify-content: space-between;
             padding: 8px 0;
-            border-bottom: 1px dashed rgba(255,255,200,0.2);
+            border-bottom: 1px dashed rgba(255,210,130,0.3);
         }
 
-        /* 技能条美化 */
-        .skillbox {
-            margin: 1rem 0 1.2rem;
+        /* 作品集 — 星座画廊 */
+        .works-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.8rem;
+            margin-top: 1rem;
         }
-        .skillbar {
-            position: relative;
-            display: block;
-            margin-bottom: 1.2rem;
-            width: 100%;
-            background: rgba(0,0,0,0.4);
-            border-radius: 40px;
-            overflow: hidden;
+        .work-item {
+            background: rgba(5, 12, 28, 0.7);
+            backdrop-filter: blur(8px);
+            border-radius: 1.6rem;
+            padding: 1.2rem 1.2rem 1.5rem;
+            border: 1px solid rgba(255,200,100,0.25);
             transition: all 0.3s;
+            cursor: pointer;
         }
-        .skillbar-title {
-            position: relative;
-            border-radius: 40px 0 0 40px;
-            padding: 8px 16px;
-            color: #fff;
-            font-weight: 600;
-            font-size: 0.85rem;
-            text-shadow: 0 1px 1px rgba(0,0,0,0.2);
-            width: 0%;
-            transition: width 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+        .work-item:hover {
+            transform: translateY(-8px) rotate(0.5deg);
+            border-color: #ffbc6e;
+            background: rgba(20, 35, 60, 0.85);
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.5);
         }
-        .skillbar-title span {
-            z-index: 2;
-        }
-        .skill-bar-percent {
-            position: absolute;
-            right: 15px;
-            top: 8px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            color: #f0f0f0;
-            background: rgba(0,0,0,0.5);
-            padding: 2px 8px;
-            border-radius: 30px;
-            backdrop-filter: blur(2px);
-            z-index: 2;
-        }
-        hr {
-            margin: 1.6rem 0;
-            border: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #ffb347, #ff6b6b, transparent);
-        }
-        .information, .tool1, .tool2 {
+        .work-icon {
+            font-size: 2.4rem;
+            margin-bottom: 0.6rem;
             display: inline-block;
-            margin-right: 20px;
-            margin-top: 0.5rem;
         }
-        .information a, .tool1 a, .tool2 a {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: linear-gradient(135deg, #2a3a5e, #1f2b44);
-            padding: 0.6rem 1.4rem;
-            border-radius: 50px;
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.25s;
-            border: 1px solid rgba(255,200,100,0.3);
-            backdrop-filter: blur(4px);
-        }
-        .information a:hover, .tool1 a:hover, .tool2 a:hover {
-            background: linear-gradient(135deg, #ff8c42, #ff6b4a);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255,100,50,0.4);
-            border-color: #ffb347;
-        }
-        h2 {
-            font-size: 1.7rem;
-            font-weight: 600;
-            margin-top: 0.5rem;
-            margin-bottom: 0.8rem;
-            display: inline-block;
-            background: linear-gradient(120deg, #ffd89b, #ffb347);
+        .work-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin: 0.5rem 0 0.3rem;
+            background: linear-gradient(135deg, #FFE1A0, #FFC06F);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
-            border-left: 4px solid #ffb347;
-            padding-left: 15px;
+        }
+        .work-desc {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin: 0.5rem 0;
+            line-height: 1.4;
+        }
+        .work-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .tag {
+            background: rgba(255,180,70,0.2);
+            border-radius: 50px;
+            padding: 0.2rem 0.8rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+            border: 0.5px solid rgba(255,200,100,0.6);
+        }
+        .work-link {
+            display: inline-block;
+            margin-top: 12px;
+            color: #ffc285;
+            font-size: 0.8rem;
+            text-decoration: none;
+            border-bottom: 1px dashed;
+        }
+        .work-link:hover {
+            color: white;
+        }
+        hr {
+            margin: 2rem 0;
+            border: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #ffbc6e, #ff8c42, transparent);
         }
         footer {
             text-align: center;
-            padding: 2rem 0 2rem;
-            font-size: 0.85rem;
-            border-top: 1px solid rgba(255,255,200,0.1);
+            padding: 2rem;
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(255,200,100,0.2);
             background: rgba(0,0,0,0.3);
-            backdrop-filter: blur(5px);
-            margin-top: 2rem;
+            backdrop-filter: blur(8px);
         }
-        @media (max-width: 860px) {
-            #content-inner { flex-direction: column; }
-            .blogtitle { font-size: 2.2rem; }
-            #nav { min-height: 45vh; }
-            #page { padding: 1.4rem; }
+        @media (max-width: 780px) {
+            .glow-name { font-size: 2.5rem; }
+            .star-grid { flex-direction: column; }
+            .works-grid { grid-template-columns: 1fr; }
         }
-        /* 按钮特效 */
-        .glow-text {
-            animation: softGlow 3s infinite;
+        .constellation-glow {
+            animation: pulseGlow 3s infinite;
         }
-        @keyframes softGlow {
-            0% { text-shadow: 0 0 2px #ffb347; }
-            50% { text-shadow: 0 0 12px #ff8c42; }
-            100% { text-shadow: 0 0 2px #ffb347; }
+        @keyframes pulseGlow {
+            0% { text-shadow: 0 0 3px #ffb347; }
+            50% { text-shadow: 0 0 18px #ffaa44; }
+            100% { text-shadow: 0 0 3px #ffb347; }
+        }
+        .btn-music {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #ffd48a;
+            transition: 0.2s;
+            margin-left: 12px;
         }
     </style>
 </head>
 <body>
 
-<!-- 动态画布: 繁星 + 流星雨增强 -->
-<canvas id="stars-canvas"></canvas>
-<canvas id="meteor-shower"></canvas>
+<div id="universe"></div>
+<canvas id="stars-layer"></canvas>
+<canvas id="twinkling-layer"></canvas>
+<canvas id="meteor-canvas"></canvas>
 
-<div id="body-wrap">
-    <nav class="not_index_bg" id="nav" style="background-image: url('https://api.ixiaowai.cn/api/api.php');">
-        <div id="page_site-info">
-            <div id="site-title">
-                <span class="blogtitle"></span>
+<div class="main-container">
+    <!-- 星轨导航区 -->
+    <div class="star-orbit-nav">
+        <div class="constellation-title">
+            <div class="glow-name">Fallingmeteorite</div>
+            <div class="sub-star">
+                <span id="dynamic-phrase"></span>
                 <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11"></script>
                 <script>
-                    var typed = new Typed(".blogtitle", {
-                        strings: ['求知若饥，虚心若愚', 'Stay Hungry Stay Foolish', '🌠 流星划过 · 代码永恒'],
-                        startDelay: 300,
-                        typeSpeed: 90,
+                    new Typed("#dynamic-phrase", {
+                        strings: ['🌠 星河滚烫，代码是人间理想', '✨ 以星辰为引，构建数字星海', '🪐 少年追光，亦是发光体'],
+                        startDelay: 500,
+                        typeSpeed: 70,
+                        backSpeed: 35,
                         loop: true,
-                        backSpeed: 45,
                         showCursor: true,
-                        cursorChar: '✨'
+                        cursorChar: '✧'
                     });
                 </script>
             </div>
         </div>
-    </nav>
+    </div>
 
-    <main id="content-outer">
-        <div id="content-inner">
-            <!-- 侧边栏 -->
-            <div class="aside_content" id="aside_content">
-                <div class="card-widget card-info">
-                    <div class="card-content">
-                        <div class="card-info-avatar is-center">
-                            <img class="avatar-img" src="https://picsum.photos/id/104/200/200?grayscale&seed=meteor" alt="avatar" style="object-fit:cover;">
-                            <div class="author-info__name">Fallingmeteorite</div>
-                            <div class="author-info__description">✨ 一名高中在读学生 · 昼夜代码，星辰作伴 ✨</div>
-                        </div>
-                        <div class="card-info-social-icons is-center">
-                            <a class="social-icon" href="https://github.com/fallingmeteorite" target="_blank" rel="noopener">
-                                <i class="fa fa-github"></i>
-                            </a>
-                            <a class="social-icon" href="#" style="margin-left: 12px;" id="musicToggleBtn" title="🎵 背景音乐控制">
-                                <i class="fa fa-music"></i>
-                            </a>
+    <div class="cosmic-wrapper">
+        <div class="star-grid">
+            <!-- 左侧：星尘个人信息 + 星语 -->
+            <div class="nebula-sidebar">
+                <div class="star-card">
+                    <div class="avatar-star">
+                        <img class="avatar-img" src="https://picsum.photos/id/29/200/200?grayscale&seed=nebula" alt="流星肖像">
+                        <div class="star-name">Fallingmeteorite</div>
+                        <div class="star-bio">✨ 高中生 · 独立开发者 · 星尘织梦者 ✨<br>“求知若饥，虚心若愚”</div>
+                        <div class="social-orbit">
+                            <a href="https://github.com/fallingmeteorite" target="_blank" class="social-link"><i class="fa fa-github"></i></a>
+                            <a href="https://space.bilibili.com/1484690146" target="_blank" class="social-link"><i class="fa fa-television"></i></a>
+                            <button id="musicToggleBtn" class="social-link btn-music"><i class="fa fa-music"></i></button>
                         </div>
                     </div>
                 </div>
 
-                <div class="card-widget card-announcement">
-                    <div class="card-content">
-                        <div class="item-headline"><i class="fa fa-bullhorn"></i><span>✨ 一言 · 漫游</span></div>
-                        <div id="hitokoto"> loading... 且听风吟</div>
-                    </div>
+                <div class="star-card">
+                    <div class="stardust-headline"><i class="fa fa-star-o"></i> <span>✨ 星 辰 一 言</span></div>
+                    <div id="hitokoto" class="hitokoto-box">…… 正在连接银河讯号 ……</div>
                 </div>
 
-                <div class="card-widget card-announcement">
-                    <div class="card-content">
-                        <div class="item-headline"><i class="fa fa-calendar"></i><span>📜 今日诗词</span></div>
-                        <div id="jinrishici-sentence"> 诗酒趁年华，代码写春秋</div>
-                    </div>
+                <div class="star-card">
+                    <div class="stardust-headline"><i class="fa fa-moon-o"></i> <span>📜 今 日 星 词</span></div>
+                    <div id="jinrishici-sentence" class="poetry-box">—— 且将新火试新茶，诗酒趁年华 ——</div>
                 </div>
 
-                <div class="card-widget card-webinfo">
-                    <div class="card-content">
-                        <div class="item-headline"><i class="fa fa-line-chart"></i><span>🌠 星际访客</span></div>
-                        <div class="webinfo">
-                            <div class="webinfo-item"><span>✨ 流浪者数 :</span><span id="busuanzi_value_site_uv">-</span></div>
-                            <div class="webinfo-item"><span>🌌 星际访问量 :</span><span id="busuanzi_value_site_pv">-</span></div>
-                        </div>
-                    </div>
+                <div class="star-card">
+                    <div class="stardust-headline"><i class="fa fa-bar-chart"></i> <span>🌌 星 际 访 客</span></div>
+                    <div class="visitor-stats"><span>✨ 流浪星人数 :</span><span id="busuanzi_value_site_uv">-</span></div>
+                    <div class="visitor-stats"><span>🌠 总星光访问 :</span><span id="busuanzi_value_site_pv">-</span></div>
                 </div>
             </div>
 
-            <!-- 主要内容 -->
-            <article id="page">
-                <h2><i class="fa fa-code" style="margin-right: 10px;"></i> 技能星轨</h2>
-                <div class="skillbox">
-                    <div class="skillbar" data-percent="90"><div class="skillbar-title" style="background: linear-gradient(90deg, #FF0066, #FF6A88);"><span>🐍 Python</span></div><div class="skill-bar-percent">90%</div></div>
-                    <div class="skillbar" data-percent="40"><div class="skillbar-title" style="background: linear-gradient(90deg, #9900FF, #C158FF);"><span>⚙️ C++</span></div><div class="skill-bar-percent">40%</div></div>
-                    <div class="skillbar" data-percent="60"><div class="skillbar-title" style="background: linear-gradient(90deg, #2196F3, #6EC8FF);"><span>🎮 Unreal Engine 5</span></div><div class="skill-bar-percent">60%</div></div>
-                    <div class="skillbar" data-percent="70"><div class="skillbar-title" style="background: linear-gradient(90deg, #00BCD4, #4DDAFF);"><span>🔍 软件逆向</span></div><div class="skill-bar-percent">70%</div></div>
-                    <div class="skillbar" data-percent="80"><div class="skillbar-title" style="background: linear-gradient(90deg, #f54009, #FF884D);"><span>🔧 硬件开发</span></div><div class="skill-bar-percent">80%</div></div>
-                    <div class="skillbar" data-percent="45"><div class="skillbar-title" style="background: linear-gradient(90deg, #FFEB3B, #FFF9A5);"><span>📚 数据结构与算法</span></div><div class="skill-bar-percent">45%</div></div>
+            <!-- 右侧：作品星河（替代技能与光源盒子） -->
+            <div class="galaxy-works">
+                <div class="star-card" style="padding-bottom: 1rem;">
+                    <div class="stardust-headline"><i class="fa fa-cubes"></i> <span>🌟 星 尘 作 品 集</span></div>
+                    <div class="works-grid" id="works-container">
+                        <!-- 作品动态加载 JS 注入，保证星空感 -->
+                    </div>
+                    <hr>
+                    <div style="text-align: center; font-size: 0.8rem; opacity: 0.7; margin-top: 0.5rem;">
+                        <i class="fa fa-github-alt"></i> 更多星辰造物，即将划破夜空
+                    </div>
                 </div>
-                <hr>
-
-                <h2><i class="fa fa-cube"></i> 光源AI绘画盒子 · 附属软件</h2>
-                <div class="information">
-                    <a href="https://www.bilibili.com/video/BV1YC411z7yQ" target="_blank" rel="noopener noreferrer"><i class="fa fa-play-circle"></i> 软件主页 / 演示视频</a>
+                <!-- 额外作者其他星系链接 -->
+                <div style="display: flex; gap: 20px; justify-content: flex-end; margin-top: 0.5rem;">
+                    <a href="https://github.com/fallingmeteorite" target="_blank" style="color:#ffc285; text-decoration: none;"><i class="fa fa-github"></i> 星际源码仓</a>
+                    <a href="https://space.bilibili.com/1484690146" target="_blank" style="color:#ffc285; text-decoration: none;"><i class="fa fa-bilibili"></i> 光年工坊</a>
                 </div>
-                <hr>
-
-                <h2><i class="fa fa-globe"></i> 宇宙传送门</h2>
-                <div style="display: flex; flex-wrap: wrap; gap: 14px;">
-                    <div class="tool1"><a href="https://github.com/fallingmeteorite" target="_blank"><i class="fa fa-github-alt"></i> Github 星际源码</a></div>
-                    <div class="tool2"><a href="https://space.bilibili.com/1484690146" target="_blank"><i class="fa fa-television"></i> Bilibili 光年工坊</a></div>
-                </div>
-                <hr>
-                <div style="font-size: 0.8rem; text-align: center; opacity: 0.7; margin-top: 1rem;">
-                    <i class="fa fa-star"></i> 每一次坠落，都是更亮的轨迹
-                </div>
-            </article>
+            </div>
         </div>
-    </main>
-    <footer id="footer">
-        <div id="footer-wrap">
-            <div class="copyright">🌠 © 2019 - 2044 | Fallingmeteorite · 流星划过的痕迹 | 星辰大海，代码永恒 🌠</div>
-        </div>
+    </div>
+
+    <footer>
+        <div>🌌 © 2024 - 永恒星轨 · Fallingmeteorite | 愿每一行代码，都如流星般闪耀 🌠</div>
+        <div style="margin-top: 6px; font-size: 0.7rem;">✦ 以星河为证，热爱永不停歇 ✦</div>
     </footer>
 </div>
 
-<!-- 音乐 audio 原始标签，增加控制按钮 -->
-<audio preload="auto" loop id="music" style="display:none;">
+<!-- 背景音乐控制 -->
+<audio id="bgMusic" loop preload="auto" style="display:none;">
     <source src="background_music.mp3" type="audio/mpeg">
-    您的浏览器不支持音频播放，但星光依旧。
 </audio>
 
-<!-- 必要的脚本 -->
+<!-- 脚本区 -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.js"></script>
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.js" type="module"></script>
-<script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
 <script src="https://v1.hitokoto.cn/?encode=js&select=%23hitokoto" defer></script>
-<!-- 看板娘 Live2D 增强趣味 -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+<script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
+<!-- 看板娘 optional 轻量版 -->
 <script src="https://cdn.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js"></script>
 
 <script>
-    // 技能条动画 (滚动加载)
-    function animateSkillBars() {
-        $('.skillbar').each(function(){
-            let percentElem = $(this).find('.skillbar-title');
-            let targetWidth = $(this).data('percent');
-            if(!targetWidth){
-                let percentText = $(this).find('.skill-bar-percent').text().replace('%','');
-                targetWidth = parseFloat(percentText);
-            }
-            percentElem.css('width', targetWidth + '%');
-        });
-    }
-    // 滚动监听 + 立即执行一次
-    let animated = false;
-    function checkAnimate(){
-        if(!animated){
-            let pageTop = $('#page').offset().top;
-            let winScroll = $(window).scrollTop() + $(window).height();
-            if(winScroll > pageTop - 100){
-                animateSkillBars();
-                animated = true;
-            }
-        }
-    }
-    $(window).on('scroll', checkAnimate);
-    setTimeout(()=>{ checkAnimate(); }, 500);
-    $(document).ready(()=>{
-        animateSkillBars(); // 直接可见也触发
-        animated=true;
-    });
-
-    // 星星背景 + 流星雨canvas 特效 (增强)
-    const starCanvas = document.getElementById('stars-canvas');
-    const meteorCanvas = document.getElementById('meteor-shower');
-    let starCtx = starCanvas.getContext('2d');
+    // ---------- 星 空 背 景 全 套 动 效 ----------
+    const starsCanvas = document.getElementById('stars-layer');
+    const twinkleCanvas = document.getElementById('twinkling-layer');
+    const meteorCanvas = document.getElementById('meteor-canvas');
+    let width = window.innerWidth, height = window.innerHeight;
+    let starsCtx = starsCanvas.getContext('2d');
+    let twinkleCtx = twinkleCanvas.getContext('2d');
     let meteorCtx = meteorCanvas.getContext('2d');
-    let width, height;
-    let stars = [];
-    let meteors = [];
-
-    function resizeCanvas() {
+    
+    function resizeAll() {
         width = window.innerWidth;
         height = window.innerHeight;
-        starCanvas.width = width;
-        starCanvas.height = height;
+        starsCanvas.width = width;
+        starsCanvas.height = height;
+        twinkleCanvas.width = width;
+        twinkleCanvas.height = height;
         meteorCanvas.width = width;
         meteorCanvas.height = height;
-        initStars(300);
+        initStars();
+        initTwinkles();
     }
-    function initStars(count) {
-        stars = [];
-        for(let i=0;i<count;i++){
-            stars.push({
+    
+    let starsArray = [];
+    function initStars() {
+        starsArray = [];
+        const starCount = 550;
+        for(let i=0;i<starCount;i++) {
+            starsArray.push({
                 x: Math.random() * width,
                 y: Math.random() * height,
-                radius: Math.random() * 1.8,
-                alpha: Math.random() * 0.7 + 0.3,
-                twinkle: Math.random() * 0.03 + 0.01
+                radius: Math.random() * 2.2 + 0.8,
+                alpha: Math.random() * 0.6 + 0.3,
             });
         }
     }
     function drawStars() {
-        if(!starCtx) return;
-        starCtx.clearRect(0,0,width,height);
-        starCtx.fillStyle = "#030617";
-        starCtx.fillRect(0,0,width,height);
-        for(let s of stars){
-            starCtx.beginPath();
-            starCtx.arc(s.x, s.y, s.radius, 0, Math.PI*2);
-            starCtx.fillStyle = `rgba(255, 240, 200, ${s.alpha + Math.sin(Date.now() * s.twinkle) * 0.2})`;
-            starCtx.fill();
+        if(!starsCtx) return;
+        starsCtx.clearRect(0,0,width,height);
+        starsCtx.fillStyle = "#030518";
+        starsCtx.fillRect(0,0,width,height);
+        for(let s of starsArray) {
+            starsCtx.beginPath();
+            starsCtx.arc(s.x, s.y, s.radius, 0, Math.PI*2);
+            starsCtx.fillStyle = `rgba(255, 240, 200, ${s.alpha})`;
+            starsCtx.fill();
         }
         requestAnimationFrame(drawStars);
     }
     
-    // 流星雨类
-    class Meteor {
-        constructor(){
+    // 闪烁星星层
+    let twinkles = [];
+    function initTwinkles() {
+        twinkles = [];
+        for(let i=0;i<300;i++) {
+            twinkles.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                rad: Math.random() * 1.5 + 0.5,
+                speed: 0.02 + Math.random() * 0.03,
+                phase: Math.random() * Math.PI * 2
+            });
+        }
+    }
+    function drawTwinkles() {
+        if(!twinkleCtx) return;
+        twinkleCtx.clearRect(0,0,width,height);
+        let now = Date.now() / 1000;
+        for(let t of twinkles) {
+            let alpha = 0.3 + Math.sin(now * t.speed + t.phase) * 0.4;
+            twinkleCtx.beginPath();
+            twinkleCtx.arc(t.x, t.y, t.rad, 0, Math.PI*2);
+            twinkleCtx.fillStyle = `rgba(255, 210, 130, ${alpha * 0.8})`;
+            twinkleCtx.fill();
+        }
+        requestAnimationFrame(drawTwinkles);
+    }
+    
+    // 流星系统
+    class ShootingStar {
+        constructor() {
             this.reset();
         }
-        reset(){
+        reset() {
             this.x = Math.random() * width;
-            this.y = Math.random() * height * 0.3 - 50;
-            this.length = Math.random() * 90 + 50;
-            this.speedX = (Math.random() * 8 + 5) * (Math.random() > 0.7 ? 1 : 0.8);
-            this.speedY = (Math.random() * 5 + 3) * (Math.random() > 0.7 ? 1 : 0.8);
-            this.opacity = Math.random() * 0.6 + 0.4;
+            this.y = Math.random() * height * 0.3;
+            this.length = Math.random() * 100 + 70;
+            this.speedX = (Math.random() * 12 + 6) * (Math.random() > 0.7 ? 1 : 0.9);
+            this.speedY = (Math.random() * 7 + 4) * (Math.random() > 0.7 ? 1 : 0.9);
+            this.opacity = Math.random() * 0.7 + 0.4;
             this.active = true;
-            this.tailWidth = Math.random() * 2 + 1.2;
         }
-        update(){
-            if(!this.active) return false;
+        update() {
             this.x += this.speedX;
             this.y += this.speedY;
-            if(this.x > width + 200 || this.y > height + 200 || this.x < -200 || this.y < -200){
+            if(this.x > width + 300 || this.y > height + 250 || this.x < -200 || this.y < -200) {
                 this.reset();
                 this.x = Math.random() * width;
-                this.y = Math.random() * -150;
+                this.y = Math.random() * -80;
             }
-            return true;
         }
-        draw(ctx){
-            if(!this.active) return;
-            let gradient = ctx.createLinearGradient(this.x, this.y, this.x - this.length, this.y - this.length*0.5);
-            gradient.addColorStop(0, `rgba(255, 210, 100, ${this.opacity})`);
-            gradient.addColorStop(1, `rgba(255, 80, 60, 0)`);
+        draw(ctx) {
             ctx.beginPath();
+            let gradient = ctx.createLinearGradient(this.x, this.y, this.x - this.length, this.y - this.length * 0.5);
+            gradient.addColorStop(0, `rgba(255, 200, 100, ${this.opacity})`);
+            gradient.addColorStop(1, `rgba(255, 80, 50, 0)`);
             ctx.moveTo(this.x, this.y);
-            ctx.lineTo(this.x - this.length, this.y - this.length*0.4);
-            ctx.lineTo(this.x - this.length*0.8, this.y - this.length*0.3);
+            ctx.lineTo(this.x - this.length, this.y - this.length*0.45);
+            ctx.lineTo(this.x - this.length*0.7, this.y - this.length*0.3);
             ctx.fillStyle = gradient;
             ctx.fill();
             ctx.beginPath();
             ctx.arc(this.x, this.y, 3, 0, Math.PI*2);
-            ctx.fillStyle = `rgba(255, 180, 70, 0.9)`;
+            ctx.fillStyle = `rgba(255, 160, 70, 0.9)`;
             ctx.fill();
         }
     }
-    
-    function initMeteors(count){
+    let meteors = [];
+    function initMeteors(count) {
         meteors = [];
-        for(let i=0;i<count;i++){
-            let m = new Meteor();
+        for(let i=0;i<count;i++) {
+            let m = new ShootingStar();
             m.reset();
             meteors.push(m);
         }
     }
-    function animateMeteors(){
+    function drawMeteors() {
         if(!meteorCtx) return;
         meteorCtx.clearRect(0,0,width,height);
-        for(let m of meteors){
+        for(let m of meteors) {
             m.update();
             m.draw(meteorCtx);
         }
-        requestAnimationFrame(animateMeteors);
+        requestAnimationFrame(drawMeteors);
     }
     
-    window.addEventListener('resize', ()=>{
-        resizeCanvas();
-        initStars(320);
-        initMeteors(18);
+    window.addEventListener('resize', () => {
+        resizeAll();
+        initMeteors(20);
     });
-    resizeCanvas();
-    initStars(400);
-    initMeteors(22);
+    resizeAll();
+    initMeteors(24);
     drawStars();
-    animateMeteors();
+    drawTwinkles();
+    drawMeteors();
+    
+    // ---------- 作品数据 (星尘作品集，替换原有技能和光源盒子) ----------
+    const worksData = [
+        { icon: "🪐", title: "星轨编译器", desc: "轻量级 Python 字节码分析工具，支持可视化执行流。", tags: ["Python", "编译器"], link: "https://github.com/fallingmeteorite/star-compiler" },
+        { icon: "🎮", title: "流光·虚幻引擎实验", desc: "基于UE5的开放世界场景，动态星空粒子与实时渲染。", tags: ["Unreal", "C++", "蓝图"], link: "https://www.bilibili.com/video/BV1YC411z7yQ" },
+        { icon: "🔧", title: "逆向星芒", desc: "软件逆向分析笔记，包括反汇编与协议分析案例库。", tags: ["逆向工程", "IDA", "CTF"], link: "https://github.com/fallingmeteorite/reverse-constellation" },
+        { icon: "🤖", title: "星尘·嵌入式OS雏形", desc: "基于STM32的微型实时系统，实现多任务调度与星图显示。", tags: ["硬件开发", "RTOS", "C"], link: "https://github.com/fallingmeteorite/stardust-rtos" },
+        { icon: "📡", title: "流星信标", desc: "全栈个人导航站 + 动态星空API，收集宇宙级灵感。", tags: ["WebGL", "Three.js", "API"], link: "https://github.com/fallingmeteorite/meteor-beacon" }
+    ];
+    
+    function renderWorks() {
+        const container = document.getElementById('works-container');
+        if(!container) return;
+        let html = '';
+        worksData.forEach(work => {
+            html += `
+                <div class="work-item" onclick="window.open('${work.link}', '_blank')">
+                    <div class="work-icon">${work.icon}</div>
+                    <div class="work-title">${work.title}</div>
+                    <div class="work-desc">${work.desc}</div>
+                    <div class="work-tags">
+                        ${work.tags.map(t => `<span class="tag">#${t}</span>`).join('')}
+                    </div>
+                    <a href="${work.link}" target="_blank" class="work-link" onclick="event.stopPropagation();">探索星域 →</a>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+    renderWorks();
+    
+    // 今日诗词渲染
+    jinrishici.load(function(result) {
+        let poetryDiv = document.getElementById('jinrishici-sentence');
+        if(poetryDiv && result.data) {
+            poetryDiv.innerHTML = `⭐ 「 ${result.data.content} 」<br>✦ —— ${result.data.origin.dynasty} · ${result.data.origin.author} 《${result.data.origin.title}》 ✦`;
+        }
+    }, function(err){});
 
-    // 音乐控制 (允许手动开关背景音乐)
-    let musicAudio = document.getElementById('music');
-    let musicBtn = document.getElementById('musicToggleBtn');
+    // 音乐控制优雅处理
+    const bgAudio = document.getElementById('bgMusic');
+    const musicBtn = document.getElementById('musicToggleBtn');
     let musicPlaying = true;
-    if(musicAudio){
-        musicAudio.volume = 0.45;
-        musicAudio.play().catch(e=>console.log("自动播放受限，点击音乐按钮"));
-        musicBtn.addEventListener('click', (e)=>{
+    if(bgAudio) {
+        bgAudio.volume = 0.35;
+        bgAudio.play().catch(e => console.log("自动播放策略限制，点击音乐按钮唤醒"));
+        musicBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            if(musicPlaying){
-                musicAudio.pause();
+            if(musicPlaying) {
+                bgAudio.pause();
                 musicBtn.innerHTML = '<i class="fa fa-volume-off"></i>';
                 musicPlaying = false;
             } else {
-                musicAudio.play().catch(()=>{});
+                bgAudio.play().catch(()=>{});
                 musicBtn.innerHTML = '<i class="fa fa-music"></i>';
                 musicPlaying = true;
             }
         });
     }
-
-    // 今日诗词API渲染
-    jinrishici.load(function(result) {
-        let sentenceDiv = document.getElementById('jinrishici-sentence');
-        if(sentenceDiv && result.data){
-            sentenceDiv.innerHTML = `「 ${result.data.content} 」<br>—— ${result.data.origin.dynasty} · ${result.data.origin.author} 《${result.data.origin.title}》`;
-        }
-    }, function(err){});
-
-    // 动态搞笑标题增强
-    var OriginTitle = document.title;
-    var titleTime;
-    document.addEventListener('visibilitychange', function () {
-        if (document.hidden) {
-            document.title = '🌠 流星坠落，稍后归来... 🌠';
-            clearTimeout(titleTime);
+    
+    // 标题星尘趣味效果
+    let originTitle = document.title;
+    document.addEventListener('visibilitychange', () => {
+        if(document.hidden) {
+            document.title = '🌠 流星划过，稍后回归星河 🌠';
         } else {
-            document.title = '✨ 欢迎回到星辰大海 ✨ · Fallingmeteorite';
-            titleTime = setTimeout(function () {
-                document.title = OriginTitle;
-            }, 2500);
+            document.title = '✨ Fallingmeteorite · 星辰集 ✨';
+            setTimeout(() => { document.title = originTitle; }, 2000);
         }
     });
-
-    // 鼠标点击小流星特效 (原有点击特效基础上保留)
-    if(typeof $.fn.snow === 'undefined') {
-        (function ($) {
-            $.fn.snow = function (options) {
-                var $flake = $('<div class="snowflake_click" style="position:absolute;z-index:9999;top:-20px;pointer-events:none;">⚡</div>'),
-                    docHeight = $(document).height(),
-                    docWidth = $(document).width(),
-                    defaults = { minSize: 8, maxSize: 28, newOn: 800, flakeColor: "#FFD966" };
-                options = $.extend({}, defaults, options);
-                var interval = setInterval(function () {
-                    var leftP = Math.random() * docWidth;
-                    var sizeFlake = options.minSize + Math.random() * options.maxSize;
-                    $flake.clone().appendTo('body').css({
-                        left: leftP,
-                        top: -15,
-                        'font-size': sizeFlake,
-                        color: options.flakeColor,
-                        opacity: 0.9
-                    }).animate({
-                        top: docHeight + 20,
-                        opacity: 0.1
-                    }, Math.random() * 5000 + 4000, 'linear', function(){ $(this).remove(); });
-                }, options.newOn);
-            };
-        })(jQuery);
-        $(function(){ $.fn.snow({ minSize: 6, maxSize: 22, newOn: 1100, flakeColor: "#FFBF69" }); });
-    }
-
-    // 增加边缘光晕
-    $('body').append('<style>.card-widget, #page { transition: all 0.25s ease; } ::selection { background: #ffb347; color:#0a0f1e; }</style>');
     
-    // 控制台诗意输出
-    console.log("%c 🌠 流星划过的代码世界，感谢你来访 🌠", "color:#ffb347; font-size:16px; font-weight:bold;");
-    console.log("%c ✨ 保持好奇，继续闪耀 ✨", "color:#f5bc70");
+    // 鼠标点击 炫光小流星
+    document.body.addEventListener('click', function(e) {
+        let starBurst = document.createElement('div');
+        starBurst.innerHTML = '✨';
+        starBurst.style.position = 'fixed';
+        starBurst.style.left = e.clientX + 'px';
+        starBurst.style.top = e.clientY + 'px';
+        starBurst.style.fontSize = '22px';
+        starBurst.style.pointerEvents = 'none';
+        starBurst.style.zIndex = '9999';
+        starBurst.style.opacity = '0.9';
+        starBurst.style.transition = 'all 0.6s ease-out';
+        document.body.appendChild(starBurst);
+        setTimeout(() => {
+            starBurst.style.opacity = '0';
+            starBurst.style.transform = 'translateY(-40px) rotate(20deg)';
+            setTimeout(() => starBurst.remove(), 700);
+        }, 30);
+    });
+    
+    console.log("%c ✨ 欢迎来到 Fallingmeteorite 的星辰宇宙 ✨", "color:#ffbc6e; font-size:16px;");
+    console.log("%c 每一颗星星，都是一个未完成的梦", "color:#FFD966");
 </script>
 </body>
 </html>
