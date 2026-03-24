@@ -53,10 +53,10 @@
 </head>
 <body>
     <div class="info-panel">
-        <h1>🌀 引力吸引 · 螺旋坠星</h1>
+        <h1>🌀 真实引力吸引 · 螺旋坠星</h1>
         <p>✨ 高中开发者 | 星辰造物主 ✨</p>
         <p>🔴 红色星星受引力影响半径逐渐缩小 → 进入引力阱(半径18) → 沿螺旋支路坠入黑洞 → 重生回归</p>
-        <div class="quote" id="hitokoto-display">🌠 红色星星正被黑洞缓缓拉近，最终沿螺旋支路坠入深渊...</div>
+        <div class="quote" id="hitokoto-display">🌠 红色星星正被黑洞引力捕获，沿螺旋线坠入深渊...</div>
     </div>
     <div class="controls-hint">🖱️ 鼠标拖拽旋转视角 | 滚动缩放 | ✨ 点击大星星探索作品 ✨ | 🔴 红色星星会被吸引，蓝色星星永续圆周</div>
     <div class="music-btn" id="musicToggleBtn">🎵 星渊旋律 🔇</div>
@@ -172,7 +172,7 @@
         fillLight.position.set(6, 5, 7);
         scene.add(fillLight);
         
-        // ================= 2. 螺旋支路（从半径18到2.2） =================
+        // ================= 2. 螺旋支路（视觉引导线） =================
         const BRANCH_ANGLES = [Math.PI / 4, 3 * Math.PI / 4, 5 * Math.PI / 4, 7 * Math.PI / 4];
         const BRANCH_COLORS = [0xff66aa, 0x66ffaa, 0x66aaff, 0xffaa66];
         
