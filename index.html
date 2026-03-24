@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>宇宙大爆炸 · 奇点压缩 | fallingmeteorite</title>
+    <title>宇宙大爆炸 · 太空粉尘奇点 | fallingmeteorite</title>
     <style>
         body {
             margin: 0;
@@ -12,7 +12,7 @@
             background: #000;
         }
         
-        /* 全屏覆盖层：展示背景图 + 引爆按钮 */
+        /* 全屏覆盖层：展示动态太空粉尘 + 引爆按钮 */
         .prelude-overlay {
             position: fixed;
             top: 0;
@@ -28,16 +28,15 @@
             will-change: transform, opacity;
             transform-origin: center center;
         }
-        .prelude-bg {
+        .dust-canvas {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            filter: brightness(0.85) blur(0.4px);   /* 降低锐度，模拟低分辨率效果 */
-            image-rendering: crisp-edges;           /* 减少抗锯齿开销 */
-            transform: scale(1.001);                 /* 轻微缩放避免边缘闪烁 */
+            display: block;
+            pointer-events: none;
+            background: radial-gradient(circle at center, #0a0a2a 0%, #000000 100%);
         }
         .bigbang-btn-overlay {
             position: relative;
@@ -140,9 +139,9 @@
     </style>
 </head>
 <body>
-    <!-- 预爆炸覆盖层：包含本地背景图片 + 引爆按钮 -->
+    <!-- 预爆炸覆盖层：动态太空粉尘Canvas + 引爆按钮 -->
     <div id="preludeOverlay" class="prelude-overlay">
-        <img id="backgroundImg" class="prelude-bg" alt="cosmic background" src="background.png">
+        <canvas id="dustCanvas" class="dust-canvas"></canvas>
         <button id="bigbangTriggerBtn" class="bigbang-btn-overlay">💥 引爆宇宙 💥</button>
     </div>
     
@@ -172,7 +171,78 @@
         import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
         import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
         
-        // ================= 1. 初始化Three场景 (所有天体初始不可见) =================
+        // ================= 1. 太空粉尘 Canvas 动画 =================
+        const canvas = document.getElementById('dustCanvas');
+        let ctx = canvas.getContext('2d');
+        let particles = [];
+        let animationId = null;
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles();
+        }
+        
+        function initParticles() {
+            particles = [];
+            const particleCount = Math.min(800, Math.floor(window.innerWidth * window.innerHeight / 4000));
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 1.5 + 0.5,
+                    alpha: Math.random() * 0.5 + 0.2,
+                    speedX: (Math.random() - 0.5) * 0.3,
+                    speedY: (Math.random() - 0.5) * 0.2,
+                    color: `hsl(${Math.random() * 60 + 200}, 70%, 60%)`
+                });
+            }
+        }
+        
+        function drawDust() {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // 深邃星空渐变背景
+            const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            grad.addColorStop(0, '#050510');
+            grad.addColorStop(1, '#000000');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // 绘制粉尘粒子
+            for (let p of particles) {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.shadowBlur = 4;
+                ctx.shadowColor = 'rgba(100, 100, 255, 0.5)';
+                ctx.fill();
+                // 移动粒子
+                p.x += p.speedX;
+                p.y += p.speedY;
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height;
+                if (p.y > canvas.height) p.y = 0;
+            }
+            // 额外绘制飘浮星云光晕
+            ctx.shadowBlur = 0;
+            for (let i = 0; i < 30; i++) {
+                ctx.beginPath();
+                ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 3 + 1, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(180, 130, 255, ${Math.random() * 0.3})`;
+                ctx.fill();
+            }
+            animationId = requestAnimationFrame(drawDust);
+        }
+        
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+        });
+        resizeCanvas();
+        drawDust();
+        
+        // ================= 2. Three.js 3D 宇宙场景 =================
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x010004);
         scene.fog = new THREE.FogExp2(0x010004, 0.000038);
@@ -218,9 +288,8 @@
         
         // 全局爆炸标志
         let explosionPlayed = false;
-        let allCosmicObjects = [];      // 存放所有爆炸后才显示的对象
+        let allCosmicObjects = [];
         
-        // 辅助：添加物体并默认隐藏
         function addToUniverse(obj) {
             if (obj) {
                 obj.visible = false;
@@ -230,7 +299,7 @@
             return obj;
         }
         
-        // ========= 2. 创建华丽宇宙组件 (黑洞、星云、星星等，全部隐藏，并优化性能) =========
+        // ========= 3. 宇宙天体组件（全部初始隐藏） =========
         // 黑洞核心
         const blackHoleCore = new THREE.Mesh(
             new THREE.SphereGeometry(1.85, 128, 128),
@@ -238,7 +307,6 @@
         );
         addToUniverse(blackHoleCore);
         
-        // 增强吸积盘：更亮、更多层次
         const accInner = new THREE.Mesh(new THREE.TorusGeometry(2.5, 0.16, 100, 320), new THREE.MeshStandardMaterial({ color: 0xff66cc, emissive: 0xff44aa, emissiveIntensity: 1.6, transparent: true }));
         accInner.rotation.x = Math.PI / 2 + 0.2;
         addToUniverse(accInner);
@@ -251,7 +319,6 @@
         accOuter.rotation.x = Math.PI / 2 + 0.1;
         addToUniverse(accOuter);
         
-        // 动态能量环
         const energyRingA = new THREE.Mesh(new THREE.TorusGeometry(2.95, 0.1, 80, 280), new THREE.MeshBasicMaterial({ color: 0xff66aa, transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending }));
         energyRingA.rotation.x = Math.PI / 2;
         addToUniverse(energyRingA);
@@ -269,7 +336,7 @@
         gravityRing.position.y = -0.2;
         addToUniverse(gravityRing);
         
-        // 粒子光环 (优化数量)
+        // 粒子光环
         const rippleParticleCount = 2200;
         const rippleGeo = new THREE.BufferGeometry();
         const ripplePos = [];
@@ -296,7 +363,7 @@
         const ambientLight = new THREE.AmbientLight(0x15112a);
         scene.add(ambientLight);
         
-        // 螺旋支路 (优化轨迹)
+        // 螺旋支路
         const BRANCH_ANGLES = [Math.PI / 4, 3 * Math.PI / 4, 5 * Math.PI / 4, 7 * Math.PI / 4];
         const BRANCH_COLORS = [0xff77bb, 0x77ffbb, 0x88aaff, 0xffaa77];
         BRANCH_ANGLES.forEach((angle, idx) => {
@@ -327,7 +394,7 @@
             addToUniverse(trailPoints);
         });
         
-        // 银河盘星尘 (减少数量提升性能)
+        // 银河盘星尘
         const galaxyPositions = [];
         for (let i = 0; i < 4000; i++) {
             const rad = 55 + Math.random() * 70;
@@ -340,7 +407,7 @@
         const galaxyDust = new THREE.Points(galaxyPointsGeom, new THREE.PointsMaterial({ color: 0x99bbff, size: 0.22, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending }));
         addToUniverse(galaxyDust);
         
-        // 星云流光粒子 (减少数量)
+        // 星云流光粒子
         const flowCount = 3800;
         const flowGeom = new THREE.BufferGeometry();
         const flowPos = [], flowColors = [];
@@ -357,7 +424,7 @@
         const flowNebula = new THREE.Points(flowGeom, new THREE.PointsMaterial({ size: 0.18, vertexColors: true, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending }));
         addToUniverse(flowNebula);
         
-        // 繁星背景 (优化)
+        // 繁星背景
         const starFieldPos = [];
         for (let i = 0; i < 7000; i++) starFieldPos.push((Math.random() - 0.5) * 620, (Math.random() - 0.5) * 380, (Math.random() - 0.5) * 450 - 130);
         const starFieldGeom = new THREE.BufferGeometry();
@@ -389,7 +456,7 @@
         blackHoleLabel.position.set(0, 2.3, 0);
         addToUniverse(blackHoleLabel);
         
-        // 大星星作品集 (不变)
+        // 大星星作品集
         const worksData = [
             { name: "task_scheduling", desc: "⚙️ 高级Python调度器", link: "https://github.com/fallingmeteorite/task_scheduling", color: 0x6c9eff, icon: "✨" },
             { name: "BilBil 主页", desc: "🎬 创意空间", link: "https://space.bilibili.com/1484690146", color: 0x88ddff, icon: "📺" },
@@ -447,7 +514,7 @@
         }
         const bigStars = worksData.map(d => new BigStarNode(d));
         
-        // 小型恒星系统 (减少总数，优化性能)
+        // 小型恒星系统
         const TOTAL_SMALL_STARS = 2800;
         const ATTRACT_RADIUS = 18.2;
         const GRAV_PULL = 0.00115;
@@ -560,7 +627,7 @@
         }
         for (let i = 0; i < 150; i++) smallStars.push(new SmallStar('falling', 17.5 + Math.random() * 5.5));
         
-        // 流星系统 (优化)
+        // 流星系统
         class MeteorStreak {
             constructor() { this.active = true; this.reset(); }
             reset() { 
@@ -610,9 +677,8 @@
         let meteors = [];
         function spawnMeteor() { if (explosionPlayed && meteors.length < 10 && Math.random() < 0.025) meteors.push(new MeteorStreak()); }
         
-        // 增强爆炸特效：多重粒子层 + 全屏闪光
+        // 增强爆炸特效
         function createBigBangExplosion() {
-            // 主粒子层
             const particleCount = 1800;
             const geom = new THREE.BufferGeometry();
             const positions = new Float32Array(particleCount * 3);
@@ -626,19 +692,16 @@
             const particles = new THREE.Points(geom, particleMat);
             scene.add(particles);
             
-            // 第二层高温粒子
             const hotCount = 1200;
             const hotGeom = new THREE.BufferGeometry();
             const hotPos = [];
-            for (let i = 0; i < hotCount; i++) {
-                hotPos.push((Math.random() - 0.5) * 3, (Math.random() - 0.5) * 3, (Math.random() - 0.5) * 3);
-            }
+            for (let i = 0; i < hotCount; i++) hotPos.push((Math.random() - 0.5) * 3, (Math.random() - 0.5) * 3, (Math.random() - 0.5) * 3);
             hotGeom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(hotPos), 3));
             const hotMat = new THREE.PointsMaterial({ color: 0xff5533, size: 0.28, blending: THREE.AdditiveBlending });
             const hotParticles = new THREE.Points(hotGeom, hotMat);
             scene.add(hotParticles);
             
-            // 全屏白色闪光 (临时覆盖)
+            // 全屏闪光
             const flashDiv = document.createElement('div');
             flashDiv.style.position = 'fixed';
             flashDiv.style.top = '0';
@@ -671,7 +734,7 @@
             }
             requestAnimationFrame(animateBang);
             
-            // 爆裂音效
+            // 音效
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = audioCtx.createOscillator();
@@ -707,6 +770,7 @@
             btn.style.opacity = '0';
             setTimeout(() => {
                 if (overlay.parentNode) overlay.remove();
+                if (animationId) cancelAnimationFrame(animationId);
                 createBigBangExplosion();
                 revealUniverse();
             }, 580);
@@ -775,6 +839,7 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
             effectComposer.setSize(window.innerWidth, window.innerHeight);
             labelRenderer.setSize(window.innerWidth, window.innerHeight);
+            resizeCanvas();
         });
     </script>
 </body>
