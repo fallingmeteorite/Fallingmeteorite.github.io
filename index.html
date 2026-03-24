@@ -165,7 +165,7 @@
         scene.fog = new THREE.FogExp2(0x010003, 0.00008);
         
         const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 2000);
-        camera.position.set(18, 12, 28);
+        camera.position.set(22, 15, 32);
         camera.lookAt(0, 0, 0);
         
         const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -263,14 +263,15 @@
         const fillLight = new THREE.PointLight(0x8866ff, 0.8);
         fillLight.position.set(6, 5, 7);
         scene.add(fillLight);
+        const backLight = new THREE.PointLight(0x4488ff, 0.5);
+        backLight.position.set(-5, 3, -8);
+        scene.add(backLight);
         
-        // ================= 2. 四条螺旋支路可视化 (从半径 20 螺旋下降到 2.5) =================
+        // ================= 2. 四条螺旋支路可视化 =================
         const BRANCH_ANGLES = [Math.PI / 4, 3 * Math.PI / 4, 5 * Math.PI / 4, 7 * Math.PI / 4];
         const BRANCH_COLORS = [0xff66aa, 0x66ffaa, 0x66aaff, 0xffaa66];
         
         // 为每条支路创建可视化螺旋线
-        branchLines.forEach(line => scene.remove(line));
-        const branchLines = [];
         BRANCH_ANGLES.forEach((angle, idx) => {
             const points = [];
             for (let r = 20; r > 2.5; r -= 0.25) {
@@ -285,7 +286,6 @@
             const lineMat = new THREE.LineBasicMaterial({ color: BRANCH_COLORS[idx], transparent: true, opacity: 0.55 });
             const spiralLine = new THREE.Line(lineGeo, lineMat);
             scene.add(spiralLine);
-            branchLines.push(spiralLine);
             
             // 光点点缀
             const glowPoints = [];
@@ -303,7 +303,7 @@
             scene.add(glowPointsObj);
         });
         
-        // ================= 3. 大星星 (作品) 分布在大轨道上 =================
+        // ================= 3. 大星星 (作品) =================
         const worksData = [
             { name: "💻 星轨编译器", desc: "Python字节码分析 · 可视化执行流", link: "https://github.com/fallingmeteorite/star-compiler", color: 0x6c9eff, icon: "🪐" },
             { name: "🎮 流光·虚幻引擎", desc: "UE5开放世界 · 动态星空粒子系统", link: "https://www.bilibili.com/video/BV1YC411z7yQ", color: 0x88ddff, icon: "✨" },
@@ -336,8 +336,7 @@
         class BigStar {
             constructor(data) {
                 this.data = data;
-                // 大星星分布在大轨道上，半径 24-42
-                const radius = 24 + Math.random() * 22;
+                const radius = 26 + Math.random() * 22;
                 const angle = Math.random() * Math.PI * 2;
                 this.radius = radius;
                 this.angle = angle;
@@ -388,32 +387,29 @@
         
         const bigStars = worksData.map(d => new BigStar(d));
         
-        // ================= 4. 小星星系统：大范围圆周运动 + 被吸引后进入螺旋支路 =================
+        // ================= 4. 小星星系统 =================
         const TOTAL_STARS = 2800;
-        const ORBIT_RADIUS_MIN = 22;
-        const ORBIT_RADIUS_MAX = 48;
-        const ATTRACT_RADIUS = 6.5; // 当星星进入这个半径范围时被吸引
+        const ORBIT_RADIUS_MIN = 24;
+        const ORBIT_RADIUS_MAX = 52;
+        const ATTRACT_RADIUS = 7.0;
         
         class SmallStar {
             constructor() {
-                // 圆周运动参数：半径范围大，覆盖所有大星星
                 this.orbitRadius = ORBIT_RADIUS_MIN + Math.random() * (ORBIT_RADIUS_MAX - ORBIT_RADIUS_MIN);
                 this.orbitAngle = Math.random() * Math.PI * 2;
-                this.orbitSpeed = 0.0008 + Math.random() * 0.0012;
-                this.yOffset = (Math.random() - 0.5) * 2.0;
+                this.orbitSpeed = 0.0007 + Math.random() * 0.0012;
+                this.yOffset = (Math.random() - 0.5) * 2.2;
                 
                 this.x = Math.cos(this.orbitAngle) * this.orbitRadius;
                 this.z = Math.sin(this.orbitAngle) * this.orbitRadius;
                 this.y = this.yOffset + Math.sin(this.orbitAngle * 2) * 0.3;
                 
-                // 状态
-                this.state = 'orbit'; // 'orbit' 或 'attracted'
+                this.state = 'orbit';
                 this.targetBranch = null;
                 this.spiralProgress = 0;
                 this.spiralStartAngle = 0;
                 this.spiralStartRadius = 0;
                 
-                // 创建星星网格
                 const geom = Math.random() > 0.6 ? 
                     new THREE.IcosahedronGeometry(0.12 + Math.random() * 0.09, 0) : 
                     new THREE.DodecahedronGeometry(0.11 + Math.random() * 0.08, 0);
@@ -435,7 +431,6 @@
                 this.rotSpeedY = 0.02 + Math.random() * 0.03;
             }
             
-            // 检查是否应该被吸引
             checkAttraction() {
                 if (this.state !== 'orbit') return false;
                 const distToCenter = Math.sqrt(this.x * this.x + this.z * this.z);
@@ -446,11 +441,9 @@
                 return false;
             }
             
-            // 开始被吸引，进入螺旋支路
             startAttraction() {
                 this.state = 'attracted';
                 const currentAngle = Math.atan2(this.z, this.x);
-                // 选择最近的支路
                 let bestBranch = 0;
                 let minAngleDiff = Math.PI;
                 for (let i = 0; i < BRANCH_ANGLES.length; i++) {
@@ -467,7 +460,6 @@
                 this.spiralProgress = 0;
             }
             
-            // 更新螺旋位置
             updateSpiralPosition() {
                 this.spiralProgress += 0.022 + Math.random() * 0.01;
                 
@@ -513,7 +505,6 @@
                 return true;
             }
             
-            // 更新圆周运动位置
             updateOrbitPosition() {
                 this.orbitAngle += this.orbitSpeed;
                 if (this.orbitAngle > Math.PI * 2) this.orbitAngle -= Math.PI * 2;
@@ -552,7 +543,6 @@
             }
         }
         
-        // 销毁特效
         function createDestructionEffect(position, color) {
             const particleCount = 80;
             const geom = new THREE.BufferGeometry();
@@ -606,7 +596,6 @@
             requestAnimationFrame(animateGlow);
         }
         
-        // 创建小星星
         let smallStars = [];
         for (let i = 0; i < TOTAL_STARS; i++) {
             smallStars.push(new SmallStar());
@@ -618,15 +607,15 @@
         const nebulaPosArr = new Float32Array(nebulaCount * 3);
         const nebulaColors = new Float32Array(nebulaCount * 3);
         for (let i = 0; i < nebulaCount; i++) {
-            const radius = 10 + Math.pow(Math.random(), 1.2) * 50;
+            const radius = 12 + Math.pow(Math.random(), 1.2) * 52;
             const angle = Math.random() * Math.PI * 2;
             const spiral = radius * 0.25;
             const finalAngle = angle + spiral;
             const yVal = Math.sin(radius * 0.4) * 1.8 + (Math.random() - 0.5) * 2.0;
             nebulaPosArr[i*3] = Math.cos(finalAngle) * radius;
-            nebulaPosArr[i*3+1] = yVal * (1 - radius / 58);
+            nebulaPosArr[i*3+1] = yVal * (1 - radius / 60);
             nebulaPosArr[i*3+2] = Math.sin(finalAngle) * radius;
-            const mix = Math.min(1, radius / 42);
+            const mix = Math.min(1, radius / 45);
             nebulaColors[i*3] = 0.55 + mix * 0.4;
             nebulaColors[i*3+1] = 0.35 + mix * 0.45;
             nebulaColors[i*3+2] = 0.85 + mix * 0.15;
@@ -638,26 +627,26 @@
         scene.add(nebulaCloud);
         
         // 背景繁星
-        const bgStarCount = 9000;
+        const bgStarCount = 10000;
         const bgStarGeom = new THREE.BufferGeometry();
         const bgStarPos = new Float32Array(bgStarCount * 3);
         for (let i = 0; i < bgStarCount; i++) {
-            bgStarPos[i*3] = (Math.random() - 0.5) * 420;
-            bgStarPos[i*3+1] = (Math.random() - 0.5) * 240;
-            bgStarPos[i*3+2] = (Math.random() - 0.5) * 260 - 120;
+            bgStarPos[i*3] = (Math.random() - 0.5) * 450;
+            bgStarPos[i*3+1] = (Math.random() - 0.5) * 260;
+            bgStarPos[i*3+2] = (Math.random() - 0.5) * 280 - 130;
         }
         bgStarGeom.setAttribute('position', new THREE.BufferAttribute(bgStarPos, 3));
         const bgStarMat = new THREE.PointsMaterial({ color: 0xaaccff, size: 0.12, transparent: true, opacity: 0.55 });
         const bgStars = new THREE.Points(bgStarGeom, bgStarMat);
         scene.add(bgStars);
         
-        // 添加一个半透明的参考圆环显示吸引范围
+        // 吸引范围指示环
         const attractRing = new THREE.Mesh(
-            new THREE.RingGeometry(ATTRACT_RADIUS - 0.3, ATTRACT_RADIUS + 0.3, 64),
-            new THREE.MeshBasicMaterial({ color: 0xff66aa, transparent: true, opacity: 0.15, side: THREE.DoubleSide })
+            new THREE.RingGeometry(ATTRACT_RADIUS - 0.4, ATTRACT_RADIUS + 0.4, 64),
+            new THREE.MeshBasicMaterial({ color: 0xff66aa, transparent: true, opacity: 0.12, side: THREE.DoubleSide })
         );
         attractRing.rotation.x = -Math.PI / 2;
-        attractRing.position.y = -0.1;
+        attractRing.position.y = -0.15;
         scene.add(attractRing);
         
         // ================= 音乐系统 =================
@@ -721,10 +710,8 @@
             requestAnimationFrame(animate);
             time += 16;
             
-            // 更新大星星
             bigStars.forEach(star => star.update(time));
             
-            // 更新小星星
             for (let i = smallStars.length - 1; i >= 0; i--) {
                 const star = smallStars[i];
                 const alive = star.update();
@@ -733,16 +720,13 @@
                 }
             }
             
-            // 星云缓慢旋转
             nebulaCloud.rotation.y += 0.0004;
             
-            // 黑洞吸积盘旋转
             innerAcc.rotation.z += 0.013;
             midAcc.rotation.z -= 0.01;
             outerAcc.rotation.z += 0.008;
             dustRing.rotation.y += 0.006;
             
-            // 黑洞脉动
             const pulse = 1 + Math.sin(time * 0.004) * 0.013;
             blackHoleCore.scale.set(pulse, pulse, pulse);
             eventHorizonGlow.scale.setScalar(1 + Math.sin(time * 0.005) * 0.028);
@@ -762,7 +746,7 @@
             labelRenderer.setSize(window.innerWidth, window.innerHeight);
         });
         
-        console.log("%c✨ 大范围圆周轨道 (22-48) | 星星进入半径6.5内被吸引 | 沿螺旋支路坠入黑洞 ✨", "color: #ffaa88; font-size: 14px");
+        console.log("%c✨ 大范围圆周轨道 (24-52) | 星星进入半径7内被吸引 | 沿螺旋支路坠入黑洞 ✨", "color: #ffaa88; font-size: 14px");
     </script>
 </body>
 </html>
