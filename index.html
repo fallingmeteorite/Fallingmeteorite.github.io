@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>星云漩涡 | 华丽星空 · 引力吸引螺旋坠星</title>
+    <title>fallingmeteorite的星空</title>
     <style>
         body { margin: 0; overflow: hidden; font-family: 'Segoe UI', 'Poppins', sans-serif; color: white; }
         .info-panel {
@@ -54,11 +54,10 @@
 <body>
     <div class="info-panel">
         <h1>🌀 华丽星云 · 引力吸引螺旋坠星</h1>
-        <p>✨ 高中开发者 | 星辰造物主 ✨</p>
-        <p>🔴 红色星星受引力影响半径缩小 → 进入引力阱(半径18) → 沿螺旋支路坠入黑洞 → 重生回归</p>
+        <p>✨一条emo的咸鱼 ✨</p>
         <div class="quote" id="hitokoto-display">🌠 红色星星被黑洞引力捕获，流星划过，星云流转...</div>
     </div>
-    <div class="controls-hint">🖱️ 鼠标拖拽旋转视角 | 滚动缩放 | ✨ 点击大星星探索作品 ✨ | 🔴 红色星星会被吸引，蓝色星星永续圆周</div>
+    <div class="controls-hint">🖱️ 鼠标拖拽旋转视角 | 滚动缩放 | ✨ 点击大星星探索作品 ✨ </div>
     <div class="music-btn" id="musicToggleBtn">🎵 星渊旋律 🔇</div>
     
     <script type="importmap">
@@ -370,14 +369,14 @@
         
         // --- 大星星（作品）---
         const worksData = [
-            { name: "💻 星轨编译器", desc: "Python字节码分析", link: "https://github.com", color: 0x6c9eff, icon: "🪐" },
-            { name: "🎮 流光·虚幻引擎", desc: "UE5开放世界星空", link: "https://www.bilibili.com", color: 0x88ddff, icon: "✨" },
-            { name: "🔧 逆向星芒", desc: "CTF实战库", link: "https://github.com", color: 0xdd88aa, icon: "⚙️" },
-            { name: "🤖 星尘·嵌入式OS", desc: "STM32实时系统", link: "https://github.com", color: 0x77cc88, icon: "📡" },
-            { name: "📡 流星信标", desc: "全栈导航站", link: "https://github.com", color: 0xffaa88, icon: "🌠" },
-            { name: "🎨 光源AI绘画", desc: "AI创意工具", link: "https://www.bilibili.com", color: 0xdd99ff, icon: "🎨" },
-            { name: "🌌 星尘档案馆", desc: "开源项目索引", link: "https://github.com", color: 0xccccdd, icon: "⭐" },
-            { name: "🌀 黑洞边缘实验室", desc: "WebGL交互实验", link: "https://github.com", color: 0xff99cc, icon: "🌌" }
+            { name: "task_scheduling", desc: "Python任务调度器", link: "https://github.com/fallingmeteorite/task_scheduling", color: 0x6c9eff},
+            { name: "BilBil主页", desc: "只是随便放一个", link: "https://space.bilibili.com/1484690146", color: 0x88ddff},
+            { name: "nsfw-image-check-comfyui", desc: "一个检测NSFW图片的节点", link: "https://github.com/fallingmeteorite/nsfw-image-check-comfyui", color: 0xdd88aa},
+            { name: "registry_cleaner", desc: "一个用于清理注册表的工具", link: "https://github.com/fallingmeteorite/registry_cleaner", color: 0x77cc88},
+            { name: "Illustrate_AI_toolbox", desc: "依绘工具箱", link: "https://github.com/fallingmeteorite/Illustrate_AI_toolbox", color: 0xffaa88},
+            { name: "Lora_box", desc: "早期Lora一键包", link: "https://github.com/fallingmeteorite/Lora_box", color: 0xdd99ff},
+            { name: "GITHUB主页", desc: "就只是一个主页", link: "https://github.com/fallingmeteorite/", color: 0xccccdd},
+            { name: "task_scheduling说明库", desc: "task_scheduling的使用文档", link: "https://fallingmeteorite.github.io/task_scheduling/", color: 0xff99cc}
         ];
         
         function createStarShape(color, size = 0.45) {
