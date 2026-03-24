@@ -71,34 +71,63 @@
             transition: transform 0.55s cubic-bezier(0.7, 0, 0.3, 1), opacity 0.45s ease !important;
         }
         
-        /* UI面板初始隐藏 */
+        /* UI面板 - 升级为高亮紫色半透明，文字清晰 */
         .info-panel {
             position: absolute; top: 20px; left: 20px;
-            background: rgba(8, 5, 20, 0.75); backdrop-filter: blur(14px);
+            background: rgba(80, 40, 140, 0.85);
+            backdrop-filter: blur(16px);
             border-radius: 24px; padding: 14px 24px; z-index: 100;
-            border: 1px solid rgba(180, 100, 255, 0.6);
+            border: 1px solid rgba(200, 120, 255, 0.9);
             pointer-events: none; max-width: 440px;
             opacity: 0;
             transition: opacity 1.2s ease;
+            box-shadow: 0 0 25px rgba(160, 80, 255, 0.4);
         }
-        .info-panel h1 { margin: 0 0 6px; font-size: 1.45rem; background: linear-gradient(135deg, #e2a5ff, #a366ff); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: 1px; }
-        .info-panel p { margin: 4px 0; font-size: 0.82rem; opacity: 0.92; }
-        .quote { font-style: italic; font-size: 0.75rem; border-top: 1px solid rgba(200, 130, 255, 0.5); margin-top: 9px; padding-top: 7px; color: #ddc9ff; }
+        .info-panel h1 {
+            margin: 0 0 6px;
+            font-size: 1.45rem;
+            background: linear-gradient(135deg, #f0b0ff, #c880ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 1px;
+            text-shadow: 0 0 8px rgba(200, 100, 255, 0.5);
+        }
+        .info-panel p {
+            margin: 4px 0;
+            font-size: 0.82rem;
+            color: #f0e6ff;
+            font-weight: 500;
+            text-shadow: 0 0 2px rgba(0,0,0,0.3);
+        }
+        .quote {
+            font-style: italic;
+            font-size: 0.75rem;
+            border-top: 1px solid rgba(220, 150, 255, 0.7);
+            margin-top: 9px;
+            padding-top: 7px;
+            color: #e5ccff;
+        }
         
         .controls-hint {
             position: absolute; bottom: 18px; left: 18px;
-            background: rgba(0,0,0,0.55); backdrop-filter: blur(8px);
+            background: rgba(60, 30, 100, 0.75);
+            backdrop-filter: blur(8px);
             padding: 6px 16px; border-radius: 28px;
-            font-size: 12px; color: #ddd; z-index: 100; pointer-events: none;
+            font-size: 12px; color: #e0c0ff; z-index: 100;
+            pointer-events: none;
             font-family: monospace;
             opacity: 0;
             transition: opacity 1s ease;
+            border: 1px solid rgba(200, 120, 255, 0.5);
         }
         .music-btn {
             position: absolute; bottom: 22px; right: 22px;
-            background: rgba(0,0,0,0.65); backdrop-filter: blur(12px);
+            background: rgba(80, 40, 140, 0.85);
+            backdrop-filter: blur(12px);
             padding: 8px 20px; border-radius: 44px; font-size: 13px; font-weight: 500;
-            color: #e2b0ff; cursor: pointer; z-index: 100; border: 1px solid #b77eff;
+            color: #f0d0ff; cursor: pointer; z-index: 100;
+            border: 1px solid #c880ff;
             transition: all 0.25s ease; letter-spacing: 1px;
             opacity: 0;
             pointer-events: none;
@@ -107,7 +136,12 @@
             opacity: 1;
             pointer-events: auto;
         }
-        .music-btn:hover { background: #b77eff; color: #0a0a1a; transform: scale(1.02); box-shadow: 0 0 15px #b77eff; }
+        .music-btn:hover {
+            background: #a066ff;
+            color: #0a0a1a;
+            transform: scale(1.02);
+            box-shadow: 0 0 15px #b77eff;
+        }
         
         .star-label {
             background: radial-gradient(circle, rgba(100, 50, 160, 0.92), rgba(40, 20, 90, 0.92));
@@ -181,16 +215,16 @@
         
         function initParticles() {
             particles = [];
-            const particleCount = Math.min(1200, Math.floor(window.innerWidth * window.innerHeight / 3500));
+            const particleCount = Math.min(1500, Math.floor(window.innerWidth * window.innerHeight / 3200));
             for (let i = 0; i < particleCount; i++) {
                 particles.push({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
-                    radius: Math.random() * 2 + 0.5,
+                    radius: Math.random() * 2.2 + 0.6,
                     alpha: Math.random() * 0.6 + 0.2,
-                    speedX: (Math.random() - 0.5) * 0.4,
-                    speedY: (Math.random() - 0.5) * 0.3,
-                    color: `hsl(${Math.random() * 80 + 200}, 70%, 65%)`
+                    speedX: (Math.random() - 0.5) * 0.45,
+                    speedY: (Math.random() - 0.5) * 0.35,
+                    color: `hsl(${Math.random() * 100 + 200}, 75%, 65%)`
                 });
             }
         }
@@ -208,8 +242,8 @@
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
                 ctx.fillStyle = p.color;
-                ctx.shadowBlur = 5;
-                ctx.shadowColor = 'rgba(150, 100, 255, 0.6)';
+                ctx.shadowBlur = 6;
+                ctx.shadowColor = 'rgba(180, 120, 255, 0.8)';
                 ctx.fill();
                 p.x += p.speedX;
                 p.y += p.speedY;
@@ -219,10 +253,10 @@
                 if (p.y > canvas.height) p.y = 0;
             }
             // 大星云光晕
-            for (let i = 0; i < 40; i++) {
+            for (let i = 0; i < 60; i++) {
                 ctx.beginPath();
-                ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 4 + 2, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(180, 130, 255, ${Math.random() * 0.4})`;
+                ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 5 + 2, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(200, 140, 255, ${Math.random() * 0.5})`;
                 ctx.fill();
             }
             animationId = requestAnimationFrame(drawDust);
@@ -232,10 +266,10 @@
         resizeCanvas();
         drawDust();
         
-        // ================= 2. Three.js 场景（震撼升级版）=================
+        // ================= 2. Three.js 场景（极致震撼版）=================
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x010004);
-        scene.fog = new THREE.FogExp2(0x010004, 0.00003);
+        scene.fog = new THREE.FogExp2(0x010004, 0.000028);
         
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 2200);
         camera.position.set(26, 14, 42);
@@ -244,15 +278,15 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.toneMapping = THREE.ReinhardToneMapping;
-        renderer.toneMappingExposure = 1.3;
+        renderer.toneMappingExposure = 1.4;
         document.body.appendChild(renderer.domElement);
         
         // 后期特效增强
         const renderScene = new RenderPass(scene, camera);
-        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.9);
-        bloomPass.threshold = 0.08;
-        bloomPass.strength = 1.1;
-        bloomPass.radius = 0.5;
+        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.6, 0.45, 0.95);
+        bloomPass.threshold = 0.06;
+        bloomPass.strength = 1.2;
+        bloomPass.radius = 0.55;
         const effectComposer = new EffectComposer(renderer);
         effectComposer.addPass(renderScene);
         effectComposer.addPass(bloomPass);
@@ -287,125 +321,130 @@
         }
         
         // ========= 3. 宇宙天体（极致华丽版）=========
-        // 黑洞核心 + 动态吸积盘 + 粒子流
+        // 黑洞核心
         const blackHoleCore = new THREE.Mesh(
-            new THREE.SphereGeometry(1.9, 160, 160),
-            new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.02, metalness: 0.99, emissive: 0xaa22ff, emissiveIntensity: 1.8 })
+            new THREE.SphereGeometry(1.95, 180, 180),
+            new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.01, metalness: 0.99, emissive: 0xcc44ff, emissiveIntensity: 2.0 })
         );
         addToUniverse(blackHoleCore);
         
-        // 三层吸积盘
+        // 多层吸积盘
         const accLayers = [];
         const accParams = [
-            { radius: 2.55, width: 0.18, color: 0xff44aa, intensity: 1.9, tilt: 0.2 },
-            { radius: 3.35, width: 0.2, color: 0xff88dd, intensity: 1.5, tilt: -0.05 },
-            { radius: 4.25, width: 0.22, color: 0xcc88ff, intensity: 1.3, tilt: 0.12 }
+            { radius: 2.6, width: 0.2, color: 0xff44cc, intensity: 2.2, tilt: 0.22 },
+            { radius: 3.45, width: 0.22, color: 0xff88ee, intensity: 1.8, tilt: -0.06 },
+            { radius: 4.35, width: 0.24, color: 0xdd99ff, intensity: 1.5, tilt: 0.14 }
         ];
         accParams.forEach(p => {
-            const torus = new THREE.Mesh(new THREE.TorusGeometry(p.radius, p.width, 140, 400), new THREE.MeshStandardMaterial({ color: p.color, emissive: p.color, emissiveIntensity: p.intensity, transparent: true }));
+            const torus = new THREE.Mesh(new THREE.TorusGeometry(p.radius, p.width, 160, 460), new THREE.MeshStandardMaterial({ color: p.color, emissive: p.color, emissiveIntensity: p.intensity, transparent: true }));
             torus.rotation.x = Math.PI / 2 + p.tilt;
             addToUniverse(torus);
             accLayers.push(torus);
         });
         
-        // 能量光环
+        // 能量光环（更多层）
         const energyRings = [];
-        const ringColors = [0xff66cc, 0x88aaff, 0xffaa88];
-        [2.9, 3.6, 4.4].forEach((rad, idx) => {
-            const ring = new THREE.Mesh(new THREE.TorusGeometry(rad, 0.1, 80, 300), new THREE.MeshBasicMaterial({ color: ringColors[idx], transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending }));
-            ring.rotation.x = idx === 1 ? Math.PI / 2.5 : Math.PI / 2;
-            if (idx === 2) ring.rotation.z = 0.5;
+        const ringParams = [
+            { rad: 2.95, width: 0.12, color: 0xff66cc, opacity: 0.9, rot: 0 },
+            { rad: 3.65, width: 0.1, color: 0x88aaff, opacity: 0.85, rot: 0.5 },
+            { rad: 4.45, width: 0.11, color: 0xffaa88, opacity: 0.8, rot: 0.8 }
+        ];
+        ringParams.forEach((p, idx) => {
+            const ring = new THREE.Mesh(new THREE.TorusGeometry(p.rad, p.width, 100, 360), new THREE.MeshBasicMaterial({ color: p.color, transparent: true, opacity: p.opacity, blending: THREE.AdditiveBlending }));
+            if (idx === 1) ring.rotation.x = Math.PI / 2.4;
+            else if (idx === 2) ring.rotation.z = 0.6;
+            else ring.rotation.x = Math.PI / 2;
             addToUniverse(ring);
             energyRings.push(ring);
         });
         
-        const eventGlow = new THREE.Mesh(new THREE.SphereGeometry(2.4, 80, 80), new THREE.MeshBasicMaterial({ color: 0xd066ff, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending }));
+        const eventGlow = new THREE.Mesh(new THREE.SphereGeometry(2.5, 100, 100), new THREE.MeshBasicMaterial({ color: 0xe080ff, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending }));
         addToUniverse(eventGlow);
         
-        // 引力光环
-        const gravityRing = new THREE.Mesh(new THREE.RingGeometry(16.8, 19.2, 100), new THREE.MeshBasicMaterial({ color: 0xff77aa, transparent: true, opacity: 0.6, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
+        // 引力光环扩大
+        const gravityRing = new THREE.Mesh(new THREE.RingGeometry(16.5, 19.5, 120), new THREE.MeshBasicMaterial({ color: 0xff88cc, transparent: true, opacity: 0.65, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
         gravityRing.rotation.x = -Math.PI / 2;
         gravityRing.position.y = -0.2;
         addToUniverse(gravityRing);
         
-        // 螺旋支路粒子流（更密集）
+        // 螺旋支路（更多粒子）
         const BRANCH_ANGLES = [Math.PI / 4, 3 * Math.PI / 4, 5 * Math.PI / 4, 7 * Math.PI / 4];
         const BRANCH_COLORS = [0xff77bb, 0x77ffbb, 0x88aaff, 0xffaa77];
         BRANCH_ANGLES.forEach((angle, idx) => {
             const points = [];
-            for (let r = 19; r > 2.2; r -= 0.2) {
-                const t = (19 - r) / 16.8;
-                const spiralAngle = angle + t * (Math.PI * 1.4);
+            for (let r = 20; r > 2.0; r -= 0.18) {
+                const t = (20 - r) / 18;
+                const spiralAngle = angle + t * (Math.PI * 1.45);
                 const x = Math.cos(spiralAngle) * r;
                 const z = Math.sin(spiralAngle) * r;
-                const y = Math.sin(r * 0.8) * 0.55;
+                const y = Math.sin(r * 0.85) * 0.6;
                 points.push(new THREE.Vector3(x, y, z));
             }
             const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
-            const lineMat = new THREE.LineBasicMaterial({ color: BRANCH_COLORS[idx], transparent: true, opacity: 0.95 });
+            const lineMat = new THREE.LineBasicMaterial({ color: BRANCH_COLORS[idx], transparent: true, opacity: 0.98 });
             addToUniverse(new THREE.Line(lineGeo, lineMat));
             
             const glowTrail = [];
-            for (let r = 19; r > 2.5; r -= 1.0) {
-                const t = (19 - r) / 16.5;
-                const spiralAngle = angle + t * (Math.PI * 1.4);
+            for (let r = 20; r > 2.2; r -= 0.9) {
+                const t = (20 - r) / 17.8;
+                const spiralAngle = angle + t * (Math.PI * 1.45);
                 const x = Math.cos(spiralAngle) * r;
                 const z = Math.sin(spiralAngle) * r;
-                const y = Math.sin(r * 0.8) * 0.52;
+                const y = Math.sin(r * 0.85) * 0.58;
                 glowTrail.push(new THREE.Vector3(x, y, z));
             }
-            const trailPoints = new THREE.Points(new THREE.BufferGeometry().setFromPoints(glowTrail), new THREE.PointsMaterial({ color: BRANCH_COLORS[idx], size: 0.32, transparent: true, blending: THREE.AdditiveBlending }));
+            const trailPoints = new THREE.Points(new THREE.BufferGeometry().setFromPoints(glowTrail), new THREE.PointsMaterial({ color: BRANCH_COLORS[idx], size: 0.38, transparent: true, blending: THREE.AdditiveBlending }));
             addToUniverse(trailPoints);
         });
         
-        // 星云粒子系统（大量）
-        const nebulaCount = 5500;
+        // 星云粒子（大幅增加）
+        const nebulaCount = 8000;
         const nebulaGeom = new THREE.BufferGeometry();
         const nebulaPos = [];
         for (let i = 0; i < nebulaCount; i++) {
-            const rad = 20 + Math.random() * 70;
+            const rad = 18 + Math.random() * 75;
             const ang = Math.random() * Math.PI * 2;
-            const yoff = (Math.random() - 0.5) * 12;
+            const yoff = (Math.random() - 0.5) * 13;
             nebulaPos.push(Math.cos(ang) * rad, yoff, Math.sin(ang) * rad);
         }
         nebulaGeom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(nebulaPos), 3));
-        const nebulaPoints = new THREE.Points(nebulaGeom, new THREE.PointsMaterial({ color: 0x88aaff, size: 0.2, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending }));
+        const nebulaPoints = new THREE.Points(nebulaGeom, new THREE.PointsMaterial({ color: 0x99aaff, size: 0.22, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending }));
         addToUniverse(nebulaPoints);
         
-        // 繁星背景
-        const starCount = 10000;
+        // 繁星背景（超多）
+        const starCount = 15000;
         const starGeom = new THREE.BufferGeometry();
         const starPos = [];
-        for (let i = 0; i < starCount; i++) starPos.push((Math.random() - 0.5) * 700, (Math.random() - 0.5) * 450, (Math.random() - 0.5) * 550 - 150);
+        for (let i = 0; i < starCount; i++) starPos.push((Math.random() - 0.5) * 800, (Math.random() - 0.5) * 500, (Math.random() - 0.5) * 600 - 180);
         starGeom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starPos), 3));
-        const starsField = new THREE.Points(starGeom, new THREE.PointsMaterial({ color: 0xbdd4ff, size: 0.14, transparent: true, opacity: 0.7 }));
+        const starsField = new THREE.Points(starGeom, new THREE.PointsMaterial({ color: 0xcceeff, size: 0.16, transparent: true, opacity: 0.75 }));
         addToUniverse(starsField);
         
-        // 黑洞周围吸入粒子流（动态效果）
-        const inflowCount = 4000;
+        // 黑洞吸入粒子流（动态）
+        const inflowCount = 5500;
         const inflowGeom = new THREE.BufferGeometry();
         const inflowPos = [];
         for (let i = 0; i < inflowCount; i++) {
-            const rad = 5 + Math.random() * 12;
+            const rad = 4.5 + Math.random() * 14;
             const ang = Math.random() * Math.PI * 2;
-            const yoff = (Math.random() - 0.5) * 4;
+            const yoff = (Math.random() - 0.5) * 4.5;
             inflowPos.push(Math.cos(ang) * rad, yoff, Math.sin(ang) * rad);
         }
         inflowGeom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(inflowPos), 3));
-        const inflowPoints = new THREE.Points(inflowGeom, new THREE.PointsMaterial({ color: 0xffaa88, size: 0.12, blending: THREE.AdditiveBlending }));
+        const inflowPoints = new THREE.Points(inflowGeom, new THREE.PointsMaterial({ color: 0xffaa99, size: 0.14, blending: THREE.AdditiveBlending }));
         addToUniverse(inflowPoints);
         
-        // 光源
-        const coreLight = new THREE.PointLight(0xff44cc, 2.2, 70);
+        // 光源（更强）
+        const coreLight = new THREE.PointLight(0xff44cc, 2.5, 80);
         coreLight.position.set(0, 0, 0);
         addToUniverse(coreLight);
         const fillLights = [
-            new THREE.PointLight(0xaa88ff, 1.0), new THREE.PointLight(0xff77aa, 0.8)
+            new THREE.PointLight(0xaa88ff, 1.2), new THREE.PointLight(0xff77aa, 1.0)
         ];
         fillLights[0].position.set(8, 7, 9);
         fillLights[1].position.set(-6, 5, 12);
         fillLights.forEach(l => addToUniverse(l));
-        const ambient = new THREE.AmbientLight(0x15112a);
+        const ambient = new THREE.AmbientLight(0x201530);
         scene.add(ambient);
         
         // 黑洞标签
@@ -415,50 +454,50 @@
         blackLabelDiv.style.background = "rgba(0,0,0,0.85)";
         blackLabelDiv.style.border = "2px solid #ff44aa";
         const blackLabel = new CSS2DObject(blackLabelDiv);
-        blackLabel.position.set(0, 2.5, 0);
+        blackLabel.position.set(0, 2.7, 0);
         addToUniverse(blackLabel);
         
         // 作品大星星
         const worksData = [
-            { name: "task_scheduling", desc: "⚙️ 高级Python调度器", link: "https://github.com/fallingmeteorite/task_scheduling", color: 0x6c9eff, icon: "✨" },
-            { name: "BilBil 主页", desc: "🎬 创意空间", link: "https://space.bilibili.com/1484690146", color: 0x88ddff, icon: "📺" },
-            { name: "nsfw-image-check", desc: "🔞 ComfyUI 鉴黄节点", link: "https://github.com/fallingmeteorite/nsfw-image-check-comfyui", color: 0xdd88aa, icon: "🔍" },
-            { name: "registry_cleaner", desc: "🧹 注册表清理工具", link: "https://github.com/fallingmeteorite/registry_cleaner", color: 0x77cc88, icon: "🧰" },
-            { name: "Illustrate_AI_toolbox", desc: "🎨 依绘工具箱", link: "https://github.com/fallingmeteorite/Illustrate_AI_toolbox", color: 0xffaa88, icon: "🖌️" },
-            { name: "Lora_box", desc: "📦 Lora 一键包", link: "https://github.com/fallingmeteorite/Lora_box", color: 0xdd99ff, icon: "💎" },
-            { name: "GITHUB 主页", desc: "🐙 开源宇宙", link: "https://github.com/fallingmeteorite/", color: 0xccccdd, icon: "⭐" },
-            { name: "task_scheduling文档", desc: "📖 详细说明库", link: "https://fallingmeteorite.github.io/task_scheduling/", color: 0xff99cc, icon: "📘" }
+            { name: "task_scheduling", desc: "⚙️ 高级Python调度器", link: "https://github.com/fallingmeteorite/task_scheduling", color: 0x7cafff, icon: "✨" },
+            { name: "BilBil 主页", desc: "🎬 创意空间", link: "https://space.bilibili.com/1484690146", color: 0x99eeff, icon: "📺" },
+            { name: "nsfw-image-check", desc: "🔞 ComfyUI 鉴黄节点", link: "https://github.com/fallingmeteorite/nsfw-image-check-comfyui", color: 0xee99bb, icon: "🔍" },
+            { name: "registry_cleaner", desc: "🧹 注册表清理工具", link: "https://github.com/fallingmeteorite/registry_cleaner", color: 0x88dd99, icon: "🧰" },
+            { name: "Illustrate_AI_toolbox", desc: "🎨 依绘工具箱", link: "https://github.com/fallingmeteorite/Illustrate_AI_toolbox", color: 0xffbb99, icon: "🖌️" },
+            { name: "Lora_box", desc: "📦 Lora 一键包", link: "https://github.com/fallingmeteorite/Lora_box", color: 0xeeaaff, icon: "💎" },
+            { name: "GITHUB 主页", desc: "🐙 开源宇宙", link: "https://github.com/fallingmeteorite/", color: 0xddddff, icon: "⭐" },
+            { name: "task_scheduling文档", desc: "📖 详细说明库", link: "https://fallingmeteorite.github.io/task_scheduling/", color: 0xffbbdd, icon: "📘" }
         ];
         
-        function createStarShape(color, sz = 0.5) {
+        function createStarShape(color, sz = 0.52) {
             const geom = new THREE.IcosahedronGeometry(sz, 0);
-            const mat = new THREE.MeshStandardMaterial({ color: color, emissive: color, emissiveIntensity: 1.0, metalness: 0.3, roughness: 0.2 });
+            const mat = new THREE.MeshStandardMaterial({ color: color, emissive: color, emissiveIntensity: 1.1, metalness: 0.3, roughness: 0.2 });
             return new THREE.Mesh(geom, mat);
         }
         
         class BigStar {
             constructor(data) {
                 this.data = data;
-                const radius = 24 + Math.random() * 28;
+                const radius = 22 + Math.random() * 30;
                 const angle = Math.random() * Math.PI * 2;
                 this.radius = radius;
                 this.angle = angle;
-                this.yOffset = (Math.random() - 0.5) * 3.5;
-                this.speed = 0.00025 + Math.random() * 0.0006;
+                this.yOffset = (Math.random() - 0.5) * 3.8;
+                this.speed = 0.00022 + Math.random() * 0.00065;
                 this.x = Math.cos(angle) * radius;
                 this.z = Math.sin(angle) * radius;
                 this.y = this.yOffset;
-                this.mesh = createStarShape(data.color, 0.5);
+                this.mesh = createStarShape(data.color, 0.52);
                 this.mesh.position.set(this.x, this.y, this.z);
                 addToUniverse(this.mesh);
-                this.glow = new THREE.PointLight(data.color, 1.0, 25);
+                this.glow = new THREE.PointLight(data.color, 1.1, 28);
                 this.mesh.add(this.glow);
                 const div = document.createElement('div');
                 div.className = 'star-label';
                 div.innerHTML = `${data.icon} ${data.name}<br><small>${data.desc}</small>`;
                 div.addEventListener('click', (e) => { e.stopPropagation(); showToast(data.name, data.desc, data.link); });
                 this.label = new CSS2DObject(div);
-                this.label.position.set(this.x, this.y + 0.9, this.z);
+                this.label.position.set(this.x, this.y + 1.0, this.z);
                 addToUniverse(this.label);
             }
             update(t) {
@@ -466,63 +505,63 @@
                 this.angle += this.speed;
                 this.x = Math.cos(this.angle) * this.radius;
                 this.z = Math.sin(this.angle) * this.radius;
-                this.y = this.yOffset + Math.sin(t * 0.0007) * 0.2;
+                this.y = this.yOffset + Math.sin(t * 0.0007) * 0.22;
                 this.mesh.position.set(this.x, this.y, this.z);
-                this.label.position.set(this.x, this.y + 0.95, this.z);
-                this.mesh.rotation.y += 0.004;
-                this.glow.intensity = 0.9 + Math.sin(t * 0.0025) * 0.4;
+                this.label.position.set(this.x, this.y + 1.05, this.z);
+                this.mesh.rotation.y += 0.0045;
+                this.glow.intensity = 1.0 + Math.sin(t * 0.0025) * 0.5;
             }
         }
         const bigStars = worksData.map(d => new BigStar(d));
         
-        // 小型星星（引力坠落优化）
-        const STAR_TOTAL = 3200;
-        const ATTRACT_RADIUS = 18.5;
-        const GRAVITY = 0.0012;
+        // 小型星星（引力坠落）
+        const STAR_TOTAL = 3800;
+        const ATTRACT_RADIUS = 18.8;
+        const GRAVITY = 0.00125;
         
         class SmallStar {
             constructor(type, customRad = null) {
                 this.type = type;
                 this.gravity = (type !== 'orbit-only');
-                this.rad = customRad !== null ? customRad : (this.gravity ? 26 + Math.random() * 28 : 32 + Math.random() * 32);
+                this.rad = customRad !== null ? customRad : (this.gravity ? 25 + Math.random() * 29 : 31 + Math.random() * 33);
                 this.angle = Math.random() * Math.PI * 2;
-                this.speed = 0.0006 + Math.random() * 0.0018;
-                this.yOff = (Math.random() - 0.5) * 3.2;
+                this.speed = 0.0005 + Math.random() * 0.0019;
+                this.yOff = (Math.random() - 0.5) * 3.5;
                 this.x = Math.cos(this.angle) * this.rad;
                 this.z = Math.sin(this.angle) * this.rad;
-                this.y = this.yOff + Math.sin(this.angle * 2) * 0.4;
+                this.y = this.yOff + Math.sin(this.angle * 2) * 0.45;
                 this.state = 'orbit';
                 this.targetBranch = 0;
                 this.spiral = 0;
                 this.spiralStartAng = 0;
                 this.spiralStartRad = 0;
-                const hue = this.gravity ? 0.02 + Math.random() * 0.15 : 0.55 + Math.random() * 0.3;
-                const baseCol = new THREE.Color().setHSL(hue, 0.95, 0.65);
-                const geom = new THREE.IcosahedronGeometry(0.14 + Math.random() * 0.1, 0);
-                const mat = new THREE.MeshStandardMaterial({ color: baseCol, emissive: this.gravity ? 0xff5533 : 0x4488ff, emissiveIntensity: this.gravity ? 0.85 : 0.6, metalness: 0.2 });
+                const hue = this.gravity ? 0.01 + Math.random() * 0.16 : 0.53 + Math.random() * 0.32;
+                const baseCol = new THREE.Color().setHSL(hue, 0.95, 0.68);
+                const geom = new THREE.IcosahedronGeometry(0.15 + Math.random() * 0.11, 0);
+                const mat = new THREE.MeshStandardMaterial({ color: baseCol, emissive: this.gravity ? 0xff6644 : 0x5599ff, emissiveIntensity: this.gravity ? 0.95 : 0.7, metalness: 0.2 });
                 this.mesh = new THREE.Mesh(geom, mat);
                 this.mesh.position.set(this.x, this.y, this.z);
                 addToUniverse(this.mesh);
                 this.active = true;
                 this.baseColor = baseCol.clone();
                 this.phase = Math.random() * Math.PI * 2;
-                this.rotSpeed = 0.012 + Math.random() * 0.03;
+                this.rotSpeed = 0.01 + Math.random() * 0.035;
             }
             updateOrbit() {
                 if (this.gravity && this.state === 'orbit') {
                     this.rad -= GRAVITY;
                     if (this.rad <= ATTRACT_RADIUS) { this.startFall(); return true; }
-                    if (this.rad < 28) this.speed = 0.0018 + (30 - this.rad) * 0.00025;
+                    if (this.rad < 28) this.speed = 0.0020 + (30 - this.rad) * 0.0003;
                 }
                 this.angle += this.speed;
                 this.x = Math.cos(this.angle) * this.rad;
                 this.z = Math.sin(this.angle) * this.rad;
-                this.y = this.yOff + Math.sin(this.angle * 2) * 0.38;
+                this.y = this.yOff + Math.sin(this.angle * 2) * 0.42;
                 this.mesh.position.set(this.x, this.y, this.z);
                 if (this.gravity && this.rad < 30) {
-                    const intens = 0.9 + (32 - this.rad) * 0.1;
-                    this.mesh.material.emissiveIntensity = Math.min(2.2, intens);
-                } else this.mesh.material.emissiveIntensity = this.gravity ? 0.85 : 0.6;
+                    const intens = 1.0 + (32 - this.rad) * 0.12;
+                    this.mesh.material.emissiveIntensity = Math.min(2.5, intens);
+                } else this.mesh.material.emissiveIntensity = this.gravity ? 0.95 : 0.7;
                 return true;
             }
             startFall() {
@@ -540,28 +579,28 @@
                 this.spiral = 0;
             }
             updateFall() {
-                let delta = 0.025;
-                if (this.spiral > 0.45) delta = 0.04;
-                if (this.spiral > 0.8) delta = 0.065;
+                let delta = 0.028;
+                if (this.spiral > 0.45) delta = 0.045;
+                if (this.spiral > 0.8) delta = 0.072;
                 this.spiral += delta;
                 if (this.spiral >= 1.0) { this.destroy(); return false; }
-                const rad = this.spiralStartRad * (1 - this.spiral) + 2.4 * this.spiral;
+                const rad = this.spiralStartRad * (1 - this.spiral) + 2.5 * this.spiral;
                 const branchAng = BRANCH_ANGLES[this.targetBranch];
-                let angDiff = (branchAng + Math.PI / 2.2) - this.spiralStartAng;
+                let angDiff = (branchAng + Math.PI / 2.15) - this.spiralStartAng;
                 while (angDiff > Math.PI) angDiff -= Math.PI*2;
                 while (angDiff < -Math.PI) angDiff += Math.PI*2;
                 let spiralAng = this.spiralStartAng + angDiff * this.spiral;
-                spiralAng += Math.sin(this.spiral * Math.PI * 2.8) * 0.3;
+                spiralAng += Math.sin(this.spiral * Math.PI * 3.0) * 0.32;
                 let x = Math.cos(spiralAng) * rad;
                 let z = Math.sin(spiralAng) * rad;
-                const sway = Math.sin(this.spiral * Math.PI * 4.5 + this.phase) * 0.22;
+                const sway = Math.sin(this.spiral * Math.PI * 4.8 + this.phase) * 0.24;
                 x += -Math.sin(spiralAng) * sway;
                 z += Math.cos(spiralAng) * sway;
-                const y = Math.sin(this.spiral * Math.PI) * 0.65 * (1 - this.spiral * 0.6);
+                const y = Math.sin(this.spiral * Math.PI) * 0.7 * (1 - this.spiral * 0.65);
                 this.mesh.position.set(x, y, z);
                 const heat = Math.max(0.5, 1 - (rad-2)/14);
-                this.mesh.material.emissiveIntensity = 1.3 + (1 - heat) * 2.4;
-                if (rad < 6) this.mesh.material.color.setRGB(1.0, 0.35, 0.2);
+                this.mesh.material.emissiveIntensity = 1.5 + (1 - heat) * 2.8;
+                if (rad < 5.8) this.mesh.material.color.setRGB(1.0, 0.4, 0.25);
                 else this.mesh.material.color = this.baseColor;
                 return true;
             }
@@ -576,36 +615,36 @@
                 this.active = false;
                 scene.remove(this.mesh);
                 if (this.gravity && this.mesh.visible) {
-                    setTimeout(() => { smallStars.push(new SmallStar('falling', 34 + Math.random() * 24)); }, 50);
+                    setTimeout(() => { smallStars.push(new SmallStar('falling', 34 + Math.random() * 25)); }, 45);
                 }
             }
         }
         
         let smallStars = [];
         for (let i = 0; i < STAR_TOTAL; i++) {
-            const type = Math.random() < 0.7 ? 'falling' : 'orbit-only';
+            const type = Math.random() < 0.72 ? 'falling' : 'orbit-only';
             smallStars.push(new SmallStar(type));
         }
-        for (let i = 0; i < 180; i++) smallStars.push(new SmallStar('falling', 17 + Math.random() * 6));
+        for (let i = 0; i < 220; i++) smallStars.push(new SmallStar('falling', 16.5 + Math.random() * 6.5));
         
-        // 流星雨（更多、更长）
+        // 流星雨（更多更长）
         class Meteor {
             constructor() { this.active = true; this.reset(); }
             reset() {
                 const angle = Math.random() * Math.PI * 2;
-                const startRad = 50 + Math.random() * 32;
+                const startRad = 52 + Math.random() * 35;
                 this.sx = Math.cos(angle) * startRad;
                 this.sz = Math.sin(angle) * startRad;
-                this.sy = (Math.random() - 0.5) * 16;
-                const tAngle = angle + (Math.random() - 0.5) * 1.8;
-                this.ex = Math.cos(tAngle) * 5.5;
-                this.ez = Math.sin(tAngle) * 5.5;
-                this.ey = (Math.random() - 0.5) * 6;
+                this.sy = (Math.random() - 0.5) * 18;
+                const tAngle = angle + (Math.random() - 0.5) * 2.0;
+                this.ex = Math.cos(tAngle) * 5.0;
+                this.ez = Math.sin(tAngle) * 5.0;
+                this.ey = (Math.random() - 0.5) * 7;
                 this.prog = 0;
-                this.speed = 0.007 + Math.random() * 0.012;
-                this.color = new THREE.Color().setHSL(0.05 + Math.random() * 0.2, 1.0, 0.7);
+                this.speed = 0.008 + Math.random() * 0.014;
+                this.color = new THREE.Color().setHSL(0.04 + Math.random() * 0.22, 1.0, 0.72);
                 this.geom = new THREE.BufferGeometry();
-                this.obj = new THREE.Points(this.geom, new THREE.PointsMaterial({ color: this.color, size: 0.28, blending: THREE.AdditiveBlending }));
+                this.obj = new THREE.Points(this.geom, new THREE.PointsMaterial({ color: this.color, size: 0.32, blending: THREE.AdditiveBlending }));
                 scene.add(this.obj);
                 if (!explosionPlayed) this.obj.visible = false;
                 else this.obj.visible = true;
@@ -619,8 +658,8 @@
                 const z = this.sz * (1 - t) + this.ez * t;
                 const y = this.sy * (1 - t) + this.ey * t;
                 const trail = [];
-                for (let i = 0; i <= 15; i++) {
-                    const pt = Math.max(0, t - i * 0.018);
+                for (let i = 0; i <= 18; i++) {
+                    const pt = Math.max(0, t - i * 0.016);
                     if (pt >= 0) {
                         const tx = this.sx * (1 - pt) + this.ex * pt;
                         const tz = this.sz * (1 - pt) + this.ez * pt;
@@ -636,70 +675,69 @@
             }
         }
         let meteors = [];
-        function spawnMeteor() { if (explosionPlayed && meteors.length < 14 && Math.random() < 0.03) meteors.push(new Meteor()); }
+        function spawnMeteor() { if (explosionPlayed && meteors.length < 18 && Math.random() < 0.035) meteors.push(new Meteor()); }
         
-        // ========= 震撼爆炸特效：多重冲击波 + 屏幕震动 =========
-        function createShockwave() {
-            const ringGeo = new THREE.RingGeometry(0.5, 1.2, 32);
-            const ringMat = new THREE.MeshBasicMaterial({ color: 0xffaa66, transparent: true, opacity: 0.9, side: THREE.DoubleSide, blending: THREE.AdditiveBlending });
+        // ========= 极致震撼爆炸特效 =========
+        function createShockwave(color, size, duration) {
+            const ringGeo = new THREE.RingGeometry(0.5, 1.2, 48);
+            const ringMat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.9, side: THREE.DoubleSide, blending: THREE.AdditiveBlending });
             const ring = new THREE.Mesh(ringGeo, ringMat);
             ring.position.set(0, 0, 0);
             scene.add(ring);
             let scale = 1;
+            let frames = 0;
             function expand() {
-                scale += 0.18;
+                frames++;
+                scale += 0.22;
                 ring.scale.set(scale, scale, 1);
-                ring.material.opacity = 0.9 - (scale - 1) * 0.03;
-                if (scale < 18) requestAnimationFrame(expand);
+                ring.material.opacity = 0.9 - (scale - 1) * 0.04;
+                if (scale < size) requestAnimationFrame(expand);
                 else scene.remove(ring);
             }
             requestAnimationFrame(expand);
         }
         
-        function screenShake() {
-            let intensity = 0.25;
-            let duration = 30;
+        function screenShake(intensity, duration) {
             let originalPos = camera.position.clone();
+            let count = 0;
             function shake() {
-                if (duration <= 0) {
+                if (count >= duration) {
                     camera.position.copy(originalPos);
                     return;
                 }
                 camera.position.x = originalPos.x + (Math.random() - 0.5) * intensity;
                 camera.position.y = originalPos.y + (Math.random() - 0.5) * intensity;
-                intensity *= 0.85;
-                duration--;
+                intensity *= 0.92;
+                count++;
                 requestAnimationFrame(shake);
             }
             shake();
         }
         
         function createBigBang() {
-            // 主粒子云
-            const pCount = 2800;
-            const geom = new THREE.BufferGeometry();
-            const pos = new Float32Array(pCount * 3);
-            for (let i = 0; i < pCount; i++) {
-                pos[i*3] = (Math.random() - 0.5) * 3;
-                pos[i*3+1] = (Math.random() - 0.5) * 3;
-                pos[i*3+2] = (Math.random() - 0.5) * 3;
-            }
-            geom.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-            const pMat = new THREE.PointsMaterial({ color: 0xffaa66, size: 0.38, blending: THREE.AdditiveBlending });
-            const particles = new THREE.Points(geom, pMat);
-            scene.add(particles);
+            // 主粒子云（三层）
+            const layers = [
+                { count: 3500, color: 0xffaa66, size: 0.42, scaleSpeed: 0.7 },
+                { count: 2500, color: 0xff6644, size: 0.38, scaleSpeed: 0.65 },
+                { count: 1800, color: 0xff2288, size: 0.34, scaleSpeed: 0.6 }
+            ];
+            const particlesList = [];
+            layers.forEach(layer => {
+                const geom = new THREE.BufferGeometry();
+                const pos = new Float32Array(layer.count * 3);
+                for (let i = 0; i < layer.count; i++) {
+                    pos[i*3] = (Math.random() - 0.5) * 3.2;
+                    pos[i*3+1] = (Math.random() - 0.5) * 3.2;
+                    pos[i*3+2] = (Math.random() - 0.5) * 3.2;
+                }
+                geom.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+                const mat = new THREE.PointsMaterial({ color: layer.color, size: layer.size, blending: THREE.AdditiveBlending });
+                const pts = new THREE.Points(geom, mat);
+                scene.add(pts);
+                particlesList.push({ obj: pts, mat: mat, scaleSpeed: layer.scaleSpeed });
+            });
             
-            // 高温粒子
-            const hotCount = 1800;
-            const hotGeom = new THREE.BufferGeometry();
-            const hotPos = [];
-            for (let i = 0; i < hotCount; i++) hotPos.push((Math.random() - 0.5) * 3.5, (Math.random() - 0.5) * 3.5, (Math.random() - 0.5) * 3.5);
-            hotGeom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(hotPos), 3));
-            const hotMat = new THREE.PointsMaterial({ color: 0xff4422, size: 0.34, blending: THREE.AdditiveBlending });
-            const hotParticles = new THREE.Points(hotGeom, hotMat);
-            scene.add(hotParticles);
-            
-            // 全屏闪光
+            // 全屏闪光（更亮）
             const flash = document.createElement('div');
             flash.style.position = 'fixed';
             flash.style.top = '0';
@@ -713,32 +751,74 @@
             flash.style.transition = 'opacity 0.4s ease';
             document.body.appendChild(flash);
             setTimeout(() => flash.style.opacity = '0', 150);
-            setTimeout(() => flash.remove(), 650);
+            setTimeout(() => flash.remove(), 700);
+            
+            // 彩色闪烁（紫色/红色）
+            const colorFlash = document.createElement('div');
+            colorFlash.style.position = 'fixed';
+            colorFlash.style.top = '0';
+            colorFlash.style.left = '0';
+            colorFlash.style.width = '100%';
+            colorFlash.style.height = '100%';
+            colorFlash.style.backgroundColor = '#ff44aa';
+            colorFlash.style.zIndex = '349';
+            colorFlash.style.opacity = '0.6';
+            colorFlash.style.pointerEvents = 'none';
+            colorFlash.style.transition = 'opacity 0.2s ease';
+            document.body.appendChild(colorFlash);
+            setTimeout(() => colorFlash.style.opacity = '0', 100);
+            setTimeout(() => colorFlash.remove(), 500);
+            
+            // 多重冲击波
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => createShockwave(0xffaa66, 18 + i * 2, 40), i * 70);
+                setTimeout(() => createShockwave(0xff44aa, 14 + i * 2, 35), i * 90);
+            }
+            
+            // 屏幕剧烈震动
+            screenShake(0.45, 35);
             
             let frame = 0;
             function boomAnim() {
                 frame++;
-                const alpha = Math.max(0, 1 - frame / 42);
-                pMat.opacity = alpha * 0.95;
-                hotMat.opacity = alpha * 0.9;
-                particles.scale.setScalar(1 + frame * 0.65);
-                hotParticles.scale.setScalar(1 + frame * 0.6);
-                if (frame > 50) {
-                    scene.remove(particles);
-                    scene.remove(hotParticles);
+                const alpha = Math.max(0, 1 - frame / 48);
+                particlesList.forEach(p => {
+                    p.mat.opacity = alpha * 0.95;
+                    p.obj.scale.setScalar(1 + frame * p.scaleSpeed);
+                });
+                if (frame > 55) {
+                    particlesList.forEach(p => scene.remove(p.obj));
                     return;
                 }
                 requestAnimationFrame(boomAnim);
             }
             requestAnimationFrame(boomAnim);
             
-            // 多重冲击波
-            for (let i = 0; i < 3; i++) setTimeout(() => createShockwave(), i * 80);
+            // 黑洞周围粒子爆发
+            const burstCount = 1200;
+            const burstGeom = new THREE.BufferGeometry();
+            const burstPos = [];
+            for (let i = 0; i < burstCount; i++) {
+                const rad = 2 + Math.random() * 4;
+                const ang = Math.random() * Math.PI * 2;
+                const yoff = (Math.random() - 0.5) * 3;
+                burstPos.push(Math.cos(ang) * rad, yoff, Math.sin(ang) * rad);
+            }
+            burstGeom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(burstPos), 3));
+            const burstMat = new THREE.PointsMaterial({ color: 0xffaa88, size: 0.22, blending: THREE.AdditiveBlending });
+            const burstPoints = new THREE.Points(burstGeom, burstMat);
+            scene.add(burstPoints);
+            let burstFrame = 0;
+            function burstAnim() {
+                burstFrame++;
+                burstPoints.scale.setScalar(1 + burstFrame * 0.35);
+                burstMat.opacity = Math.max(0, 1 - burstFrame / 35);
+                if (burstFrame > 40) scene.remove(burstPoints);
+                else requestAnimationFrame(burstAnim);
+            }
+            requestAnimationFrame(burstAnim);
             
-            // 屏幕震动
-            screenShake();
-            
-            // 音效（更震撼）
+            // 震撼低频音效
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const now = audioCtx.currentTime;
@@ -746,22 +826,21 @@
                 const gain = audioCtx.createGain();
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
-                osc.frequency.value = 60;
-                gain.gain.value = 0.7;
+                osc.frequency.value = 55;
+                gain.gain.value = 0.85;
                 osc.start();
-                gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.5);
-                osc.stop(now + 1.5);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.8);
+                osc.stop(now + 1.8);
                 
-                // 低频轰鸣
                 const sub = audioCtx.createOscillator();
                 const subGain = audioCtx.createGain();
                 sub.connect(subGain);
                 subGain.connect(audioCtx.destination);
-                sub.frequency.value = 35;
-                subGain.gain.value = 0.5;
+                sub.frequency.value = 30;
+                subGain.gain.value = 0.65;
                 sub.start();
-                subGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.2);
-                sub.stop(now + 1.2);
+                subGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.5);
+                sub.stop(now + 1.5);
             } catch(e) {}
         }
         
@@ -772,7 +851,7 @@
             document.getElementById('controlsHint').style.opacity = '1';
             document.getElementById('musicToggleBtn').classList.add('visible');
             if (bgMusic && !musicStarted) startMusic();
-            setInterval(() => spawnMeteor(), 700);
+            setInterval(() => spawnMeteor(), 650);
         }
         
         function startCompressionAndBang() {
@@ -795,7 +874,7 @@
         // 音乐本地
         const bgMusic = new Audio();
         bgMusic.loop = true;
-        bgMusic.volume = 0.28;
+        bgMusic.volume = 0.3;
         bgMusic.src = "background_music.mp3";
         let musicStarted = false;
         const musicBtn = document.getElementById('musicToggleBtn');
@@ -827,20 +906,20 @@
             for (let i = meteors.length-1; i >= 0; i--) if (!meteors[i].update()) meteors.splice(i,1);
             
             if (explosionPlayed) {
-                nebulaPoints.rotation.y += 0.00025;
-                inflowPoints.rotation.y -= 0.004;
-                gravityRing.rotation.z += 0.003;
+                nebulaPoints.rotation.y += 0.00028;
+                inflowPoints.rotation.y -= 0.005;
+                gravityRing.rotation.z += 0.0035;
                 energyRings.forEach((r, idx) => {
-                    r.rotation.z += 0.007;
+                    r.rotation.z += 0.008;
                     if (idx === 1) r.rotation.x += 0.003;
                 });
                 accLayers.forEach((a, i) => {
-                    a.rotation.z += i === 0 ? 0.014 : (i === 1 ? -0.012 : 0.01);
+                    a.rotation.z += i === 0 ? 0.016 : (i === 1 ? -0.014 : 0.012);
                 });
-                const pulse = 1 + Math.sin(time * 0.0045) * 0.02;
+                const pulse = 1 + Math.sin(time * 0.0048) * 0.022;
                 blackHoleCore.scale.set(pulse, pulse, pulse);
-                eventGlow.scale.setScalar(1 + Math.sin(time * 0.006) * 0.04);
-                coreLight.intensity = 1.5 + Math.sin(time * 0.004) * 0.6;
+                eventGlow.scale.setScalar(1 + Math.sin(time * 0.0065) * 0.045);
+                coreLight.intensity = 1.7 + Math.sin(time * 0.0042) * 0.7;
             }
             controls.update();
             effectComposer.render();
