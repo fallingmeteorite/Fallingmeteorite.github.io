@@ -138,9 +138,10 @@
     </style>
 </head>
 <body>
-    <!-- 预爆炸覆盖层：包含背景图片 + 引爆按钮 -->
+    <!-- 预爆炸覆盖层：包含本地背景图片 + 引爆按钮 -->
     <div id="preludeOverlay" class="prelude-overlay">
-        <img id="backgroundImg" class="prelude-bg" alt="cosmic background" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 800'%3E%3Cdefs%3E%3CradialGradient id='a' cx='50%25' cy='50%25' r='70%25'%3E%3Cstop offset='0%25' stop-color='%231a0c2e'/%3E%3Cstop offset='100%25' stop-color='%2303010a'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23a)'/%3E%3Ccircle cx='20%25' cy='30%25' r='2' fill='white' opacity='0.7'/%3E%3Ccircle cx='70%25' cy='60%25' r='1.5' fill='white' opacity='0.6'/%3E%3Ccircle cx='85%25' cy='20%25' r='1' fill='white' opacity='0.8'/%3E%3Ccircle cx='45%25' cy='80%25' r='1.2' fill='white' opacity='0.5'/%3E%3Cpath d='M300 400 L350 380 L370 410 L340 430 L310 420 Z' fill='%23ffaa66' opacity='0.3'/%3E%3C/svg%3E">
+        <!-- 使用本地图片 background.png，请确保该文件与HTML在同一目录下 -->
+        <img id="backgroundImg" class="prelude-bg" alt="cosmic background" src="background.png">
         <button id="bigbangTriggerBtn" class="bigbang-btn-overlay">💥 引爆宇宙 💥</button>
     </div>
     
@@ -574,7 +575,7 @@
                 positions[i*3+1] = (Math.random() - 0.5) * 2.5;
                 positions[i*3+2] = (Math.random() - 0.5) * 2.5;
             }
-            geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
             const particleMat = new THREE.PointsMaterial({ color: 0xffaa66, size: 0.28, blending: THREE.AdditiveBlending });
             const particles = new THREE.Points(geom, particleMat);
             scene.add(particles);
