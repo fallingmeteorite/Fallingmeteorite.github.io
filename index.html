@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>星云漩涡 | 四条螺旋星轨 · 黑洞吞噬小星辰</title>
+    <title>星云漩涡 | 前后左右四条螺旋星轨 · 平面内吞噬小星辰</title>
     <style>
         body {
             margin: 0;
@@ -135,10 +135,10 @@
 </head>
 <body>
     <div class="info-panel">
-        <h1>🌀 四条螺旋星轨 · 黑洞吞噬</h1>
+        <h1>🌀 四条螺旋星轨 · 前后左右</h1>
         <p>✨ 高中开发者 | 星辰造物主 ✨</p>
-        <p>📡 上下左右四条螺旋路径，星辰缓缓坠入黑洞</p>
-        <div class="quote" id="hitokoto-display">🌠 四条螺旋星轨，星辰如缕，被引力之渊缓缓吞噬...</div>
+        <p>📡 前、后、左、右四条螺旋路径，星辰缓缓坠入黑洞</p>
+        <div class="quote" id="hitokoto-display">🌠 前后左右四条螺旋星轨，星辰如缕，被引力之渊吞噬...</div>
     </div>
     <div class="controls-hint">
         🖱️ 鼠标拖拽旋转视角 | 右键平移 | 滚动缩放 | ✨ 点击大星星探索作品 ✨ | 🌟 小星星沿四条螺旋轨道坠入黑洞
@@ -165,7 +165,7 @@
         scene.fog = new THREE.FogExp2(0x020005, 0.00012);
         
         const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 2000);
-        camera.position.set(8, 6, 26);
+        camera.position.set(8, 8, 22);
         camera.lookAt(0, 0, 0);
         
         const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -246,7 +246,7 @@
         // 黑洞标签
         const blackHoleDiv = document.createElement('div');
         blackHoleDiv.className = 'star-label';
-        blackHoleDiv.innerHTML = `🌀 奇点深渊 🌀<br><small>「四条螺旋星轨的终点」</small>`;
+        blackHoleDiv.innerHTML = `🌀 奇点深渊 🌀<br><small>「前后左右四条螺旋星轨的终点」</small>`;
         blackHoleDiv.style.background = "rgba(0,0,0,0.85)";
         blackHoleDiv.style.border = "2px solid #ff44aa";
         blackHoleDiv.style.pointerEvents = "none";
@@ -387,73 +387,73 @@
         
         const bigStars = worksData.map(d => new BigStar(d));
         
-        // ================= 4. 四条螺旋轨道 + 小星星 =================
-        // 定义四条轨道的方向角度: 上(90°)、下(-90°)、左(180°)、右(0°)
-        // 但为了更好的视觉效果，使用四个方向: 右(0°), 上(90°), 左(180°), 下(270°)
+        // ================= 4. 四条螺旋轨道：前、后、左、右 (在同一平面内) =================
+        // 定义四个方向的角度: 右(0°), 前(90°), 左(180°), 后(270°)
+        // 注意：在XZ平面内，角度0°是+X方向(右)，90°是+Z方向(前)，180°是-X方向(左)，270°是-Z方向(后)
         const SPIRAL_DIRECTIONS = [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2];
+        const DIRECTION_NAMES = ["右", "前", "左", "后"];
         const SPIRAL_COLORS = [0xff66aa, 0x66ffaa, 0x66aaff, 0xffaa66];
         
         const SMALL_STAR_COUNT = 1600; // 总星星数，均匀分布在四条轨道
         const DESTROY_RADIUS = 2.3;
         
-        // 为每条轨道创建可视化的螺旋线
+        // 为每条轨道创建可视化的螺旋线 (在同一XZ平面内，Y=0)
         const spiralLines = [];
         SPIRAL_DIRECTIONS.forEach((direction, idx) => {
             const points = [];
-            const startR = 32;
+            const startR = 34;
             const endR = 2.5;
-            for (let r = startR; r > endR; r -= 0.4) {
+            for (let r = startR; r > endR; r -= 0.45) {
                 // 螺旋参数：半径越小，角度变化越快
-                const angleOffset = direction;
-                const spiralAngle = angleOffset + (startR - r) * 0.55;
+                const spiralAngle = direction + (startR - r) * 0.58;
                 const x = Math.cos(spiralAngle) * r;
                 const z = Math.sin(spiralAngle) * r;
-                // 让轨道稍微有Y轴偏移，使其在上下左右方向更加明显
-                let y = 0;
-                if (direction === Math.PI / 2) y = r * 0.6; // 上轨道
-                else if (direction === 3 * Math.PI / 2) y = -r * 0.6; // 下轨道
-                else y = Math.sin(r * 0.5) * 0.4; // 左右轨道轻微波动
-                
-                points.push(new THREE.Vector3(x, y, z));
+                // 所有轨道都在同一平面 Y=0
+                points.push(new THREE.Vector3(x, 0, z));
             }
             const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
-            const lineMat = new THREE.LineBasicMaterial({ color: SPIRAL_COLORS[idx], transparent: true, opacity: 0.45 });
+            const lineMat = new THREE.LineBasicMaterial({ color: SPIRAL_COLORS[idx], transparent: true, opacity: 0.55 });
             const spiralLine = new THREE.Line(lineGeo, lineMat);
             scene.add(spiralLine);
             spiralLines.push(spiralLine);
             
             // 添加发光粒子沿轨道点缀
             const glowPoints = [];
-            for (let r = startR; r > endR; r -= 1.2) {
-                const angleOffset = direction;
-                const spiralAngle = angleOffset + (startR - r) * 0.55;
+            for (let r = startR; r > endR; r -= 1.5) {
+                const spiralAngle = direction + (startR - r) * 0.58;
                 const x = Math.cos(spiralAngle) * r;
                 const z = Math.sin(spiralAngle) * r;
-                let y = 0;
-                if (direction === Math.PI / 2) y = r * 0.6;
-                else if (direction === 3 * Math.PI / 2) y = -r * 0.6;
-                else y = Math.sin(r * 0.5) * 0.4;
-                glowPoints.push(new THREE.Vector3(x, y, z));
+                glowPoints.push(new THREE.Vector3(x, 0, z));
             }
             const glowGeom = new THREE.BufferGeometry().setFromPoints(glowPoints);
-            const glowMat = new THREE.PointsMaterial({ color: SPIRAL_COLORS[idx], size: 0.12, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending });
+            const glowMat = new THREE.PointsMaterial({ color: SPIRAL_COLORS[idx], size: 0.13, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending });
             const glowPointsObj = new THREE.Points(glowGeom, glowMat);
             scene.add(glowPointsObj);
+            
+            // 添加方向指示小光球
+            const dirMarker = new THREE.Mesh(
+                new THREE.SphereGeometry(0.18, 16, 16),
+                new THREE.MeshStandardMaterial({ color: SPIRAL_COLORS[idx], emissive: SPIRAL_COLORS[idx], emissiveIntensity: 0.8 })
+            );
+            const markerX = Math.cos(direction) * 32;
+            const markerZ = Math.sin(direction) * 32;
+            dirMarker.position.set(markerX, 0, markerZ);
+            scene.add(dirMarker);
         });
         
         class SpiralStar {
             constructor(directionIndex, startRadius) {
                 this.directionIndex = directionIndex;
                 this.direction = SPIRAL_DIRECTIONS[directionIndex];
-                this.startRadius = startRadius || 12 + Math.random() * 24;
+                this.startRadius = startRadius || 13 + Math.random() * 24;
                 this.radius = this.startRadius;
                 // 根据半径计算起始角度
-                const startAngle = this.direction + (32 - this.radius) * 0.55;
+                const startAngle = this.direction + (34 - this.radius) * 0.58;
                 this.angle = startAngle;
                 // 坠落速度
-                this.fallSpeed = 0.0015 + Math.random() * 0.0025;
+                this.fallSpeed = 0.0014 + Math.random() * 0.0024;
                 // 角速度系数
-                this.angularSpeedBase = 0.012;
+                this.angularSpeedBase = 0.013;
                 
                 // 创建星星网格
                 const geom = Math.random() > 0.6 ? new THREE.IcosahedronGeometry(0.11 + Math.random() * 0.08, 0) : new THREE.DodecahedronGeometry(0.1 + Math.random() * 0.07, 0);
@@ -473,22 +473,10 @@
             }
             
             updatePosition() {
-                // 根据半径和角度计算位置
+                // 在同一平面内 (Y=0) 沿螺旋路径运动
                 const x = Math.cos(this.angle) * this.radius;
                 const z = Math.sin(this.angle) * this.radius;
-                // 根据轨道方向计算Y轴位置
-                let y = 0;
-                if (this.direction === Math.PI / 2) {
-                    // 上轨道：Y轴为正，随半径减小逐渐降低
-                    y = this.radius * 0.55;
-                } else if (this.direction === 3 * Math.PI / 2) {
-                    // 下轨道：Y轴为负
-                    y = -this.radius * 0.55;
-                } else {
-                    // 左右轨道：轻微波动
-                    y = Math.sin(this.radius * 0.6) * 0.45;
-                }
-                this.mesh.position.set(x, y, z);
+                this.mesh.position.set(x, 0, z);
             }
             
             update() {
@@ -498,7 +486,7 @@
                 this.radius -= this.fallSpeed;
                 
                 // 角度变化：半径越小，角速度越快（螺旋加速）
-                const angularSpeed = this.angularSpeedBase * (1 + (1 - Math.min(1, this.radius / 12)) * 1.2);
+                const angularSpeed = this.angularSpeedBase * (1 + (1 - Math.min(1, this.radius / 12)) * 1.3);
                 this.angle += angularSpeed;
                 
                 // 到达销毁半径
@@ -533,15 +521,15 @@
                 scene.remove(this.mesh);
                 // 重生在对应轨道的远端
                 setTimeout(() => {
-                    const newStar = new SpiralStar(this.directionIndex, 28 + Math.random() * 12);
+                    const newStar = new SpiralStar(this.directionIndex, 30 + Math.random() * 12);
                     spiralStars.push(newStar);
-                }, 50);
+                }, 45);
             }
         }
         
         // 销毁特效
         function createDestructionEffect(position, dirIdx) {
-            const particleCount = 70;
+            const particleCount = 75;
             const geom = new THREE.BufferGeometry();
             const positions = new Float32Array(particleCount * 3);
             for (let i = 0; i < particleCount; i++) {
@@ -612,6 +600,15 @@
             spiralStars.push(star);
         }
         
+        // 添加一个半透明的参考圆环，显示平面范围
+        const guideRing = new THREE.Mesh(
+            new THREE.RingGeometry(4, 38, 64),
+            new THREE.MeshBasicMaterial({ color: 0x88aaff, transparent: true, opacity: 0.08, side: THREE.DoubleSide })
+        );
+        guideRing.rotation.x = -Math.PI / 2;
+        guideRing.position.y = -0.1;
+        scene.add(guideRing);
+        
         // ================= 音乐系统 =================
         const bgMusic = new Audio();
         bgMusic.loop = true;
@@ -664,7 +661,7 @@
         fetch('https://v1.hitokoto.cn')
             .then(res => res.json())
             .then(data => document.getElementById('hitokoto-display').innerHTML = `🌠 “${data.hitokoto}” — ${data.from}`)
-            .catch(() => document.getElementById('hitokoto-display').innerHTML = '🌀 四条螺旋星轨，星辰缓缓坠入奇点');
+            .catch(() => document.getElementById('hitokoto-display').innerHTML = '🌀 前后左右四条螺旋星轨，星辰缓缓坠入奇点');
         
         // ================= 动画循环 =================
         let time = 0;
@@ -714,7 +711,7 @@
             labelRenderer.setSize(window.innerWidth, window.innerHeight);
         });
         
-        console.log("%c✨ 四条螺旋星轨 | 上下左右四条轨道 | 小星星沿螺旋路径坠入黑洞 ✨", "color: #ffaa88; font-size: 14px");
+        console.log("%c✨ 前后左右四条螺旋星轨 | 同一平面内 | 小星星沿螺旋路径坠入黑洞 ✨", "color: #ffaa88; font-size: 14px");
     </script>
 </body>
 </html>
