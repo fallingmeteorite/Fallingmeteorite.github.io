@@ -2,662 +2,522 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>星辰集· Fallingmeteorite</title>
-    <meta name="description" content="星穹之下，少年与代码的银河漫游">
-    <meta name="keywords" content="星空, 作品集, 高中生, 流星, 创意开发">
-    <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>">
-    
-    <!-- 字体与图标库 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.css">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>太阳系个人主页 | Fallingmeteorite</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
-            background: #030518;
-            color: #eef5ff;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-
-        /* ========= 深邃星空画布 ========= */
-        #universe {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            background: radial-gradient(ellipse at 30% 40%, #0a0f2a, #02010a);
-        }
-        #stars-layer, #twinkling-layer, #meteor-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-        }
-        #meteor-canvas { z-index: 2; }
-
-        /* 主容器磨砂玻璃星空效果 */
-        .main-container {
-            position: relative;
-            z-index: 10;
-            background: rgba(3, 8, 28, 0.55);
-            backdrop-filter: blur(3px);
-            min-height: 100vh;
-        }
-
-        /* 星轨导航区 — 如银河飘带 */
-        .star-orbit-nav {
-            position: relative;
-            min-height: 70vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            background: radial-gradient(circle at 50% 20%, rgba(30, 40, 80, 0.3) 0%, transparent 80%);
-            border-bottom: 1px solid rgba(255,215,140,0.3);
+            margin: 0;
             overflow: hidden;
-        }
-        .constellation-title {
-            position: relative;
-            z-index: 5;
-            padding: 2rem;
-        }
-        .glow-name {
-            font-size: 4.2rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #FFE6B0, #FFB347, #E08E3A);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 20px rgba(255,180,70,0.5);
-            letter-spacing: -0.02em;
-        }
-        .sub-star {
-            font-size: 1.3rem;
-            margin-top: 1rem;
-            opacity: 0.9;
-            letter-spacing: 2px;
-            font-weight: 300;
-            backdrop-filter: blur(4px);
-            display: inline-block;
-            padding: 0.4rem 1.2rem;
-            border-radius: 60px;
-            background: rgba(10,20,40,0.4);
-            border: 1px solid rgba(255,200,100,0.3);
-        }
-        .typed-cursor {
-            font-size: 2rem;
-            color: #ffbc6e;
-        }
-
-        /* 主内容区 — 星尘卡片布局 */
-        .cosmic-wrapper {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 3rem 2rem 4rem;
-        }
-        .star-grid {
-            display: flex;
-            gap: 2.5rem;
-            flex-wrap: wrap;
-        }
-        /* 左侧星云简介区 */
-        .nebula-sidebar {
-            flex: 1.2;
-            min-width: 260px;
-        }
-        /* 右侧作品星河 */
-        .galaxy-works {
-            flex: 2.8;
-        }
-
-        /* 星光卡片 */
-        .star-card {
-            background: rgba(12, 20, 38, 0.65);
-            backdrop-filter: blur(12px);
-            border-radius: 2rem;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(255, 200, 120, 0.25);
-            transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            box-shadow: 0 15px 35px -12px rgba(0,0,0,0.4);
-        }
-        .star-card:hover {
-            transform: translateY(-6px);
-            border-color: rgba(255, 180, 70, 0.7);
-            background: rgba(20, 32, 55, 0.75);
-            box-shadow: 0 25px 40px -14px rgba(255,160,50,0.2);
-        }
-        .avatar-star {
-            text-align: center;
-        }
-        .avatar-img {
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #ffbc6e;
-            box-shadow: 0 0 0 5px rgba(255,180,70,0.3), 0 0 20px rgba(255,200,100,0.3);
-            transition: 0.4s;
-        }
-        .avatar-img:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 0 8px rgba(255,180,70,0.5);
-        }
-        .star-name {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-top: 1rem;
-            background: linear-gradient(120deg, #FFF2D0, #FFD966);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-        }
-        .star-bio {
-            font-size: 0.9rem;
-            opacity: 0.85;
-            margin-top: 0.5rem;
-        }
-        .social-orbit {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            margin-top: 1rem;
-        }
-        .social-link {
-            font-size: 1.8rem;
-            color: #cddcff;
-            transition: 0.2s;
-        }
-        .social-link:hover {
-            color: #ffb347;
-            transform: scale(1.15);
-        }
-        .stardust-headline {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            border-left: 4px solid #ffb347;
-            padding-left: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .hitokoto-box, .poetry-box {
-            font-style: normal;
-            line-height: 1.55;
-            font-size: 0.95rem;
-            color: #e5edff;
-        }
-        .visitor-stats {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px dashed rgba(255,210,130,0.3);
-        }
-
-        /* 作品集 — 星座画廊 */
-        .works-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.8rem;
-            margin-top: 1rem;
-        }
-        .work-item {
-            background: rgba(5, 12, 28, 0.7);
-            backdrop-filter: blur(8px);
-            border-radius: 1.6rem;
-            padding: 1.2rem 1.2rem 1.5rem;
-            border: 1px solid rgba(255,200,100,0.25);
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-        .work-item:hover {
-            transform: translateY(-8px) rotate(0.5deg);
-            border-color: #ffbc6e;
-            background: rgba(20, 35, 60, 0.85);
-            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.5);
-        }
-        .work-icon {
-            font-size: 2.4rem;
-            margin-bottom: 0.6rem;
-            display: inline-block;
-        }
-        .work-title {
-            font-size: 1.35rem;
-            font-weight: 700;
-            margin: 0.5rem 0 0.3rem;
-            background: linear-gradient(135deg, #FFE1A0, #FFC06F);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-        }
-        .work-desc {
-            font-size: 0.85rem;
-            opacity: 0.8;
-            margin: 0.5rem 0;
-            line-height: 1.4;
-        }
-        .work-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 12px;
-        }
-        .tag {
-            background: rgba(255,180,70,0.2);
-            border-radius: 50px;
-            padding: 0.2rem 0.8rem;
-            font-size: 0.7rem;
-            font-weight: 500;
-            border: 0.5px solid rgba(255,200,100,0.6);
-        }
-        .work-link {
-            display: inline-block;
-            margin-top: 12px;
-            color: #ffc285;
-            font-size: 0.8rem;
-            text-decoration: none;
-            border-bottom: 1px dashed;
-        }
-        .work-link:hover {
+            font-family: 'Microsoft YaHei', 'Segoe UI', 'Poppins', 'Arial', sans-serif;
             color: white;
         }
-        hr {
-            margin: 2rem 0;
-            border: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #ffbc6e, #ff8c42, transparent);
+        
+        /* 信息面板 - 悬浮在右上角 */
+        .info-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 15px 25px;
+            z-index: 100;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            pointer-events: none;
+            font-family: monospace;
+            text-align: right;
+            max-width: 280px;
         }
-        footer {
-            text-align: center;
-            padding: 2rem;
+        
+        .info-panel h1 {
+            margin: 0 0 5px;
+            font-size: 1.4rem;
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .info-panel p {
+            margin: 5px 0;
             font-size: 0.8rem;
-            border-top: 1px solid rgba(255,200,100,0.2);
-            background: rgba(0,0,0,0.3);
-            backdrop-filter: blur(8px);
+            opacity: 0.9;
         }
-        @media (max-width: 780px) {
-            .glow-name { font-size: 2.5rem; }
-            .star-grid { flex-direction: column; }
-            .works-grid { grid-template-columns: 1fr; }
+        
+        .info-panel .quote {
+            font-style: italic;
+            font-size: 0.75rem;
+            border-top: 1px solid rgba(255,215,0,0.3);
+            margin-top: 8px;
+            padding-top: 5px;
         }
-        .constellation-glow {
-            animation: pulseGlow 3s infinite;
+        
+        /* 左下角控制提示 */
+        .controls-hint {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            background: rgba(0,0,0,0.5);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            color: #aaa;
+            z-index: 100;
+            font-family: monospace;
+            pointer-events: none;
         }
-        @keyframes pulseGlow {
-            0% { text-shadow: 0 0 3px #ffb347; }
-            50% { text-shadow: 0 0 18px #ffaa44; }
-            100% { text-shadow: 0 0 3px #ffb347; }
+        
+        /* 行星标签样式 (CSS 2D渲染) */
+        .planet-label {
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(5px);
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            white-space: nowrap;
+            border-left: 3px solid #ffaa44;
+            font-family: 'Segoe UI', sans-serif;
+            pointer-events: none;
+            transition: transform 0.2s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
-        .btn-music {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #ffd48a;
-            transition: 0.2s;
-            margin-left: 12px;
+        
+        .planet-label small {
+            font-size: 10px;
+            opacity: 0.8;
+            font-weight: normal;
+        }
+        
+        /* 点击行星时弹出的信息卡 (简易) */
+        .toast-message {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(12px);
+            padding: 12px 24px;
+            border-radius: 40px;
+            color: #ffdd99;
+            border-top: 2px solid #ffaa44;
+            z-index: 200;
+            font-size: 0.9rem;
+            pointer-events: none;
+            white-space: nowrap;
+            font-family: monospace;
+            transition: opacity 0.3s;
+            box-shadow: 0 0 20px rgba(255,170,0,0.3);
+        }
+        
+        @media (max-width: 600px) {
+            .planet-label { font-size: 10px; padding: 3px 8px; }
+            .info-panel { top: 10px; right: 10px; padding: 8px 15px; max-width: 220px; }
+            .info-panel h1 { font-size: 1rem; }
+            .toast-message { font-size: 0.7rem; white-space: nowrap; padding: 8px 16px; }
+        }
+        
+        /* 加载提示 */
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            background: rgba(0,0,0,0.6);
+            padding: 12px 24px;
+            border-radius: 40px;
+            z-index: 1000;
+            font-family: monospace;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
-
-<div id="universe"></div>
-<canvas id="stars-layer"></canvas>
-<canvas id="twinkling-layer"></canvas>
-<canvas id="meteor-canvas"></canvas>
-
-<div class="main-container">
-    <!-- 星轨导航区 -->
-    <div class="star-orbit-nav">
-        <div class="constellation-title">
-            <div class="glow-name">Fallingmeteorite</div>
-            <div class="sub-star">
-                <span id="dynamic-phrase"></span>
-                <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11"></script>
-                <script>
-                    new Typed("#dynamic-phrase", {
-                        strings: ['🌠 星河滚烫，代码是人间理想', '✨ 以星辰为引，构建数字星海', '🪐 少年追光，亦是发光体'],
-                        startDelay: 500,
-                        typeSpeed: 70,
-                        backSpeed: 35,
-                        loop: true,
-                        showCursor: true,
-                        cursorChar: '✧'
-                    });
-                </script>
-            </div>
-        </div>
+    <div class="info-panel">
+        <h1>🌞 Fallingmeteorite</h1>
+        <p>✨ 高中开发者 | 星尘织梦者 ✨</p>
+        <p>📡 "求知若饥，虚心若愚"</p>
+        <div class="quote" id="hitokoto-display">🌠 正在连接银河讯号...</div>
     </div>
-
-    <div class="cosmic-wrapper">
-        <div class="star-grid">
-            <!-- 左侧：星尘个人信息 + 星语 -->
-            <div class="nebula-sidebar">
-                <div class="star-card">
-                    <div class="avatar-star">
-                        <img class="avatar-img" src="https://picsum.photos/id/29/200/200?grayscale&seed=nebula" alt="流星肖像">
-                        <div class="star-name">Fallingmeteorite</div>
-                        <div class="star-bio">✨ 高中生 · 独立开发者 · 星尘织梦者 ✨<br>“求知若饥，虚心若愚”</div>
-                        <div class="social-orbit">
-                            <a href="https://github.com/fallingmeteorite" target="_blank" class="social-link"><i class="fa fa-github"></i></a>
-                            <a href="https://space.bilibili.com/1484690146" target="_blank" class="social-link"><i class="fa fa-television"></i></a>
-                            <button id="musicToggleBtn" class="social-link btn-music"><i class="fa fa-music"></i></button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="star-card">
-                    <div class="stardust-headline"><i class="fa fa-star-o"></i> <span>✨ 星 辰 一 言</span></div>
-                    <div id="hitokoto" class="hitokoto-box">…… 正在连接银河讯号 ……</div>
-                </div>
-
-                <div class="star-card">
-                    <div class="stardust-headline"><i class="fa fa-moon-o"></i> <span>📜 今 日 星 词</span></div>
-                    <div id="jinrishici-sentence" class="poetry-box">—— 且将新火试新茶，诗酒趁年华 ——</div>
-                </div>
-
-                <div class="star-card">
-                    <div class="stardust-headline"><i class="fa fa-bar-chart"></i> <span>🌌 星 际 访 客</span></div>
-                    <div class="visitor-stats"><span>✨ 流浪星人数 :</span><span id="busuanzi_value_site_uv">-</span></div>
-                    <div class="visitor-stats"><span>🌠 总星光访问 :</span><span id="busuanzi_value_site_pv">-</span></div>
-                </div>
-            </div>
-
-            <!-- 右侧：作品星河（替代技能与光源盒子） -->
-            <div class="galaxy-works">
-                <div class="star-card" style="padding-bottom: 1rem;">
-                    <div class="stardust-headline"><i class="fa fa-cubes"></i> <span>🌟 星 尘 作 品 集</span></div>
-                    <div class="works-grid" id="works-container">
-                        <!-- 作品动态加载 JS 注入，保证星空感 -->
-                    </div>
-                    <hr>
-                    <div style="text-align: center; font-size: 0.8rem; opacity: 0.7; margin-top: 0.5rem;">
-                        <i class="fa fa-github-alt"></i> 更多星辰造物，即将划破夜空
-                    </div>
-                </div>
-                <!-- 额外作者其他星系链接 -->
-                <div style="display: flex; gap: 20px; justify-content: flex-end; margin-top: 0.5rem;">
-                    <a href="https://github.com/fallingmeteorite" target="_blank" style="color:#ffc285; text-decoration: none;"><i class="fa fa-github"></i> 星际源码仓</a>
-                    <a href="https://space.bilibili.com/1484690146" target="_blank" style="color:#ffc285; text-decoration: none;"><i class="fa fa-bilibili"></i> 光年工坊</a>
-                </div>
-            </div>
-        </div>
+    <div class="controls-hint">
+        🖱️ 鼠标拖拽旋转视角 | 右键平移 | 滚动缩放 | 点击行星查看详情
     </div>
-
-    <footer>
-        <div>🌌 © 2024 - 永恒星轨 · Fallingmeteorite | 愿每一行代码，都如流星般闪耀 🌠</div>
-        <div style="margin-top: 6px; font-size: 0.7rem;">✦ 以星河为证，热爱永不停歇 ✦</div>
-    </footer>
-</div>
-
-<!-- 背景音乐控制 -->
-<audio id="bgMusic" loop preload="auto" style="display:none;">
-    <source src="background_music.mp3" type="audio/mpeg">
-</audio>
-
-<!-- 脚本区 -->
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jquery.fancybox@2.1.5/source/jquery.fancybox.js"></script>
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-<script src="https://v1.hitokoto.cn/?encode=js&select=%23hitokoto" defer></script>
-<script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
-<!-- 看板娘 optional 轻量版 -->
-<script src="https://cdn.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js"></script>
-
-<script>
-    // ---------- 星 空 背 景 全 套 动 效 ----------
-    const starsCanvas = document.getElementById('stars-layer');
-    const twinkleCanvas = document.getElementById('twinkling-layer');
-    const meteorCanvas = document.getElementById('meteor-canvas');
-    let width = window.innerWidth, height = window.innerHeight;
-    let starsCtx = starsCanvas.getContext('2d');
-    let twinkleCtx = twinkleCanvas.getContext('2d');
-    let meteorCtx = meteorCanvas.getContext('2d');
+    <div id="loading">✨ 加载星河系谱中... ✨</div>
     
-    function resizeAll() {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        starsCanvas.width = width;
-        starsCanvas.height = height;
-        twinkleCanvas.width = width;
-        twinkleCanvas.height = height;
-        meteorCanvas.width = width;
-        meteorCanvas.height = height;
-        initStars();
-        initTwinkles();
-    }
-    
-    let starsArray = [];
-    function initStars() {
-        starsArray = [];
-        const starCount = 550;
-        for(let i=0;i<starCount;i++) {
-            starsArray.push({
-                x: Math.random() * width,
-                y: Math.random() * height,
-                radius: Math.random() * 2.2 + 0.8,
-                alpha: Math.random() * 0.6 + 0.3,
-            });
-        }
-    }
-    function drawStars() {
-        if(!starsCtx) return;
-        starsCtx.clearRect(0,0,width,height);
-        starsCtx.fillStyle = "#030518";
-        starsCtx.fillRect(0,0,width,height);
-        for(let s of starsArray) {
-            starsCtx.beginPath();
-            starsCtx.arc(s.x, s.y, s.radius, 0, Math.PI*2);
-            starsCtx.fillStyle = `rgba(255, 240, 200, ${s.alpha})`;
-            starsCtx.fill();
-        }
-        requestAnimationFrame(drawStars);
-    }
-    
-    // 闪烁星星层
-    let twinkles = [];
-    function initTwinkles() {
-        twinkles = [];
-        for(let i=0;i<300;i++) {
-            twinkles.push({
-                x: Math.random() * width,
-                y: Math.random() * height,
-                rad: Math.random() * 1.5 + 0.5,
-                speed: 0.02 + Math.random() * 0.03,
-                phase: Math.random() * Math.PI * 2
-            });
-        }
-    }
-    function drawTwinkles() {
-        if(!twinkleCtx) return;
-        twinkleCtx.clearRect(0,0,width,height);
-        let now = Date.now() / 1000;
-        for(let t of twinkles) {
-            let alpha = 0.3 + Math.sin(now * t.speed + t.phase) * 0.4;
-            twinkleCtx.beginPath();
-            twinkleCtx.arc(t.x, t.y, t.rad, 0, Math.PI*2);
-            twinkleCtx.fillStyle = `rgba(255, 210, 130, ${alpha * 0.8})`;
-            twinkleCtx.fill();
-        }
-        requestAnimationFrame(drawTwinkles);
-    }
-    
-    // 流星系统
-    class ShootingStar {
-        constructor() {
-            this.reset();
-        }
-        reset() {
-            this.x = Math.random() * width;
-            this.y = Math.random() * height * 0.3;
-            this.length = Math.random() * 100 + 70;
-            this.speedX = (Math.random() * 12 + 6) * (Math.random() > 0.7 ? 1 : 0.9);
-            this.speedY = (Math.random() * 7 + 4) * (Math.random() > 0.7 ? 1 : 0.9);
-            this.opacity = Math.random() * 0.7 + 0.4;
-            this.active = true;
-        }
-        update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            if(this.x > width + 300 || this.y > height + 250 || this.x < -200 || this.y < -200) {
-                this.reset();
-                this.x = Math.random() * width;
-                this.y = Math.random() * -80;
+    <!-- 引入Three.js核心库及扩展 -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
             }
         }
-        draw(ctx) {
-            ctx.beginPath();
-            let gradient = ctx.createLinearGradient(this.x, this.y, this.x - this.length, this.y - this.length * 0.5);
-            gradient.addColorStop(0, `rgba(255, 200, 100, ${this.opacity})`);
-            gradient.addColorStop(1, `rgba(255, 80, 50, 0)`);
-            ctx.moveTo(this.x, this.y);
-            ctx.lineTo(this.x - this.length, this.y - this.length*0.45);
-            ctx.lineTo(this.x - this.length*0.7, this.y - this.length*0.3);
-            ctx.fillStyle = gradient;
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, 3, 0, Math.PI*2);
-            ctx.fillStyle = `rgba(255, 160, 70, 0.9)`;
-            ctx.fill();
-        }
-    }
-    let meteors = [];
-    function initMeteors(count) {
-        meteors = [];
-        for(let i=0;i<count;i++) {
-            let m = new ShootingStar();
-            m.reset();
-            meteors.push(m);
-        }
-    }
-    function drawMeteors() {
-        if(!meteorCtx) return;
-        meteorCtx.clearRect(0,0,width,height);
-        for(let m of meteors) {
-            m.update();
-            m.draw(meteorCtx);
-        }
-        requestAnimationFrame(drawMeteors);
-    }
-    
-    window.addEventListener('resize', () => {
-        resizeAll();
-        initMeteors(20);
-    });
-    resizeAll();
-    initMeteors(24);
-    drawStars();
-    drawTwinkles();
-    drawMeteors();
-    
-    // ---------- 作品数据 (星尘作品集，替换原有技能和光源盒子) ----------
-    const worksData = [
-        { icon: "🪐", title: "星轨编译器", desc: "轻量级 Python 字节码分析工具，支持可视化执行流。", tags: ["Python", "编译器"], link: "https://github.com/fallingmeteorite/star-compiler" },
-        { icon: "🎮", title: "流光·虚幻引擎实验", desc: "基于UE5的开放世界场景，动态星空粒子与实时渲染。", tags: ["Unreal", "C++", "蓝图"], link: "https://www.bilibili.com/video/BV1YC411z7yQ" },
-        { icon: "🔧", title: "逆向星芒", desc: "软件逆向分析笔记，包括反汇编与协议分析案例库。", tags: ["逆向工程", "IDA", "CTF"], link: "https://github.com/fallingmeteorite/reverse-constellation" },
-        { icon: "🤖", title: "星尘·嵌入式OS雏形", desc: "基于STM32的微型实时系统，实现多任务调度与星图显示。", tags: ["硬件开发", "RTOS", "C"], link: "https://github.com/fallingmeteorite/stardust-rtos" },
-        { icon: "📡", title: "流星信标", desc: "全栈个人导航站 + 动态星空API，收集宇宙级灵感。", tags: ["WebGL", "Three.js", "API"], link: "https://github.com/fallingmeteorite/meteor-beacon" }
-    ];
-    
-    function renderWorks() {
-        const container = document.getElementById('works-container');
-        if(!container) return;
-        let html = '';
-        worksData.forEach(work => {
-            html += `
-                <div class="work-item" onclick="window.open('${work.link}', '_blank')">
-                    <div class="work-icon">${work.icon}</div>
-                    <div class="work-title">${work.title}</div>
-                    <div class="work-desc">${work.desc}</div>
-                    <div class="work-tags">
-                        ${work.tags.map(t => `<span class="tag">#${t}</span>`).join('')}
-                    </div>
-                    <a href="${work.link}" target="_blank" class="work-link" onclick="event.stopPropagation();">探索星域 →</a>
-                </div>
-            `;
-        });
-        container.innerHTML = html;
-    }
-    renderWorks();
-    
-    // 今日诗词渲染
-    jinrishici.load(function(result) {
-        let poetryDiv = document.getElementById('jinrishici-sentence');
-        if(poetryDiv && result.data) {
-            poetryDiv.innerHTML = `⭐ 「 ${result.data.content} 」<br>✦ —— ${result.data.origin.dynasty} · ${result.data.origin.author} 《${result.data.origin.title}》 ✦`;
-        }
-    }, function(err){});
+    </script>
 
-    // 音乐控制优雅处理
-    const bgAudio = document.getElementById('bgMusic');
-    const musicBtn = document.getElementById('musicToggleBtn');
-    let musicPlaying = true;
-    if(bgAudio) {
-        bgAudio.volume = 0.35;
-        bgAudio.play().catch(e => console.log("自动播放策略限制，点击音乐按钮唤醒"));
-        musicBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            if(musicPlaying) {
-                bgAudio.pause();
-                musicBtn.innerHTML = '<i class="fa fa-volume-off"></i>';
-                musicPlaying = false;
-            } else {
-                bgAudio.play().catch(()=>{});
-                musicBtn.innerHTML = '<i class="fa fa-music"></i>';
-                musicPlaying = true;
-            }
-        });
-    }
-    
-    // 标题星尘趣味效果
-    let originTitle = document.title;
-    document.addEventListener('visibilitychange', () => {
-        if(document.hidden) {
-            document.title = '🌠 流星划过，稍后回归星河 🌠';
-        } else {
-            document.title = '✨ Fallingmeteorite · 星辰集 ✨';
-            setTimeout(() => { document.title = originTitle; }, 2000);
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+        
+        // --- 初始化场景、相机、渲染器 ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x020210); // 深邃星空背景
+        scene.fog = new THREE.FogExp2(0x020210, 0.0003); // 轻微雾效增强景深
+        
+        // 透视相机 (视角,宽高比,近平面,远平面)
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 2000);
+        camera.position.set(0, 25, 45);
+        camera.lookAt(0, 0, 0);
+        
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true; // 开启阴影映射增强质感
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.body.appendChild(renderer.domElement);
+        
+        // CSS2渲染文字标签
+        const labelRenderer = new CSS2DRenderer();
+        labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        labelRenderer.domElement.style.position = 'absolute';
+        labelRenderer.domElement.style.top = '0px';
+        labelRenderer.domElement.style.left = '0px';
+        labelRenderer.domElement.style.pointerEvents = 'none';
+        document.body.appendChild(labelRenderer.domElement);
+        
+        // --- 控制器 (支持交互) ---
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;      // 惯性
+        controls.dampingFactor = 0.05;
+        controls.rotateSpeed = 0.8;
+        controls.zoomSpeed = 1.2;
+        controls.panSpeed = 0.8;
+        controls.enableZoom = true;
+        controls.enablePan = true;
+        controls.autoRotate = false;
+        controls.target.set(0, 0, 0);
+        
+        // --- 星空粒子系统 (成千上万星星) ---
+        const starGeometry = new THREE.BufferGeometry();
+        const starCount = 3500;
+        const starPositions = new Float32Array(starCount * 3);
+        for (let i = 0; i < starCount; i++) {
+            // 分布在较大的球形区域内，但主要是背景感
+            starPositions[i*3] = (Math.random() - 0.5) * 800;
+            starPositions[i*3+1] = (Math.random() - 0.5) * 500;
+            starPositions[i*3+2] = (Math.random() - 0.5) * 300 - 100;
         }
-    });
-    
-    // 鼠标点击 炫光小流星
-    document.body.addEventListener('click', function(e) {
-        let starBurst = document.createElement('div');
-        starBurst.innerHTML = '✨';
-        starBurst.style.position = 'fixed';
-        starBurst.style.left = e.clientX + 'px';
-        starBurst.style.top = e.clientY + 'px';
-        starBurst.style.fontSize = '22px';
-        starBurst.style.pointerEvents = 'none';
-        starBurst.style.zIndex = '9999';
-        starBurst.style.opacity = '0.9';
-        starBurst.style.transition = 'all 0.6s ease-out';
-        document.body.appendChild(starBurst);
+        starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+        const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.25, transparent: true, opacity: 0.7 });
+        const starsField = new THREE.Points(starGeometry, starMaterial);
+        scene.add(starsField);
+        
+        // 添加第二层闪烁星星 (更大一点)
+        const starGeometry2 = new THREE.BufferGeometry();
+        const starCount2 = 1200;
+        const starPositions2 = new Float32Array(starCount2 * 3);
+        for (let i = 0; i < starCount2; i++) {
+            starPositions2[i*3] = (Math.random() - 0.5) * 1200;
+            starPositions2[i*3+1] = (Math.random() - 0.5) * 800;
+            starPositions2[i*3+2] = (Math.random() - 0.5) * 400 - 150;
+        }
+        starGeometry2.setAttribute('position', new THREE.BufferAttribute(starPositions2, 3));
+        const starMaterial2 = new THREE.PointsMaterial({ color: 0xffdd99, size: 0.4, transparent: true, opacity: 0.6 });
+        const starsField2 = new THREE.Points(starGeometry2, starMaterial2);
+        scene.add(starsField2);
+        
+        // --- 太阳 (个人介绍核心) ---
+        const sunGeometry = new THREE.SphereGeometry(2.8, 128, 128);
+        const sunMaterial = new THREE.MeshStandardMaterial({
+            color: 0xffaa44,
+            emissive: 0xff4411,
+            emissiveIntensity: 1.2,
+            metalness: 0.1,
+            roughness: 0.4
+        });
+        const sunMesh = new THREE.Mesh(sunGeometry, sunMaterial);
+        scene.add(sunMesh);
+        
+        // 太阳光晕效果 (点光源 + 环境光)
+        const ambientLight = new THREE.AmbientLight(0x222222);
+        scene.add(ambientLight);
+        const sunLight = new THREE.PointLight(0xffaa66, 1.5, 60);
+        sunLight.position.set(0, 0, 0);
+        scene.add(sunLight);
+        // 辅助照亮行星的平行光
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        dirLight.position.set(5, 10, 7);
+        scene.add(dirLight);
+        const backLight = new THREE.PointLight(0x4466cc, 0.4);
+        backLight.position.set(-5, 0, -8);
+        scene.add(backLight);
+        
+        // 太阳周围的粒子光晕 (日冕)
+        const coronaParticles = new THREE.BufferGeometry();
+        const coronaCount = 800;
+        const coronaPos = [];
+        for (let i = 0; i < coronaCount; i++) {
+            const radius = 3.0 + Math.random() * 0.8;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos(2 * Math.random() - 1);
+            const x = radius * Math.sin(phi) * Math.cos(theta);
+            const y = radius * Math.sin(phi) * Math.sin(theta);
+            const z = radius * Math.cos(phi);
+            coronaPos.push(x, y, z);
+        }
+        coronaParticles.setAttribute('position', new THREE.BufferAttribute(new Float32Array(coronaPos), 3));
+        const coronaMat = new THREE.PointsMaterial({ color: 0xffaa66, size: 0.05, transparent: true, blending: THREE.AdditiveBlending });
+        const coronaField = new THREE.Points(coronaParticles, coronaMat);
+        scene.add(coronaField);
+        
+        // --- 太阳的 CSS2D 文字介绍 (悬浮标签) ---
+        const sunDiv = document.createElement('div');
+        sunDiv.className = 'planet-label';
+        sunDiv.innerHTML = '🌞 太阳 · Fallingmeteorite 🌞<br><small>「高中开发者 | 全栈探索者 | 逆向/硬件/UE5」</small>';
+        sunDiv.style.background = 'rgba(0,0,0,0.7)';
+        sunDiv.style.borderLeft = '4px solid #ffaa44';
+        sunDiv.style.fontSize = '16px';
+        sunDiv.style.textAlign = 'center';
+        const sunLabel = new CSS2DObject(sunDiv);
+        sunLabel.position.set(0, 1.5, 0);
+        scene.add(sunLabel);
+        
+        // --- 行星数据定义 (每个行星代表一个作品/链接)---
+        // 轨道半径, 大小, 颜色, 名称, 描述, 链接, 公转速度系数
+        const planetsData = [
+            { name: "💻 星轨编译器", desc: "轻量级Python字节码分析工具，可视化执行流", link: "https://github.com/fallingmeteorite/star-compiler", color: 0x6c9eff, size: 0.65, radius: 5.5, speed: 0.008, icon: "🪐" },
+            { name: "🎮 流光·虚幻引擎", desc: "UE5开放世界场景，动态星空粒子系统", link: "https://www.bilibili.com/video/BV1YC411z7yQ", color: 0x88ddff, size: 0.7, radius: 7.8, speed: 0.0055, icon: "✨" },
+            { name: "🔧 逆向星芒", desc: "软件逆向分析笔记 & CTF 案例库", link: "https://github.com/fallingmeteorite/reverse-constellation", color: 0xdd88aa, size: 0.6, radius: 10.2, speed: 0.0042, icon: "⚙️" },
+            { name: "🤖 星尘·嵌入式OS", desc: "基于STM32的微型实时系统，星图显示", link: "https://github.com/fallingmeteorite/stardust-rtos", color: 0x77cc88, size: 0.68, radius: 12.8, speed: 0.0035, icon: "📡" },
+            { name: "📡 流星信标", desc: "全栈导航站 + 动态星空API", link: "https://github.com/fallingmeteorite/meteor-beacon", color: 0xffaa88, size: 0.62, radius: 15.3, speed: 0.003, icon: "🌠" },
+            { name: "🎨 光源AI绘画盒子", desc: "附属AI创意工具，社区展示", link: "https://www.bilibili.com/video/BV1YC411z7yQ", color: 0xdd99ff, size: 0.64, radius: 18.0, speed: 0.0026, icon: "🎨" },
+            { name: "🌌 Github 星尘", desc: "全部开源项目，欢迎star", link: "https://github.com/fallingmeteorite", color: 0xccccdd, size: 0.58, radius: 20.8, speed: 0.0022, icon: "⭐" }
+        ];
+        
+        const planets = []; // 存储行星对象 { mesh, label, data, angle, radius, speed }
+        
+        // 创建行星纹理辅助 (简单条纹)
+        const createPlanetMaterial = (baseColor) => {
+            return new THREE.MeshStandardMaterial({ color: baseColor, roughness: 0.5, metalness: 0.2, emissive: 0x221100, emissiveIntensity: 0.1 });
+        };
+        
+        // 轨道线辅助函数
+        const addOrbit = (radius, color = 0x88aaff) => {
+            const points = [];
+            const segments = 128;
+            const angleStep = (Math.PI * 2) / segments;
+            for (let i = 0; i <= segments; i++) {
+                const angle = i * angleStep;
+                const x = radius * Math.cos(angle);
+                const z = radius * Math.sin(angle);
+                points.push(new THREE.Vector3(x, 0, z));
+            }
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            const material = new THREE.LineBasicMaterial({ color: color, transparent: true, opacity: 0.35 });
+            const orbit = new THREE.LineLoop(geometry, material);
+            scene.add(orbit);
+        };
+        
+        // 添加所有轨道
+        planetsData.forEach(p => {
+            addOrbit(p.radius, 0x77aaff);
+        });
+        // 额外添加一个更外圈的装饰轨道
+        addOrbit(24, 0x5599ff);
+        
+        // 创建行星和标签
+        planetsData.forEach((data, idx) => {
+            // 网格
+            const geometry = new THREE.SphereGeometry(data.size, 64, 64);
+            const material = createPlanetMaterial(data.color);
+            const planetMesh = new THREE.Mesh(geometry, material);
+            planetMesh.castShadow = true;
+            planetMesh.receiveShadow = false;
+            scene.add(planetMesh);
+            
+            // CSS2D标签
+            const div = document.createElement('div');
+            div.className = 'planet-label';
+            div.innerHTML = `${data.icon} ${data.name}<br><small>${data.desc.substring(0, 22)}${data.desc.length > 22 ? '…' : ''}</small>`;
+            div.style.cursor = 'pointer';
+            div.style.pointerEvents = 'auto';
+            div.style.transition = 'all 0.2s';
+            div.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showToast(data.name, data.desc, data.link);
+                // 额外闪烁效果
+                planetMesh.material.emissiveIntensity = 0.5;
+                setTimeout(() => { planetMesh.material.emissiveIntensity = 0.1; }, 300);
+            });
+            // 悬浮效果改变样式
+            div.addEventListener('mouseenter', () => { div.style.transform = 'scale(1.05)'; div.style.background = 'rgba(0,0,0,0.85)'; });
+            div.addEventListener('mouseleave', () => { div.style.transform = 'scale(1)'; div.style.background = 'rgba(0,0,0,0.65)'; });
+            
+            const labelObj = new CSS2DObject(div);
+            scene.add(labelObj);
+            
+            // 存储动态数据
+            const initAngle = (idx / planetsData.length) * Math.PI * 2; // 错开初始位置
+            planets.push({
+                mesh: planetMesh,
+                label: labelObj,
+                data: data,
+                angle: initAngle,
+                radius: data.radius,
+                speed: data.speed
+            });
+        });
+        
+        // --- 添加小行星带 (装饰) 介于火星和木星之间 ---
+        const asteroidCount = 1800;
+        const asteroidGeometry = new THREE.BufferGeometry();
+        const asteroidPositions = new Float32Array(asteroidCount * 3);
+        for (let i = 0; i < asteroidCount; i++) {
+            const r = 12 + Math.random() * 3.5;
+            const angle = Math.random() * Math.PI * 2;
+            const yOffset = (Math.random() - 0.5) * 1.2;
+            const x = Math.cos(angle) * r;
+            const z = Math.sin(angle) * r;
+            asteroidPositions[i*3] = x;
+            asteroidPositions[i*3+1] = yOffset;
+            asteroidPositions[i*3+2] = z;
+        }
+        asteroidGeometry.setAttribute('position', new THREE.BufferAttribute(asteroidPositions, 3));
+        const asteroidMat = new THREE.PointsMaterial({ color: 0xaa9977, size: 0.08 });
+        const asteroidField = new THREE.Points(asteroidGeometry, asteroidMat);
+        scene.add(asteroidField);
+        
+        // --- 银河背景光晕效果 (粒子环)---
+        const ringParticles = new THREE.BufferGeometry();
+        const ringCount = 800;
+        const ringPos = [];
+        for (let i = 0; i < ringCount; i++) {
+            const rad = 23 + Math.random() * 4;
+            const ang = Math.random() * Math.PI * 2;
+            const yLev = (Math.random() - 0.5) * 1.8;
+            const xp = Math.cos(ang) * rad;
+            const zp = Math.sin(ang) * rad;
+            ringPos.push(xp, yLev, zp);
+        }
+        ringParticles.setAttribute('position', new THREE.BufferAttribute(new Float32Array(ringPos), 3));
+        const ringMat = new THREE.PointsMaterial({ color: 0x88aaff, size: 0.07, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending });
+        const ringField = new THREE.Points(ringParticles, ringMat);
+        scene.add(ringField);
+        
+        // --- 简单的动画变量: 星星整体缓慢自转 ---
+        
+        // --- 提示toast函数---
+        let toastDiv = null;
+        function showToast(name, desc, url) {
+            if (toastDiv) {
+                toastDiv.remove();
+            }
+            toastDiv = document.createElement('div');
+            toastDiv.className = 'toast-message';
+            toastDiv.innerHTML = `✨ 点击: ${name} ✨<br>📖 ${desc}<br>🔗 ${url} (将在新窗口打开)`;
+            toastDiv.style.whiteSpace = 'normal';
+            toastDiv.style.maxWidth = '80vw';
+            toastDiv.style.textAlign = 'center';
+            document.body.appendChild(toastDiv);
+            // 3秒后淡出并打开链接
+            setTimeout(() => {
+                if (toastDiv) {
+                    toastDiv.style.opacity = '0';
+                    setTimeout(() => { if(toastDiv) toastDiv.remove(); }, 400);
+                }
+            }, 2200);
+            // 打开链接
+            setTimeout(() => {
+                window.open(url, '_blank');
+            }, 600);
+        }
+        
+        // 加载一言 (增强趣味)
+        fetch('https://v1.hitokoto.cn')
+            .then(res => res.json())
+            .then(data => {
+                const hitokotoEl = document.getElementById('hitokoto-display');
+                if(hitokotoEl) hitokotoEl.innerHTML = `🌠 "${data.hitokoto}" — ${data.from}`;
+            })
+            .catch(() => {
+                document.getElementById('hitokoto-display').innerHTML = '🌠 群星闪烁，万物有光';
+            });
+        
+        // 隐藏loading
         setTimeout(() => {
-            starBurst.style.opacity = '0';
-            starBurst.style.transform = 'translateY(-40px) rotate(20deg)';
-            setTimeout(() => starBurst.remove(), 700);
-        }, 30);
-    });
-    
-    console.log("%c ✨ 欢迎来到 Fallingmeteorite 的星辰宇宙 ✨", "color:#ffbc6e; font-size:16px;");
-    console.log("%c 每一颗星星，都是一个未完成的梦", "color:#FFD966");
-</script>
+            const loadingEl = document.getElementById('loading');
+            if(loadingEl) loadingEl.style.display = 'none';
+        }, 1200);
+        
+        // --- 辅助: 添加太阳周围的辉光精灵 (简单光晕) ---
+        const glowGeometry = new THREE.SphereGeometry(3.1, 32, 32);
+        const glowMaterial = new THREE.MeshBasicMaterial({ color: 0xff8844, transparent: true, opacity: 0.12, side: THREE.BackSide });
+        const sunGlow = new THREE.Mesh(glowGeometry, glowMaterial);
+        scene.add(sunGlow);
+        
+        // --- 动态动画&行星公转 ---
+        let lastTimestamp = 0;
+        function animate(time) {
+            requestAnimationFrame(animate);
+            const delta = Math.min(0.033, (time - lastTimestamp) / 1000);
+            lastTimestamp = time;
+            
+            // 行星公转
+            planets.forEach(planet => {
+                // 角度增量
+                planet.angle += planet.speed * (delta * 60); // 保持速度与帧率相对一致
+                if (planet.angle > Math.PI * 2) planet.angle -= Math.PI * 2;
+                const x = Math.cos(planet.angle) * planet.radius;
+                const z = Math.sin(planet.angle) * planet.radius;
+                planet.mesh.position.set(x, 0, z);
+                planet.label.position.set(x, 0.55, z); // 标签稍微抬高
+            });
+            
+            // 太阳自转
+            sunMesh.rotation.y += 0.005;
+            coronaField.rotation.y += 0.002;
+            coronaField.rotation.x += 0.001;
+            // 星空缓慢旋转
+            starsField.rotation.y += 0.0002;
+            starsField2.rotation.x += 0.0001;
+            asteroidField.rotation.y += 0.0008;
+            ringField.rotation.y += 0.0005;
+            
+            // 控制更新
+            controls.update();
+            
+            // 渲染
+            renderer.render(scene, camera);
+            labelRenderer.render(scene, camera);
+        }
+        
+        requestAnimationFrame(animate);
+        
+        // 窗口适配
+        window.addEventListener('resize', onWindowResize, false);
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        // 简单控制台彩蛋
+        console.log("%c✨ 太阳系·个人主页 | 点击任意行星查看作品 ✨", "color: #ffaa44; font-size: 16px");
+        console.log("%c 每颗行星都是一个星辰项目，欢迎探索", "color: #88aaff");
+        
+        // 增加一个轻微的鼠标跟随流光效果 (可选，增加炫感) 不是重点但趣味
+        const mouseLight = new THREE.PointLight(0xffaa66, 0.5, 30);
+        scene.add(mouseLight);
+        document.addEventListener('mousemove', (event) => {
+            // 将鼠标位置映射到3D空间简单示意
+            const vector = new THREE.Vector3((event.clientX / window.innerWidth) * 2 - 1, -(event.clientY / window.innerHeight) * 2 + 1, 0.5);
+            vector.unproject(camera);
+            const dir = vector.sub(camera.position).normalize();
+            const distance = -camera.position.z / dir.z;
+            const pos = camera.position.clone().add(dir.multiplyScalar(distance));
+            mouseLight.position.set(pos.x, pos.y, pos.z);
+        });
+    </script>
 </body>
 </html>
