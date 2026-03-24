@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>星云漩涡 | 黑洞吞噬小星辰 · 作品永恒漂浮</title>
+    <title>星云漩涡 | 黑洞吞噬星河 · 奇点宏伟史诗</title>
     <style>
         body {
             margin: 0;
@@ -24,13 +24,13 @@
             border: 1px solid rgba(200, 100, 255, 0.7);
             pointer-events: none;
             font-family: monospace;
-            max-width: 320px;
+            max-width: 360px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.5);
         }
         .info-panel h1 {
             margin: 0 0 5px;
             font-size: 1.4rem;
-            background: linear-gradient(135deg, #c084fc, #a855f7);
+            background: linear-gradient(135deg, #c084fc, #f0a3ff);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -78,26 +78,26 @@
         }
         
         .star-label {
-            background: radial-gradient(circle, rgba(80, 40, 140, 0.9), rgba(40, 20, 80, 0.85));
+            background: radial-gradient(circle, rgba(80, 40, 140, 0.92), rgba(40, 20, 80, 0.88));
             backdrop-filter: blur(12px);
             padding: 6px 16px;
             border-radius: 50px;
             font-size: 13px;
             font-weight: bold;
             white-space: nowrap;
-            border: 1px solid rgba(200, 120, 255, 0.6);
+            border: 1px solid rgba(200, 120, 255, 0.7);
             pointer-events: auto;
             cursor: pointer;
             transition: all 0.25s ease;
             font-family: 'Segoe UI', monospace;
-            box-shadow: 0 0 20px rgba(160, 80, 255, 0.3);
+            box-shadow: 0 0 20px rgba(160, 80, 255, 0.4);
             text-shadow: 0 0 5px rgba(0,0,0,0.5);
         }
         .star-label:hover {
-            transform: scale(1.1);
-            background: radial-gradient(circle, rgba(120, 70, 200, 0.95), rgba(80, 40, 140, 0.9));
+            transform: scale(1.12);
+            background: radial-gradient(circle, rgba(120, 70, 220, 0.98), rgba(80, 40, 140, 0.92));
             border-color: #ffaaee;
-            box-shadow: 0 0 30px rgba(200, 100, 255, 0.8);
+            box-shadow: 0 0 40px rgba(200, 100, 255, 1);
         }
         .star-label small {
             font-size: 9px;
@@ -110,7 +110,7 @@
             bottom: 80px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.92);
             backdrop-filter: blur(16px);
             padding: 12px 24px;
             border-radius: 50px;
@@ -128,22 +128,22 @@
         
         @media (max-width: 700px) {
             .star-label { font-size: 10px; padding: 4px 12px; }
-            .info-panel { padding: 8px 15px; max-width: 240px; font-size: 11px; }
+            .info-panel { padding: 8px 15px; max-width: 260px; font-size: 11px; }
             .toast-message { font-size: 0.7rem; white-space: normal; width: 80vw; }
         }
     </style>
 </head>
 <body>
     <div class="info-panel">
-        <h1>🌀 奇点 · Fallingmeteorite</h1>
-        <p>✨ 高中开发者 | 星辰造物主 ✨</p>
+        <h1>🌀 奇点深渊 · Fallingmeteorite</h1>
+        <p>✨ 高中开发者 | 星辰造物主 | 吞噬星河 ✨</p>
         <p>📡 求知若饥 · 虚心若愚</p>
-        <div class="quote" id="hitokoto-display">🌠 星云旋涡，小星辰被吞噬，作品永恒漂浮...</div>
+        <div class="quote" id="hitokoto-display">🌌 宏伟星璇，无数星辰被黑洞抽离，化作永恒流光...</div>
     </div>
     <div class="controls-hint">
-        🖱️ 鼠标拖拽旋转视角 | 右键平移 | 滚动缩放 | ✨ 点击大星星探索作品 ✨ | 🌟 小星星会被黑洞吸入并在远处重生
+        🖱️ 鼠标拖拽旋转 | 右键平移 | 滚动缩放 | ✨ 点击大星星探索作品 ✨ | 🌠 小星辰被黑洞抽吸毁灭，远处重生
     </div>
-    <div class="music-btn" id="musicToggleBtn">🎵 星渊旋律 🔇</div>
+    <div class="music-btn" id="musicToggleBtn">🎵 星渊交响 🔇</div>
     
     <script type="importmap">
         {
@@ -159,16 +159,16 @@
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
         import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
         
-        // --- 初始化场景、相机、渲染器 ---
+        // --- 宏伟场景初始化 ---
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x020008);
-        scene.fog = new THREE.FogExp2(0x020008, 0.00018);
+        scene.background = new THREE.Color(0x010005);
+        scene.fog = new THREE.FogExp2(0x010005, 0.00012); // 极淡雾，突出深远
         
-        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 2000);
-        camera.position.set(5, 6, 22);
+        const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 0.1, 2200);
+        camera.position.set(6, 7, 28);
         camera.lookAt(0, 0, 0);
         
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.shadowMap.enabled = false;
@@ -183,12 +183,11 @@
         labelRenderer.domElement.style.zIndex = '10';
         document.body.appendChild(labelRenderer.domElement);
         
-        // OrbitControls 完全启用
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
-        controls.rotateSpeed = 1.2;
-        controls.zoomSpeed = 1.2;
+        controls.dampingFactor = 0.06;
+        controls.rotateSpeed = 1.0;
+        controls.zoomSpeed = 1.3;
         controls.panSpeed = 0.8;
         controls.enableZoom = true;
         controls.enablePan = true;
@@ -197,376 +196,384 @@
         
         renderer.domElement.style.touchAction = 'none';
         
-        // ================= 1. 黑洞核心与吸积盘 (增强视觉效果) =================
-        const blackHoleCore = new THREE.Mesh(
-            new THREE.SphereGeometry(1.48, 128, 128),
-            new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.05, metalness: 0.95, emissive: 0x440044, emissiveIntensity: 0.7 })
+        // ================= 1. 黑洞建模升级：带吸积盘细节、事件地平线光晕、粒子喷流 =================
+        // 核心奇点 (深邃)
+        const singularity = new THREE.Mesh(
+            new THREE.SphereGeometry(1.55, 128, 128),
+            new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.02, metalness: 0.98, emissive: 0x220022, emissiveIntensity: 0.9 })
         );
-        scene.add(blackHoleCore);
+        scene.add(singularity);
         
-        // 内吸积盘 (更亮更动态)
-        const accretionInner = new THREE.Mesh(
-            new THREE.TorusGeometry(2.08, 0.1, 96, 240),
-            new THREE.MeshStandardMaterial({ color: 0xff44cc, emissive: 0xff44aa, emissiveIntensity: 1.1, transparent: true })
+        // 内吸积盘 (炽热高速)
+        const innerAcc = new THREE.Mesh(
+            new THREE.TorusGeometry(2.2, 0.13, 128, 300),
+            new THREE.MeshStandardMaterial({ color: 0xff44aa, emissive: 0xff2288, emissiveIntensity: 1.3, transparent: true })
         );
-        accretionInner.rotation.x = Math.PI / 2 + 0.18;
-        scene.add(accretionInner);
+        innerAcc.rotation.x = Math.PI / 2 + 0.2;
+        scene.add(innerAcc);
         
-        const accretionMid = new THREE.Mesh(
-            new THREE.TorusGeometry(2.55, 0.13, 100, 280),
-            new THREE.MeshStandardMaterial({ color: 0xdd66ff, emissive: 0xaa44dd, emissiveIntensity: 0.85, transparent: true })
+        const midAcc = new THREE.Mesh(
+            new THREE.TorusGeometry(2.8, 0.16, 128, 340),
+            new THREE.MeshStandardMaterial({ color: 0xff66cc, emissive: 0xcc44aa, emissiveIntensity: 1.0, transparent: true })
         );
-        accretionMid.rotation.x = Math.PI / 2 - 0.05;
-        scene.add(accretionMid);
+        midAcc.rotation.x = Math.PI / 2 - 0.05;
+        scene.add(midAcc);
         
-        const accretionOuter = new THREE.Mesh(
-            new THREE.TorusGeometry(3.1, 0.15, 110, 320),
-            new THREE.MeshStandardMaterial({ color: 0xaa88ff, emissive: 0x8844cc, emissiveIntensity: 0.65, transparent: true })
+        const outerAcc = new THREE.Mesh(
+            new THREE.TorusGeometry(3.5, 0.18, 140, 380),
+            new THREE.MeshStandardMaterial({ color: 0xcc88ff, emissive: 0x8844cc, emissiveIntensity: 0.8, transparent: true })
         );
-        accretionOuter.rotation.x = Math.PI / 2 + 0.05;
-        scene.add(accretionOuter);
+        outerAcc.rotation.x = Math.PI / 2 + 0.08;
+        scene.add(outerAcc);
         
-        // 黑洞周围粒子光环
-        const dustCount = 3200;
-        const dustGeo = new THREE.BufferGeometry();
-        const dustPositions = [];
-        for (let i = 0; i < dustCount; i++) {
-            const r = 1.6 + Math.random() * 2.0;
+        // 黑洞周围的引力透镜光晕 (多个半透明球体)
+        const eventHorizonGlow = new THREE.Mesh(
+            new THREE.SphereGeometry(1.9, 64, 64),
+            new THREE.MeshBasicMaterial({ color: 0xaa44ff, transparent: true, opacity: 0.2, blending: THREE.AdditiveBlending })
+        );
+        scene.add(eventHorizonGlow);
+        
+        const outerGlow = new THREE.Mesh(
+            new THREE.SphereGeometry(2.4, 64, 64),
+            new THREE.MeshBasicMaterial({ color: 0x8844cc, transparent: true, opacity: 0.12, blending: THREE.AdditiveBlending })
+        );
+        scene.add(outerGlow);
+        
+        // 黑洞喷流粒子 (从两极射出)
+        const jetCount = 1800;
+        const jetGeo = new THREE.BufferGeometry();
+        const jetPositions = [];
+        for (let i = 0; i < jetCount; i++) {
             const theta = Math.random() * Math.PI * 2;
-            const yOff = (Math.random() - 0.5) * 1.2;
-            dustPositions.push(Math.cos(theta) * r, yOff, Math.sin(theta) * r);
+            const isTop = Math.random() > 0.5;
+            const radiusBase = 1.6 + Math.random() * 2.5;
+            const x = Math.cos(theta) * radiusBase * 0.4;
+            const z = Math.sin(theta) * radiusBase * 0.4;
+            const y = isTop ? 1.2 + Math.random() * 3.5 : -1.2 - Math.random() * 3.5;
+            jetPositions.push(x, y, z);
         }
-        dustGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(dustPositions), 3));
-        const dustMat = new THREE.PointsMaterial({ color: 0xff88dd, size: 0.048, blending: THREE.AdditiveBlending });
-        const dustHalo = new THREE.Points(dustGeo, dustMat);
-        scene.add(dustHalo);
+        jetGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(jetPositions), 3));
+        const jetMat = new THREE.PointsMaterial({ color: 0xff88dd, size: 0.065, blending: THREE.AdditiveBlending });
+        const jets = new THREE.Points(jetGeo, jetMat);
+        scene.add(jets);
         
-        // 黑洞标签
+        // 黑洞周围粒子晕 (更加密集)
+        const dustRingCount = 4500;
+        const dustRingGeo = new THREE.BufferGeometry();
+        const dustRingPos = [];
+        for (let i = 0; i < dustRingCount; i++) {
+            const r = 1.8 + Math.random() * 2.4;
+            const ang = Math.random() * Math.PI * 2;
+            const yOff = (Math.random() - 0.5) * 1.4;
+            dustRingPos.push(Math.cos(ang) * r, yOff, Math.sin(ang) * r);
+        }
+        dustRingGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(dustRingPos), 3));
+        const dustRingMat = new THREE.PointsMaterial({ color: 0xff99ee, size: 0.05, blending: THREE.AdditiveBlending });
+        const dustRing = new THREE.Points(dustRingGeo, dustRingMat);
+        scene.add(dustRing);
+        
+        // 黑洞标签 (宏大)
         const blackHoleDiv = document.createElement('div');
         blackHoleDiv.className = 'star-label';
-        blackHoleDiv.innerHTML = `🌀 奇点 · Fallingmeteorite 🌀<br><small>「高中开发者 | 全栈/逆向/UE5/硬件」</small>`;
-        blackHoleDiv.style.background = "rgba(10,0,20,0.92)";
-        blackHoleDiv.style.border = "1px solid #ff66dd";
+        blackHoleDiv.innerHTML = `🌀 奇点深渊 · 吞噬星河 🌀<br><small>「引力之渊 | 万物归墟」</small>`;
+        blackHoleDiv.style.background = "rgba(0,0,0,0.85)";
+        blackHoleDiv.style.border = "2px solid #ff44aa";
         blackHoleDiv.style.pointerEvents = "none";
         const blackHoleLabel = new CSS2DObject(blackHoleDiv);
-        blackHoleLabel.position.set(0, 1.45, 0);
+        blackHoleLabel.position.set(0, 1.7, 0);
         scene.add(blackHoleLabel);
         
-        // 光源系统
-        const ambientLight = new THREE.AmbientLight(0x181830);
-        scene.add(ambientLight);
-        const coreLight = new THREE.PointLight(0xdd66ff, 1.3, 34);
+        // 光源
+        const ambient = new THREE.AmbientLight(0x111122);
+        scene.add(ambient);
+        const coreLight = new THREE.PointLight(0xff55cc, 1.5, 38);
         coreLight.position.set(0, 0, 0);
         scene.add(coreLight);
-        const fillLight = new THREE.PointLight(0x8866dd, 0.65);
-        fillLight.position.set(5, 4, 6);
-        scene.add(fillLight);
-        const backLight = new THREE.PointLight(0x5588ff, 0.5);
-        backLight.position.set(-4, 2, -8);
-        scene.add(backLight);
+        const fillLight1 = new THREE.PointLight(0xaa66ff, 0.7);
+        fillLight1.position.set(6, 5, 7);
+        scene.add(fillLight1);
+        const fillLight2 = new THREE.PointLight(0x4488ff, 0.5);
+        fillLight2.position.set(-5, 3, -6);
+        scene.add(fillLight2);
         
-        // ================= 2. 星云粒子系统 (更华丽缓慢旋转) =================
-        const nebulaCount = 12000;
-        const nebulaGeom = new THREE.BufferGeometry();
-        const nebulaPos = new Float32Array(nebulaCount * 3);
-        const nebulaColorArr = new Float32Array(nebulaCount * 3);
-        for (let i = 0; i < nebulaCount; i++) {
-            const radius = 3.2 + Math.pow(Math.random(), 1.4) * 30;
+        // ================= 2. 宏伟星云：外圈巨型漩涡，大量星辰在外围 =================
+        // 外层星云粒子 (巨量，分布在外围)
+        const outerNebulaCount = 18000;
+        const outerNebulaGeo = new THREE.BufferGeometry();
+        const outerPos = new Float32Array(outerNebulaCount * 3);
+        const outerColors = new Float32Array(outerNebulaCount * 3);
+        for (let i = 0; i < outerNebulaCount; i++) {
+            const radius = 12 + Math.pow(Math.random(), 1.2) * 42;
             const angle = Math.random() * Math.PI * 2;
-            const spiral = radius * 0.38;
+            const spiral = radius * 0.32;
             const finalAngle = angle + spiral;
-            const yVal = Math.sin(radius * 0.65) * 1.2 + (Math.random() - 0.5) * 1.5;
+            const yVal = Math.sin(radius * 0.4) * 1.8 + (Math.random() - 0.5) * 2.2;
             const x = Math.cos(finalAngle) * radius;
             const z = Math.sin(finalAngle) * radius;
-            nebulaPos[i*3] = x;
-            nebulaPos[i*3+1] = yVal * (1 - radius / 34) * 0.85;
-            nebulaPos[i*3+2] = z;
-            const mixT = Math.min(1, radius / 26);
-            nebulaColorArr[i*3] = 0.55 + mixT * 0.45;
-            nebulaColorArr[i*3+1] = 0.35 + mixT * 0.4;
-            nebulaColorArr[i*3+2] = 0.85 + mixT * 0.15;
+            outerPos[i*3] = x;
+            outerPos[i*3+1] = yVal * (1 - (radius - 12) / 55);
+            outerPos[i*3+2] = z;
+            const mixT = Math.min(1, (radius - 12) / 35);
+            outerColors[i*3] = 0.55 + mixT * 0.45;
+            outerColors[i*3+1] = 0.3 + mixT * 0.5;
+            outerColors[i*3+2] = 0.85 + mixT * 0.15;
         }
-        nebulaGeom.setAttribute('position', new THREE.BufferAttribute(nebulaPos, 3));
-        nebulaGeom.setAttribute('color', new THREE.BufferAttribute(nebulaColorArr, 3));
-        const nebulaMatPoints = new THREE.PointsMaterial({ size: 0.082, vertexColors: true, transparent: true, opacity: 0.68, blending: THREE.AdditiveBlending });
-        const nebulaCloud = new THREE.Points(nebulaGeom, nebulaMatPoints);
-        scene.add(nebulaCloud);
+        outerNebulaGeo.setAttribute('position', new THREE.BufferAttribute(outerPos, 3));
+        outerNebulaGeo.setAttribute('color', new THREE.BufferAttribute(outerColors, 3));
+        const outerNebulaMat = new THREE.PointsMaterial({ size: 0.095, vertexColors: true, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending });
+        const outerNebula = new THREE.Points(outerNebulaGeo, outerNebulaMat);
+        scene.add(outerNebula);
         
-        const mistCount = 6000;
-        const mistGeom = new THREE.BufferGeometry();
-        const mistPositions = new Float32Array(mistCount * 3);
-        for (let i = 0; i < mistCount; i++) {
-            const r = 9 + Math.random() * 28;
+        // 中层星雾
+        const midMistCount = 8000;
+        const midMistGeo = new THREE.BufferGeometry();
+        const midMistPos = new Float32Array(midMistCount * 3);
+        for (let i = 0; i < midMistCount; i++) {
+            const r = 7 + Math.random() * 30;
             const ang = Math.random() * Math.PI * 2;
-            const sp = r * 0.24;
+            const sp = r * 0.28;
             const x = Math.cos(ang + sp) * r;
             const z = Math.sin(ang + sp) * r;
-            const y = (Math.random() - 0.5) * 3.0;
-            mistPositions[i*3] = x;
-            mistPositions[i*3+1] = y;
-            mistPositions[i*3+2] = z;
+            const y = (Math.random() - 0.5) * 3.2;
+            midMistPos[i*3] = x;
+            midMistPos[i*3+1] = y;
+            midMistPos[i*3+2] = z;
         }
-        mistGeom.setAttribute('position', new THREE.BufferAttribute(mistPositions, 3));
-        const mistMatPoints = new THREE.PointsMaterial({ color: 0x99bbff, size: 0.068, transparent: true, opacity: 0.42, blending: THREE.AdditiveBlending });
-        const starMist = new THREE.Points(mistGeom, mistMatPoints);
-        scene.add(starMist);
+        midMistGeo.setAttribute('position', new THREE.BufferAttribute(midMistPos, 3));
+        const midMistMat = new THREE.PointsMaterial({ color: 0x88aaff, size: 0.075, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending });
+        const midMist = new THREE.Points(midMistGeo, midMistMat);
+        scene.add(midMist);
         
-        // ================= 3. 大星星 (优化形状: 星形凸起 + 光晕, 缓慢漂浮) =================
-        // 创建星形网格的辅助函数 (使用二十面体加尖角效果，看起来像闪烁的星星)
-        function createStarShape(color, size = 0.38) {
-            // 使用二十面体并缩放顶点产生星芒感
+        // 背景繁星深邃
+        const bgStarCount = 8000;
+        const bgStarGeom = new THREE.BufferGeometry();
+        const bgStarPos = new Float32Array(bgStarCount * 3);
+        for (let i = 0; i < bgStarCount; i++) {
+            bgStarPos[i*3] = (Math.random() - 0.5) * 360;
+            bgStarPos[i*3+1] = (Math.random() - 0.5) * 200;
+            bgStarPos[i*3+2] = (Math.random() - 0.5) * 220 - 90;
+        }
+        bgStarGeom.setAttribute('position', new THREE.BufferAttribute(bgStarPos, 3));
+        const bgStarMat = new THREE.PointsMaterial({ color: 0xbbccff, size: 0.12, transparent: true, opacity: 0.6 });
+        const bgStars = new THREE.Points(bgStarGeom, bgStarMat);
+        scene.add(bgStars);
+        
+        // ================= 3. 大星星 (作品) 分布在外围轨道，宏伟漂浮 =================
+        const worksData = [
+            { name: "💻 星轨编译器", desc: "Python字节码分析 · 可视化执行流", link: "https://github.com/fallingmeteorite/star-compiler", color: 0x6c9eff, icon: "🪐" },
+            { name: "🎮 流光·虚幻引擎", desc: "UE5开放世界 · 动态星空粒子系统", link: "https://www.bilibili.com/video/BV1YC411z7yQ", color: 0x88ddff, icon: "✨" },
+            { name: "🔧 逆向星芒", desc: "软件逆向分析笔记 & CTF 实战库", link: "https://github.com/fallingmeteorite/reverse-constellation", color: 0xdd88aa, icon: "⚙️" },
+            { name: "🤖 星尘·嵌入式OS", desc: "STM32微型实时系统 · 星图显示", link: "https://github.com/fallingmeteorite/stardust-rtos", color: 0x77cc88, icon: "📡" },
+            { name: "📡 流星信标", desc: "全栈导航站 + 动态星空API", link: "https://github.com/fallingmeteorite/meteor-beacon", color: 0xffaa88, icon: "🌠" },
+            { name: "🎨 光源AI绘画", desc: "AI创意工具 · 社区生成平台", link: "https://www.bilibili.com/video/BV1YC411z7yQ", color: 0xdd99ff, icon: "🎨" },
+            { name: "🌌 星尘档案馆", desc: "全部开源项目索引与开发日志", link: "https://github.com/fallingmeteorite", color: 0xccccdd, icon: "⭐" },
+            { name: "🌀 黑洞边缘实验室", desc: "WebGL奇幻交互实验 & 粒子系统", link: "https://github.com/fallingmeteorite/horizon-lab", color: 0xff99cc, icon: "🌌" },
+            { name: "📖 星海博客", desc: "技术随笔与星空哲思", link: "https://fallingmeteorite.github.io", color: 0xffaa77, icon: "📖" },
+            { name: "🔮 幻境渲染器", desc: "实时体积光与星云渲染", link: "https://github.com/fallingmeteorite/nebula-render", color: 0x77aaff, icon: "🔮" }
+        ];
+        
+        // 创建星形大星星
+        function createStarShape(color, size = 0.42) {
             const geometry = new THREE.IcosahedronGeometry(size, 0);
             const positions = geometry.attributes.position.array;
             for (let i = 0; i < positions.length; i += 3) {
-                const x = positions[i];
-                const y = positions[i+1];
-                const z = positions[i+2];
+                const x = positions[i], y = positions[i+1], z = positions[i+2];
                 const len = Math.sqrt(x*x + y*y + z*z);
-                // 随机凸起，制造不规则星形效果
-                const spike = 1 + Math.sin(len * 8) * 0.18;
+                const spike = 1 + Math.sin(len * 7) * 0.2;
                 positions[i] = x * spike;
                 positions[i+1] = y * spike;
                 positions[i+2] = z * spike;
             }
             geometry.computeVertexNormals();
-            const material = new THREE.MeshStandardMaterial({
-                color: color,
-                emissive: color,
-                emissiveIntensity: 0.65,
-                metalness: 0.45,
-                roughness: 0.25,
-                flatShading: false
-            });
-            const mesh = new THREE.Mesh(geometry, material);
-            return mesh;
+            const material = new THREE.MeshStandardMaterial({ color: color, emissive: color, emissiveIntensity: 0.7, metalness: 0.4, roughness: 0.22 });
+            return new THREE.Mesh(geometry, material);
         }
-        
-        const worksData = [
-            { name: "💻 星轨编译器", desc: "Python字节码分析工具 · 可视化执行流", link: "https://github.com/fallingmeteorite/star-compiler", color: 0x6c9eff, icon: "🪐" },
-            { name: "🎮 流光·虚幻引擎", desc: "UE5开放世界 · 动态星空粒子系统", link: "https://www.bilibili.com/video/BV1YC411z7yQ", color: 0x88ddff, icon: "✨" },
-            { name: "🔧 逆向星芒", desc: "软件逆向分析笔记 & CTF 实战库", link: "https://github.com/fallingmeteorite/reverse-constellation", color: 0xdd88aa, icon: "⚙️" },
-            { name: "🤖 星尘·嵌入式OS", desc: "STM32微型实时系统 · 星图显示", link: "https://github.com/fallingmeteorite/stardust-rtos", color: 0x77cc88, icon: "📡" },
-            { name: "📡 流星信标", desc: "全栈导航站 + 动态星空API", link: "https://github.com/fallingmeteorite/meteor-beacon", color: 0xffaa88, icon: "🌠" },
-            { name: "🎨 光源AI绘画盒子", desc: "AI创意工具 · 社区生成平台", link: "https://www.bilibili.com/video/BV1YC411z7yQ", color: 0xdd99ff, icon: "🎨" },
-            { name: "🌌 星尘档案馆", desc: "全部开源项目索引与开发日志", link: "https://github.com/fallingmeteorite", color: 0xccccdd, icon: "⭐" },
-            { name: "🌀 黑洞边缘实验室", desc: "WebGL奇幻交互实验 & 粒子系统", link: "https://github.com/fallingmeteorite/horizon-lab", color: 0xff99cc, icon: "🌌" },
-            { name: "📖 星海博客", desc: "技术随笔与星空哲思", link: "https://fallingmeteorite.github.io", color: 0xffaa77, icon: "📖" },
-            { name: "🔮 幻境渲染器", desc: "实时体积光与星云渲染实验", link: "https://github.com/fallingmeteorite/nebula-render", color: 0x77aaff, icon: "🔮" }
-        ];
         
         class BigStar {
             constructor(data) {
                 this.data = data;
-                // 大星星轨道半径更大，且旋转速度极慢
-                const radius = 8.5 + Math.random() * 22;
+                const radius = 14 + Math.random() * 28; // 分布在外围
                 const angle = Math.random() * Math.PI * 2;
-                const spiralOffset = radius * 0.28;
-                this.angle = angle + spiralOffset;
                 this.radius = radius;
-                this.yOffset = (Math.random() - 0.5) * 2.2;
-                // 极慢的公转速度 (0.0006 ~ 0.0012)
-                this.orbitSpeed = 0.0006 + Math.random() * 0.0007;
-                this.floatSpeed = Math.random() * 0.3 + 0.2;
-                this.initPos();
+                this.angle = angle;
+                this.yOffset = (Math.random() - 0.5) * 2.5;
+                this.orbitSpeed = 0.0004 + Math.random() * 0.0006; // 极慢
+                this.x = Math.cos(this.angle) * this.radius;
+                this.z = Math.sin(this.angle) * this.radius;
+                this.y = this.yOffset;
                 
-                // 使用星形网格
-                this.mesh = createStarShape(data.color, 0.38 + Math.random() * 0.12);
+                this.mesh = createStarShape(data.color, 0.42 + Math.random() * 0.12);
                 this.mesh.position.set(this.x, this.y, this.z);
                 scene.add(this.mesh);
                 
-                // 添加光晕精灵效果 (小光晕点)
-                const glowGeometry = new THREE.SphereGeometry(0.22, 16, 16);
-                const glowMaterial = new THREE.MeshBasicMaterial({
-                    color: data.color,
-                    transparent: true,
-                    opacity: 0.25,
-                    blending: THREE.AdditiveBlending
-                });
-                this.glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
-                this.mesh.add(this.glowMesh);
-                
-                this.glowLight = new THREE.PointLight(data.color, 0.7, 14);
+                this.glowLight = new THREE.PointLight(data.color, 0.8, 16);
                 this.mesh.add(this.glowLight);
                 
                 const div = document.createElement('div');
                 div.className = 'star-label';
                 div.innerHTML = `${data.icon} ${data.name}<br><small>${data.desc.substring(0, 28)}…</small>`;
-                div.style.cursor = 'pointer';
                 div.style.pointerEvents = 'auto';
                 div.addEventListener('click', (e) => {
                     e.stopPropagation();
                     showToast(data.name, data.desc, data.link);
                     this.mesh.material.emissiveIntensity = 1.5;
                     this.glowLight.intensity = 1.4;
-                    if(this.glowMesh) this.glowMesh.material.opacity = 0.55;
                     setTimeout(() => {
-                        if(this.mesh.material) this.mesh.material.emissiveIntensity = 0.65;
-                        if(this.glowLight) this.glowLight.intensity = 0.7;
-                        if(this.glowMesh) this.glowMesh.material.opacity = 0.25;
+                        this.mesh.material.emissiveIntensity = 0.7;
+                        this.glowLight.intensity = 0.8;
                     }, 450);
                 });
                 this.label = new CSS2DObject(div);
-                this.label.position.set(this.x, this.y + 0.58, this.z);
+                this.label.position.set(this.x, this.y + 0.65, this.z);
                 scene.add(this.label);
             }
-            
-            initPos() {
-                this.x = Math.cos(this.angle) * this.radius;
-                this.z = Math.sin(this.angle) * this.radius;
-                this.y = this.yOffset;
-            }
-            
             update(time) {
-                // 公转速度极慢
                 this.angle += this.orbitSpeed;
-                if (this.angle > Math.PI * 2) this.angle -= Math.PI * 2;
                 this.x = Math.cos(this.angle) * this.radius;
                 this.z = Math.sin(this.angle) * this.radius;
-                // 缓慢上下漂浮
-                this.y = this.yOffset + Math.sin(time * 0.0008 * this.floatSpeed + this.radius) * 0.1;
+                this.y = this.yOffset + Math.sin(time * 0.0006) * 0.12;
                 this.mesh.position.set(this.x, this.y, this.z);
-                this.label.position.set(this.x, this.y + 0.6, this.z);
-                // 呼吸光效
-                const breath = 0.55 + Math.sin(time * 0.0018) * 0.2;
-                this.glowLight.intensity = 0.55 + breath * 0.25;
-                // 自转 (缓慢)
-                this.mesh.rotation.y += 0.003;
-                this.mesh.rotation.x += 0.002;
+                this.label.position.set(this.x, this.y + 0.7, this.z);
+                this.mesh.rotation.y += 0.002;
+                this.mesh.rotation.x += 0.001;
+                const breath = 0.6 + Math.sin(time * 0.002) * 0.2;
+                this.glowLight.intensity = 0.6 + breath * 0.25;
             }
         }
         
-        const bigStars = [];
-        worksData.forEach(data => {
-            bigStars.push(new BigStar(data));
-        });
+        const bigStars = worksData.map(d => new BigStar(d));
         
-        // ================= 4. 小星星粒子 (优化形状为多面体星星，旋转速度减慢，黑洞吸入效果更华丽) =================
-        const SMALL_STAR_COUNT = 2000;
-        const ABSORB_RADIUS = 2.1;
+        // ================= 4. 小星辰：被黑洞抽吸，产生“抽缕”特效，宏伟毁灭感 =================
+        const SMALL_STAR_COUNT = 2800;
+        const ABSORB_START = 3.2;
         
         class SmallStar {
             constructor() {
                 this.reset();
             }
-            
             reset() {
-                this.radius = 4.8 + Math.random() * 32;
+                // 分布在外圈 10~45 半径
+                this.radius = 12 + Math.random() * 38;
                 this.angle = Math.random() * Math.PI * 2;
-                const spiral = this.radius * 0.24;
+                const spiral = this.radius * 0.22;
                 this.angle += spiral;
-                this.yOffset = (Math.random() - 0.5) * 2.6;
+                this.yOffset = (Math.random() - 0.5) * 3.2;
                 this.x = Math.cos(this.angle) * this.radius;
                 this.z = Math.sin(this.angle) * this.radius;
-                this.y = this.yOffset * (this.radius / 24);
-                // 减慢坠落速度，延长生命周期
-                this.fallSpeed = 0.0018 + Math.random() * 0.0035;
-                // 减慢轨道速度
-                this.orbitSpeed = 0.0045 + Math.random() * 0.008;
-                
-                // 使用十二面体或二十面体小星星，更精致
-                const shapeType = Math.random() > 0.6 ? 'icosa' : 'dodeca';
-                let geometry;
-                if (shapeType === 'icosa') {
-                    geometry = new THREE.IcosahedronGeometry(0.13 + Math.random() * 0.09, 0);
-                } else {
-                    geometry = new THREE.DodecahedronGeometry(0.12 + Math.random() * 0.08, 0);
-                }
-                const colorVal = new THREE.Color().setHSL(0.55 + Math.random() * 0.25, 0.85, 0.6);
-                const material = new THREE.MeshStandardMaterial({
-                    color: colorVal,
-                    emissive: 0xaa88ff,
-                    emissiveIntensity: 0.45,
-                    metalness: 0.2,
-                    roughness: 0.3
-                });
+                this.y = this.yOffset * (this.radius / 30);
+                // 下落速度较快，体现抽吸
+                this.fallSpeed = 0.0025 + Math.random() * 0.0042;
+                this.orbitSpeed = 0.006 + Math.random() * 0.01;
+                const geom = new THREE.DodecahedronGeometry(0.12 + Math.random() * 0.09, 0);
+                const colorHue = 0.55 + Math.random() * 0.25;
+                const material = new THREE.MeshStandardMaterial({ color: new THREE.Color().setHSL(colorHue, 0.9, 0.6), emissive: 0xaa77ff, emissiveIntensity: 0.5 });
                 if (this.mesh) scene.remove(this.mesh);
-                this.mesh = new THREE.Mesh(geometry, material);
+                this.mesh = new THREE.Mesh(geom, material);
                 this.mesh.position.set(this.x, this.y, this.z);
                 scene.add(this.mesh);
                 this.active = true;
+                this.trailTimer = 0;
             }
-            
             update() {
                 if (!this.active) return false;
                 this.radius -= this.fallSpeed;
-                const speedFactor = 1 + Math.max(0, (1 - this.radius / 14) * 1.0);
+                const speedFactor = 1 + Math.max(0, (1 - this.radius / 12) * 1.3);
                 this.angle += this.orbitSpeed * speedFactor;
                 
-                if (this.radius <= ABSORB_RADIUS) {
-                    this.absorb();
+                if (this.radius <= ABSORB_START) {
+                    this.absorbWithTrail(); // 抽吸特效
                     return false;
                 }
                 
                 this.x = Math.cos(this.angle) * this.radius;
                 this.z = Math.sin(this.angle) * this.radius;
-                this.y = this.yOffset * (this.radius / 24) * 0.85;
+                this.y = this.yOffset * (this.radius / 32) * 0.9;
                 this.mesh.position.set(this.x, this.y, this.z);
+                this.mesh.rotation.x += 0.03;
+                this.mesh.rotation.y += 0.04;
                 
-                // 自转效果
-                this.mesh.rotation.x += 0.02;
-                this.mesh.rotation.y += 0.03;
-                
-                const proximity = Math.min(1, Math.max(0, (this.radius - 1.8) / 9));
-                const intensity = 0.3 + (1 - proximity) * 0.85;
-                this.mesh.material.emissiveIntensity = 0.3 + (1 - proximity) * 0.7;
-                if (this.radius < 4.2) {
-                    const hotMix = 1 - (this.radius - 1.8) / 2.8;
-                    this.mesh.material.color.setRGB(1.0, 0.45 + hotMix * 0.45, 0.3 + hotMix * 0.5);
+                const proximity = Math.min(1, Math.max(0, (this.radius - 2.5) / 12));
+                const intensity = 0.4 + (1 - proximity) * 1.0;
+                this.mesh.material.emissiveIntensity = 0.35 + (1 - proximity) * 0.9;
+                if (this.radius < 5) {
+                    const hot = 1 - (this.radius - 2.2) / 3;
+                    this.mesh.material.color.setRGB(1.0, 0.4 + hot * 0.5, 0.2 + hot * 0.6);
                 }
                 return true;
             }
             
-            absorb() {
+            absorbWithTrail() {
                 this.active = false;
-                // 增强吸入特效: 螺旋粒子被吸入
-                createEnhancedAbsorbEffect(this.mesh.position.clone());
+                // 宏伟抽吸特效：生成螺旋粒子流被黑洞吸入
+                const pos = this.mesh.position.clone();
+                createMajesticAbsorb(pos);
                 scene.remove(this.mesh);
                 setTimeout(() => {
                     const newStar = new SmallStar();
                     smallStars.push(newStar);
-                }, 50);
+                }, 55);
             }
         }
         
-        // 增强版吸入特效：产生螺旋粒子流
-        function createEnhancedAbsorbEffect(pos) {
-            const particleCount = 70;
+        // 宏伟抽吸特效：一缕一缕的粒子流被抽入黑洞
+        function createMajesticAbsorb(startPos) {
+            const particleCount = 110;
             const geom = new THREE.BufferGeometry();
             const positions = new Float32Array(particleCount * 3);
             const velocities = [];
             for (let i = 0; i < particleCount; i++) {
-                positions[i*3] = (Math.random() - 0.5) * 0.9;
-                positions[i*3+1] = (Math.random() - 0.5) * 0.9;
-                positions[i*3+2] = (Math.random() - 0.5) * 0.9;
+                positions[i*3] = (Math.random() - 0.5) * 0.7;
+                positions[i*3+1] = (Math.random() - 0.5) * 0.7;
+                positions[i*3+2] = (Math.random() - 0.5) * 0.7;
                 velocities.push({
-                    x: (Math.random() - 0.5) * 0.08,
-                    y: (Math.random() - 0.5) * 0.08,
-                    z: (Math.random() - 0.5) * 0.08
+                    x: (Math.random() - 0.5) * 0.12,
+                    y: (Math.random() - 0.5) * 0.12,
+                    z: (Math.random() - 0.5) * 0.12
                 });
             }
             geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            const mat = new THREE.PointsMaterial({ color: 0xff88aa, size: 0.07, blending: THREE.AdditiveBlending });
+            const mat = new THREE.PointsMaterial({ color: 0xff99aa, size: 0.08, blending: THREE.AdditiveBlending });
             const particles = new THREE.Points(geom, mat);
-            particles.position.copy(pos);
+            particles.position.copy(startPos);
             scene.add(particles);
             
             let progress = 0;
-            const startPos = pos.clone();
-            const endPos = new THREE.Vector3(0, 0, 0);
-            function animatePart() {
+            const startV = startPos.clone();
+            const endV = new THREE.Vector3(0, 0, 0);
+            function animateAbsorb() {
                 progress += 0.07;
                 if (progress >= 1) {
                     scene.remove(particles);
                     return;
                 }
-                const t = Math.pow(progress, 0.8);
-                particles.position.lerpVectors(startPos, endPos, t);
-                particles.scale.setScalar(1 - t * 0.85);
-                // 让粒子旋转
-                particles.rotation.z += 0.1;
-                requestAnimationFrame(animatePart);
+                const t = Math.pow(progress, 0.7);
+                particles.position.lerpVectors(startV, endV, t);
+                particles.scale.setScalar(1 - t * 0.9);
+                // 旋转形成螺旋感
+                particles.rotation.z += 0.12;
+                particles.rotation.x += 0.08;
+                requestAnimationFrame(animateAbsorb);
             }
-            requestAnimationFrame(animatePart);
+            requestAnimationFrame(animateAbsorb);
+            
+            // 额外产生一缕光带（线条效果）
+            const lineCount = 12;
+            for (let i = 0; i < lineCount; i++) {
+                const linePoints = [];
+                for (let j = 0; j <= 20; j++) {
+                    const t2 = j / 20;
+                    const pt = startPos.clone().lerp(endV, t2);
+                    pt.x += (Math.random() - 0.5) * 0.3 * (1 - t2);
+                    pt.y += (Math.random() - 0.5) * 0.3 * (1 - t2);
+                    pt.z += (Math.random() - 0.5) * 0.3 * (1 - t2);
+                    linePoints.push(pt);
+                }
+                const lineGeo = new THREE.BufferGeometry().setFromPoints(linePoints);
+                const lineMat = new THREE.LineBasicMaterial({ color: 0xff66aa, transparent: true, opacity: 0.6 });
+                const lineObj = new THREE.Line(lineGeo, lineMat);
+                scene.add(lineObj);
+                setTimeout(() => scene.remove(lineObj), 600);
+            }
         }
         
         let smallStars = [];
@@ -574,54 +581,62 @@
             smallStars.push(new SmallStar());
         }
         
-        // 背景恒星
-        const bgStarsCount = 6500;
-        const bgStarsGeom = new THREE.BufferGeometry();
-        const bgStarsPosArr = new Float32Array(bgStarsCount * 3);
-        for (let i = 0; i < bgStarsCount; i++) {
-            bgStarsPosArr[i*3] = (Math.random() - 0.5) * 300;
-            bgStarsPosArr[i*3+1] = (Math.random() - 0.5) * 180;
-            bgStarsPosArr[i*3+2] = (Math.random() - 0.5) * 200 - 70;
+        // 额外宏伟特效：几缕被抽吸的粒子流从外围飘向黑洞 (动态产生)
+        let extraStreams = [];
+        function addStreamingParticles() {
+            if (Math.random() < 0.08) {
+                const fromRadius = 18 + Math.random() * 28;
+                const fromAngle = Math.random() * Math.PI * 2;
+                const fromX = Math.cos(fromAngle) * fromRadius;
+                const fromZ = Math.sin(fromAngle) * fromRadius;
+                const fromY = (Math.random() - 0.5) * 3.5;
+                const startPoint = new THREE.Vector3(fromX, fromY, fromZ);
+                const streamCount = 45;
+                const streamGeom = new THREE.BufferGeometry();
+                const streamPos = [];
+                for (let i = 0; i < streamCount; i++) {
+                    streamPos.push((Math.random() - 0.5) * 0.5, (Math.random() - 0.5) * 0.5, (Math.random() - 0.5) * 0.5);
+                }
+                streamGeom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(streamPos), 3));
+                const streamMat = new THREE.PointsMaterial({ color: 0xffaa88, size: 0.07, blending: THREE.AdditiveBlending });
+                const streamPoints = new THREE.Points(streamGeom, streamMat);
+                streamPoints.position.copy(startPoint);
+                scene.add(streamPoints);
+                let p = 0;
+                const target = new THREE.Vector3(0, 0, 0);
+                function moveStream() {
+                    p += 0.025;
+                    if (p >= 1) { scene.remove(streamPoints); return; }
+                    streamPoints.position.lerpVectors(startPoint, target, p);
+                    streamPoints.scale.setScalar(1 - p * 0.8);
+                    requestAnimationFrame(moveStream);
+                }
+                requestAnimationFrame(moveStream);
+                extraStreams.push(streamPoints);
+                setTimeout(() => { if(streamPoints.parent) scene.remove(streamPoints); }, 1200);
+            }
         }
-        bgStarsGeom.setAttribute('position', new THREE.BufferAttribute(bgStarsPosArr, 3));
-        const bgStarMat = new THREE.PointsMaterial({ color: 0xb8d0ff, size: 0.11, transparent: true, opacity: 0.58 });
-        const bgStars = new THREE.Points(bgStarsGeom, bgStarMat);
-        scene.add(bgStars);
         
-        // ========== 音乐 ==========
+        // 音乐
         const bgMusic = new Audio();
         bgMusic.loop = true;
-        bgMusic.volume = 0.38;
+        bgMusic.volume = 0.4;
         bgMusic.src = "background_music.mp3";
         let musicStarted = false;
         const musicBtn = document.getElementById('musicToggleBtn');
-        
         function startMusic() {
             if (!musicStarted) {
                 bgMusic.play().then(() => {
                     musicStarted = true;
-                    musicBtn.innerHTML = "🎵 星渊旋律 🔊";
-                }).catch(e => console.log("需要交互"));
+                    musicBtn.innerHTML = "🎵 星渊交响 🔊";
+                }).catch(e => console.log);
             }
         }
         document.body.addEventListener('click', startMusic, { once: true });
-        document.body.addEventListener('touchstart', startMusic, { once: true });
         musicBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            if (!musicStarted) {
-                bgMusic.play().then(() => {
-                    musicStarted = true;
-                    musicBtn.innerHTML = "🎵 星渊旋律 🔊";
-                }).catch(err => console.log(err));
-            } else {
-                if (bgMusic.paused) {
-                    bgMusic.play();
-                    musicBtn.innerHTML = "🎵 星渊旋律 🔊";
-                } else {
-                    bgMusic.pause();
-                    musicBtn.innerHTML = "🎵 星渊旋律 🔇";
-                }
-            }
+            if (!musicStarted) { bgMusic.play().then(() => { musicStarted = true; musicBtn.innerHTML = "🎵 星渊交响 🔊"; }).catch(e=>{}); }
+            else { bgMusic.paused ? bgMusic.play() : bgMusic.pause(); musicBtn.innerHTML = bgMusic.paused ? "🎵 星渊交响 🔇" : "🎵 星渊交响 🔊"; }
         });
         
         function showToast(title, desc, url) {
@@ -634,58 +649,47 @@
             document.body.appendChild(toast);
             setTimeout(() => toast.style.opacity = '0', 1800);
             setTimeout(() => toast.remove(), 2300);
-            if(url) setTimeout(() => window.open(url, '_blank'), 650);
+            if(url) setTimeout(() => window.open(url, '_blank'), 700);
         }
         
-        fetch('https://v1.hitokoto.cn')
-            .then(res => res.json())
-            .then(data => document.getElementById('hitokoto-display').innerHTML = `🌠 “${data.hitokoto}” — ${data.from}`)
-            .catch(() => document.getElementById('hitokoto-display').innerHTML = '🌀 小星坠入奇点，作品永恒漂浮');
+        fetch('https://v1.hitokoto.cn').then(res=>res.json()).then(data=>document.getElementById('hitokoto-display').innerHTML = `🌌 “${data.hitokoto}” — ${data.from}`).catch(()=>document.getElementById('hitokoto-display').innerHTML = '🌠 无尽星璇，万物归墟');
         
-        // ========== 动画循环 (整体旋转速度减慢) ==========
         let time = 0;
         function animate() {
             requestAnimationFrame(animate);
             time += 16;
+            bigStars.forEach(s => s.update(time));
+            for (let i=smallStars.length-1; i>=0; i--) if(!smallStars[i].update()) smallStars.splice(i,1);
             
-            bigStars.forEach(star => star.update(time));
-            for (let i = smallStars.length-1; i >= 0; i--) {
-                const star = smallStars[i];
-                const alive = star.update();
-                if (!alive) {
-                    smallStars.splice(i, 1);
-                }
-            }
+            outerNebula.rotation.y += 0.00035;
+            midMist.rotation.y += 0.00025;
+            dustRing.rotation.y += 0.006;
+            dustRing.rotation.x += 0.002;
+            innerAcc.rotation.z += 0.009;
+            midAcc.rotation.z -= 0.007;
+            outerAcc.rotation.z += 0.005;
+            jets.rotation.y += 0.003;
             
-            // 星云旋转速度大幅减慢
-            nebulaCloud.rotation.y += 0.0007;
-            starMist.rotation.y += 0.0004;
-            dustHalo.rotation.y += 0.005;
-            dustHalo.rotation.x += 0.0018;
-            accretionInner.rotation.z += 0.007;
-            accretionMid.rotation.z -= 0.005;
-            accretionOuter.rotation.z += 0.004;
+            const pulse = 1 + Math.sin(time * 0.0038) * 0.012;
+            singularity.scale.set(pulse, pulse, pulse);
+            eventHorizonGlow.scale.setScalar(1 + Math.sin(time * 0.005) * 0.03);
+            coreLight.intensity = 1.1 + Math.sin(time * 0.003) * 0.35;
             
-            const pulse = 1 + Math.sin(time * 0.003) * 0.01;
-            blackHoleCore.scale.set(pulse, pulse, pulse);
-            coreLight.intensity = 0.95 + Math.sin(time * 0.0025) * 0.25;
-            
+            addStreamingParticles();
             controls.update();
             renderer.render(scene, camera);
             labelRenderer.render(scene, camera);
         }
-        
         animate();
         
-        window.addEventListener('resize', onWindowResize);
-        function onWindowResize() {
+        window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
             labelRenderer.setSize(window.innerWidth, window.innerHeight);
-        }
+        });
         
-        console.log("%c✨ 优化完成 | 星星形状升级为多面体/星形 | 公转速度减慢 | 黑洞吸入特效增强 ✨", "color: #ff99ff; font-size: 14px");
+        console.log("%c🌌 宏伟星璇 | 黑洞抽吸星辰 | 外圈星辰环绕 | 特效华丽升级 🌌", "color: #ffaaff; font-size: 15px");
     </script>
 </body>
 </html>
