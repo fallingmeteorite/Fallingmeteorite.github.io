@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>星云漩涡 | 快速引力吸引 · 螺旋坠星</title>
+    <title>星云漩涡 | 引力吸引 · 舒缓螺旋坠星</title>
     <style>
         body { margin: 0; overflow: hidden; font-family: 'Segoe UI', 'Poppins', sans-serif; color: white; }
         .info-panel {
@@ -53,10 +53,10 @@
 </head>
 <body>
     <div class="info-panel">
-        <h1>🌀 快速引力吸引 · 螺旋坠星</h1>
+        <h1>🌀 引力吸引 · 舒缓螺旋坠星</h1>
         <p>✨ 高中开发者 | 星辰造物主 ✨</p>
-        <p>🔴 红色星星受引力影响半径快速缩小 → 进入引力阱(半径18) → 沿螺旋支路坠入黑洞 → 重生回归</p>
-        <div class="quote" id="hitokoto-display">🌠 红色星星正在被黑洞引力快速捕获，沿螺旋线坠入深渊...</div>
+        <p>🔴 更多红色星星受引力影响半径缩小 → 进入引力阱(半径18) → 沿螺旋支路缓慢坠入黑洞 → 重生回归</p>
+        <div class="quote" id="hitokoto-display">🌠 红色星星正在被黑洞引力捕获，优雅地沿螺旋线坠入深渊...</div>
     </div>
     <div class="controls-hint">🖱️ 鼠标拖拽旋转视角 | 滚动缩放 | ✨ 点击大星星探索作品 ✨ | 🔴 红色星星会被吸引，蓝色星星永续圆周</div>
     <div class="music-btn" id="musicToggleBtn">🎵 星渊旋律 🔇</div>
@@ -269,11 +269,11 @@
         
         const bigStars = worksData.map(d => new BigStar(d));
         
-        // ================= 4. 星星系统：蓝色永驻星 + 红色坠落星（快速吸引） =================
+        // ================= 4. 星星系统：更多红色坠落星，缓慢螺旋坠落 =================
         const TOTAL_STARS = 2000;
-        const FALLING_RATIO = 0.55;   // 55% 红色坠落星
-        const ATTRACT_RADIUS = 18;     // 引力阱半径
-        const GRAVITY_STRENGTH = 0.0012; // 引力强度（显著加快半径缩小，几秒内进入紫圈）
+        const FALLING_RATIO = 0.70;      // 70% 红色坠落星（更多星星被吸引）
+        const ATTRACT_RADIUS = 18;        // 引力阱半径
+        const GRAVITY_STRENGTH = 0.0012;  // 引力强度（维持快速靠近，让用户看到动作）
         
         class SmallStar {
             constructor(type, customRadius = null) {
@@ -283,7 +283,7 @@
                     this.orbitRadius = 30 + Math.random() * 28; // 30-58 稳定轨道
                     this.gravityInfluence = false;
                 } else {
-                    // 坠落星初始半径 26~48，保证较快进入紫圈
+                    // 坠落星初始半径 26~48
                     this.orbitRadius = customRadius !== null ? customRadius : 28 + Math.random() * 24;
                     this.gravityInfluence = true;
                 }
@@ -327,7 +327,7 @@
                 this.rotSpeedY = 0.02 + Math.random() * 0.03;
             }
             
-            // 圆周运动更新（坠落星半径会快速缩小）
+            // 圆周运动更新（坠落星半径会缩小）
             updateOrbitPosition() {
                 if (this.gravityInfluence && this.state === 'orbit') {
                     // 半径快速缩小
@@ -383,12 +383,12 @@
                 this.spiralProgress = 0;
             }
             
-            // 沿螺旋支路快速坠落
+            // 沿螺旋支路缓慢坠落（速度调低）
             updateSpiralPosition() {
-                // 坠落速度逐段加快
-                let delta = 0.03;
-                if (this.spiralProgress > 0.5) delta = 0.045;
-                if (this.spiralProgress > 0.8) delta = 0.07;
+                // 坠落速度：减慢约25%
+                let delta = 0.022;
+                if (this.spiralProgress > 0.5) delta = 0.035;
+                if (this.spiralProgress > 0.8) delta = 0.055;
                 this.spiralProgress += delta;
                 
                 if (this.spiralProgress >= 1.0) {
@@ -418,7 +418,7 @@
                 
                 // 坠落时变红发光
                 const hot = Math.min(1, (radius - 2) / 12);
-                this.mesh.material.emissiveIntensity = 1.0 + (1 - hot) * 2.2;
+                this.mesh.material.emissiveIntensity = 1.0 + (1 - hot) * 2.0;
                 if (radius < 7) {
                     this.mesh.material.color.setRGB(1.0, 0.2 + (1 - hot) * 0.5, 0.1);
                 } else {
@@ -449,7 +449,7 @@
                     setTimeout(() => {
                         const newStar = new SmallStar('falling', 34 + Math.random() * 22);
                         smallStars.push(newStar);
-                    }, 40);
+                    }, 45);
                 }
             }
         }
@@ -497,13 +497,13 @@
         }
         
         let smallStars = [];
-        // 创建星星
+        // 创建星星（70%坠落星）
         for (let i = 0; i < TOTAL_STARS; i++) {
             const type = Math.random() < FALLING_RATIO ? 'falling' : 'orbit-only';
             smallStars.push(new SmallStar(type));
         }
         // 大量增加已经接近紫圈的红色星星，让用户立即看到吸引效果
-        for (let i = 0; i < 120; i++) {
+        for (let i = 0; i < 150; i++) {
             const radius = 18.2 + Math.random() * 4;
             const star = new SmallStar('falling', radius);
             star.orbitRadius = radius;
