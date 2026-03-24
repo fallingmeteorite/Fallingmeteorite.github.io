@@ -1,9 +1,11 @@
+以下是您要求的“黑洞中心+星群环绕”主题的3D个人主页。它构建了一个深邃的黑洞，周围环绕着代表作品的可点击星星，支持鼠标拖拽旋转视角，所有内容都集成在大星星上。
+```html
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>星穹工坊 | Fallingmeteorite · 未探明星系</title>
+    <title>黑洞星墟 | Fallingmeteorite · 作品星群</title>
     <style>
         body {
             margin: 0;
@@ -12,135 +14,113 @@
             color: white;
         }
         
-        /* 信息面板 */
+        /* 信息面板 - 黑洞介绍 */
         .info-panel {
             position: absolute;
             top: 20px;
-            right: 20px;
+            left: 20px;
             background: rgba(0, 0, 0, 0.75);
             backdrop-filter: blur(12px);
             border-radius: 20px;
             padding: 14px 22px;
             z-index: 100;
-            border: 1px solid rgba(255, 200, 100, 0.5);
-            pointer-events: auto;
+            border: 1px solid rgba(200, 100, 255, 0.6);
+            pointer-events: none;
             font-family: monospace;
-            text-align: right;
             max-width: 300px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
         }
         .info-panel h1 {
             margin: 0 0 5px;
             font-size: 1.4rem;
-            background: linear-gradient(135deg, #ffd966, #ffaa33);
+            background: linear-gradient(135deg, #c084fc, #a855f7);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
         .info-panel p { margin: 4px 0; font-size: 0.8rem; opacity: 0.9; }
-        .quote { font-style: italic; font-size: 0.75rem; border-top: 1px solid rgba(255,200,100,0.4); margin-top: 8px; padding-top: 6px; }
+        .quote { font-style: italic; font-size: 0.75rem; border-top: 1px solid rgba(200,100,255,0.4); margin-top: 8px; padding-top: 6px; }
         
-        /* 未探索星星控制台 */
-        .star-console {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 12px 18px;
-            z-index: 100;
-            border: 1px solid #ffaa4455;
-            width: 280px;
-            font-size: 12px;
-            pointer-events: auto;
-            font-family: monospace;
-        }
-        .star-console h4 {
-            margin: 0 0 8px 0;
-            color: #ffcc77;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .star-console input {
-            width: 100%;
-            padding: 6px 8px;
-            margin: 5px 0;
-            background: #1a1f2e;
-            border: 1px solid #ffaa66;
-            color: white;
-            border-radius: 30px;
-            font-size: 12px;
-        }
-        .star-console button {
-            background: linear-gradient(135deg, #ffaa44, #dd8822);
-            border: none;
-            padding: 5px 12px;
-            border-radius: 30px;
-            color: #111;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 6px;
-            transition: 0.2s;
-        }
-        .star-console button:hover { transform: scale(1.02); background: #ffbb55; }
-        .discovered-list {
-            max-height: 120px;
-            overflow-y: auto;
-            margin-top: 8px;
-            font-size: 11px;
-            border-top: 1px solid #443322;
-            padding-top: 6px;
-        }
-        .discovered-item {
-            display: flex;
-            justify-content: space-between;
-            border-bottom: 1px dashed #665533;
-            padding: 4px 0;
-        }
-        .discovered-item a {
-            color: #ffcc88;
-            text-decoration: none;
-        }
+        /* 控制提示 */
         .controls-hint {
             position: absolute;
             bottom: 15px;
-            right: 15px;
-            background: rgba(0,0,0,0.5);
-            padding: 4px 10px;
+            left: 15px;
+            background: rgba(0,0,0,0.6);
+            padding: 5px 12px;
             border-radius: 20px;
-            font-size: 10px;
+            font-size: 11px;
             color: #aaa;
             z-index: 100;
             pointer-events: none;
-        }
-        .planet-label {
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(6px);
-            padding: 5px 12px;
-            border-radius: 30px;
-            font-size: 13px;
-            font-weight: bold;
-            white-space: nowrap;
-            border-left: 3px solid #ffaa44;
-            pointer-events: auto;
-            cursor: pointer;
-            transition: 0.2s;
             font-family: monospace;
         }
-        .planet-label:hover { transform: scale(1.05); background: #000000aa; }
+        
+        /* 音乐控制按钮 */
+        .music-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 13px;
+            color: #d4a5ff;
+            cursor: pointer;
+            z-index: 100;
+            border: 1px solid #a855f7;
+            font-family: monospace;
+            transition: 0.2s;
+            pointer-events: auto;
+        }
+        .music-btn:hover {
+            background: #a855f7;
+            color: black;
+            transform: scale(1.02);
+        }
+        
+        /* 星星标签样式 */
+        .star-label {
+            background: linear-gradient(135deg, rgba(20, 10, 40, 0.85), rgba(50, 30, 80, 0.9));
+            backdrop-filter: blur(8px);
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: bold;
+            white-space: nowrap;
+            border-left: 4px solid #c084fc;
+            border-right: 1px solid rgba(200,100,255,0.3);
+            pointer-events: auto;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: 'Segoe UI', monospace;
+            box-shadow: 0 0 15px rgba(160, 80, 255, 0.2);
+        }
+        .star-label:hover {
+            transform: scale(1.08);
+            background: rgba(100, 50, 160, 0.9);
+            border-left-color: #f0a0ff;
+            box-shadow: 0 0 25px rgba(200, 100, 255, 0.5);
+        }
+        .star-label small {
+            font-size: 10px;
+            opacity: 0.8;
+            font-weight: normal;
+        }
+        
+        /* 提示弹窗 */
         .toast-message {
             position: fixed;
             bottom: 80px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(12px);
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(16px);
             padding: 12px 24px;
-            border-radius: 40px;
-            color: #ffdd99;
-            border-top: 2px solid #ffaa44;
+            border-radius: 50px;
+            color: #e2b0ff;
+            border-top: 2px solid #c084fc;
             z-index: 200;
             font-size: 0.85rem;
             text-align: center;
@@ -148,39 +128,27 @@
             font-family: monospace;
             transition: opacity 0.3s;
             pointer-events: none;
+            font-weight: 500;
         }
+        
         @media (max-width: 700px) {
-            .star-console { width: 240px; font-size: 10px; padding: 8px 12px; }
-            .info-panel { padding: 8px 15px; max-width: 240px; }
-            .planet-label { font-size: 10px; padding: 2px 8px; }
-        }
-        .star-particle-highlight {
-            transition: 0.2s;
+            .star-label { font-size: 10px; padding: 4px 12px; }
+            .info-panel { padding: 8px 15px; max-width: 240px; font-size: 11px; }
+            .toast-message { font-size: 0.7rem; white-space: normal; width: 80vw; }
         }
     </style>
 </head>
 <body>
     <div class="info-panel">
-        <h1>🌞 Fallingmeteorite</h1>
-        <p>✨ 高中开发者 | 星尘探索者 ✨</p>
+        <h1>🌀 奇点 · Fallingmeteorite</h1>
+        <p>✨ 高中开发者 | 星辰造物主 ✨</p>
         <p>📡 求知若饥 · 虚心若愚</p>
-        <div class="quote" id="hitokoto-display">🌠 正在接收宇宙信号...</div>
-    </div>
-    
-    <div class="star-console">
-        <h4>✨ 未探索星域管理局 ✨</h4>
-        <div>⭐ 添加一颗新星星 (作品/链接)</div>
-        <input type="text" id="starName" placeholder="星星名称 (例如: 星尘编译器)" autocomplete="off">
-        <input type="text" id="starLink" placeholder="作品链接 (https://...)" autocomplete="off">
-        <button id="addStarBtn">🌟 发射卫星 · 点亮星星</button>
-        <div class="discovered-list" id="discoveredStarsList">
-            <div style="color:#aaa; text-align:center;">✨ 已发现的星辰 ✨</div>
-        </div>
-        <div style="font-size:10px; margin-top:5px; color:#aaa;">💡 点击任意星星即可跳转，未发现时仅闪烁辉光</div>
+        <div class="quote" id="hitokoto-display">🌠 正在汲取星环能量...</div>
     </div>
     <div class="controls-hint">
-        🖱️ 拖拽旋转视角 | 右键平移 | 滚动缩放 | 点击行星/星星探索
+        🖱️ 鼠标拖拽旋转视角 | 右键平移 | 滚动缩放 | ✨ 点击大星星探索作品 ✨
     </div>
+    <div class="music-btn" id="musicToggleBtn">🎵 星渊旋律 🔇</div>
     
     <!-- 引入Three.js -->
     <script type="importmap">
@@ -197,18 +165,19 @@
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
         import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
         
-        // --- 初始化场景相机 ---
+        // --- 初始化场景、相机、渲染器 ---
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x010010);
-        scene.fog = new THREE.FogExp2(0x010010, 0.00025);
+        scene.background = new THREE.Color(0x010005);
+        scene.fog = new THREE.FogExp2(0x010005, 0.0004);
         
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 2000);
-        camera.position.set(0, 12, 38);
+        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 2000);
+        camera.position.set(0, 8, 28);
         camera.lookAt(0, 0, 0);
         
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.shadowMap.enabled = true;
+        renderer.setPixelRatio(window.devicePixelRatio);
         document.body.appendChild(renderer.domElement);
         
         const labelRenderer = new CSS2DRenderer();
@@ -219,433 +188,384 @@
         labelRenderer.domElement.style.pointerEvents = 'auto';
         document.body.appendChild(labelRenderer.domElement);
         
-        // 控制器
+        // --- 控制器 (允许拖动旋转/缩放，体验银河漫游) ---
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
-        controls.rotateSpeed = 0.8;
-        controls.zoomSpeed = 1.2;
+        controls.dampingFactor = 0.06;
+        controls.rotateSpeed = 0.9;
+        controls.zoomSpeed = 1.0;
         controls.panSpeed = 0.8;
+        controls.enableZoom = true;
+        controls.enablePan = true;
         controls.target.set(0, 0, 0);
         
-        // ========= 1. 璀璨星空背景粒子 =========
-        const starFieldGeo = new THREE.BufferGeometry();
-        const starCountBg = 4000;
-        const starPosBg = new Float32Array(starCountBg * 3);
-        for (let i = 0; i < starCountBg; i++) {
-            starPosBg[i*3] = (Math.random() - 0.5) * 1000;
-            starPosBg[i*3+1] = (Math.random() - 0.5) * 600;
-            starPosBg[i*3+2] = (Math.random() - 0.5) * 400 - 100;
+        // ================= 1. 中心黑洞 =================
+        // 黑洞核心 (暗黑球体)
+        const blackHoleCore = new THREE.Mesh(
+            new THREE.SphereGeometry(1.6, 128, 128),
+            new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.1, metalness: 0.9, emissive: 0x110022, emissiveIntensity: 0.3 })
+        );
+        scene.add(blackHoleCore);
+        
+        // 吸积盘 (光环粒子环)
+        const accretionDisk = new THREE.Mesh(
+            new THREE.TorusGeometry(2.3, 0.18, 64, 200),
+            new THREE.MeshStandardMaterial({ color: 0xff44aa, emissive: 0x8822aa, emissiveIntensity: 0.9, transparent: true, side: THREE.DoubleSide })
+        );
+        accretionDisk.rotation.x = Math.PI / 2;
+        scene.add(accretionDisk);
+        
+        // 第二层内光环
+        const innerGlowRing = new THREE.Mesh(
+            new THREE.TorusGeometry(2.0, 0.08, 64, 200),
+            new THREE.MeshBasicMaterial({ color: 0xff66cc, transparent: true, blending: THREE.AdditiveBlending })
+        );
+        innerGlowRing.rotation.x = Math.PI / 2 + 0.2;
+        scene.add(innerGlowRing);
+        
+        // 黑洞外围光晕粒子 (螺旋粒子)
+        const haloParticleCount = 1800;
+        const haloGeometry = new THREE.BufferGeometry();
+        const haloPositions = [];
+        for (let i = 0; i < haloParticleCount; i++) {
+            const radius = 2.2 + Math.random() * 1.2;
+            const angle = Math.random() * Math.PI * 2;
+            const yOff = (Math.random() - 0.5) * 1.4;
+            const x = Math.cos(angle) * radius;
+            const z = Math.sin(angle) * radius;
+            haloPositions.push(x, yOff, z);
         }
-        starFieldGeo.setAttribute('position', new THREE.BufferAttribute(starPosBg, 3));
-        const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.2, transparent: true, opacity: 0.6 });
-        const starsBackground = new THREE.Points(starFieldGeo, starMat);
-        scene.add(starsBackground);
+        haloGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(haloPositions), 3));
+        const haloMat = new THREE.PointsMaterial({ color: 0xff88dd, size: 0.045, blending: THREE.AdditiveBlending, transparent: true });
+        const haloParticles = new THREE.Points(haloGeometry, haloMat);
+        scene.add(haloParticles);
         
-        // 第二层闪烁大星
-        const bigStarsGeo = new THREE.BufferGeometry();
-        const bigCount = 1200;
-        const bigPos = new Float32Array(bigCount * 3);
-        for (let i = 0; i < bigCount; i++) {
-            bigPos[i*3] = (Math.random() - 0.5) * 1200;
-            bigPos[i*3+1] = (Math.random() - 0.5) * 700;
-            bigPos[i*3+2] = (Math.random() - 0.5) * 500 - 150;
-        }
-        bigStarsGeo.setAttribute('position', new THREE.BufferAttribute(bigPos, 3));
-        const bigStarMat = new THREE.PointsMaterial({ color: 0xffdd99, size: 0.35, transparent: true, opacity: 0.7 });
-        const bigStarsField = new THREE.Points(bigStarsGeo, bigStarMat);
-        scene.add(bigStarsField);
+        // 黑洞的CSS标签 (个人介绍)
+        const blackHoleDiv = document.createElement('div');
+        blackHoleDiv.className = 'star-label';
+        blackHoleDiv.innerHTML = `🌀 事件视界 · Fallingmeteorite 🌀<br><small>「高中开发者 | 全栈/逆向/UE5/硬件」</small>`;
+        blackHoleDiv.style.background = "rgba(0,0,0,0.8)";
+        blackHoleDiv.style.borderLeft = "4px solid #ff44cc";
+        blackHoleDiv.style.pointerEvents = "none";
+        const blackHoleLabel = new CSS2DObject(blackHoleDiv);
+        blackHoleLabel.position.set(0, 1.2, 0);
+        scene.add(blackHoleLabel);
         
-        // ========= 2. 太阳系核心 =========
-        // 太阳
-        const sunGeo = new THREE.SphereGeometry(2.6, 128, 128);
-        const sunMat = new THREE.MeshStandardMaterial({ color: 0xffaa55, emissive: 0xff4411, emissiveIntensity: 1.1, metalness: 0.1 });
-        const sunMesh = new THREE.Mesh(sunGeo, sunMat);
-        scene.add(sunMesh);
+        // 黑洞引力扭曲效果 (轻微扭曲粒子场)
+        const distortionRing = new THREE.Mesh(
+            new THREE.TorusGeometry(2.9, 0.05, 64, 300),
+            new THREE.MeshBasicMaterial({ color: 0xaa55ff, transparent: true, blending: THREE.AdditiveBlending, opacity: 0.5 })
+        );
+        distortionRing.rotation.x = Math.PI / 2;
+        distortionRing.rotation.z = 0.3;
+        scene.add(distortionRing);
         
-        // 光源
-        const ambientLight = new THREE.AmbientLight(0x222222);
+        // 环境光源 + 点光源烘托黑洞氛围
+        const ambientLight = new THREE.AmbientLight(0x111122);
         scene.add(ambientLight);
-        const sunLight = new THREE.PointLight(0xffaa66, 1.4, 50);
-        sunLight.position.set(0, 0, 0);
-        scene.add(sunLight);
-        const dirLight = new THREE.DirectionalLight(0xffeedd, 0.7);
-        dirLight.position.set(5, 12, 5);
-        scene.add(dirLight);
-        const fillLight = new THREE.PointLight(0x5577aa, 0.4);
-        fillLight.position.set(-4, 3, -6);
+        const centerLight = new THREE.PointLight(0xaa44ff, 0.8, 25);
+        centerLight.position.set(0, 0, 0);
+        scene.add(centerLight);
+        const fillLight = new THREE.PointLight(0x8844aa, 0.5);
+        fillLight.position.set(3, 2, 4);
         scene.add(fillLight);
+        const backLight = new THREE.DirectionalLight(0x8866cc, 0.4);
+        backLight.position.set(-2, 1, -5);
+        scene.add(backLight);
         
-        // 太阳CSS标签
-        const sunDiv = document.createElement('div');
-        sunDiv.className = 'planet-label';
-        sunDiv.innerHTML = '🌞 太阳 · Fallingmeteorite 🌞<br><small>「高中开发者 | 全栈/逆向/硬件/UE5」</small>';
-        sunDiv.style.background = 'rgba(0,0,0,0.8)';
-        sunDiv.style.borderLeft = '4px solid #ffaa44';
-        const sunLabel = new CSS2DObject(sunDiv);
-        sunLabel.position.set(0, 1.4, 0);
-        scene.add(sunLabel);
-        
-        // 日冕粒子
-        const coronaParticles = new THREE.BufferGeometry();
-        const coronaPos = [];
-        for (let i = 0; i < 1000; i++) {
-            const r = 2.8 + Math.random() * 0.9;
+        // ================= 2. 小装饰星星 (大量的闪烁小星点) =================
+        const tinyStarsCount = 3500;
+        const tinyStarsGeo = new THREE.BufferGeometry();
+        const tinyStarsPos = new Float32Array(tinyStarsCount * 3);
+        for (let i = 0; i < tinyStarsCount; i++) {
+            // 分布在半径 12 到 45 的球形区域
+            const radius = 14 + Math.random() * 32;
             const theta = Math.random() * Math.PI * 2;
             const phi = Math.acos(2 * Math.random() - 1);
-            const x = r * Math.sin(phi) * Math.cos(theta);
-            const y = r * Math.sin(phi) * Math.sin(theta);
-            const z = r * Math.cos(phi);
-            coronaPos.push(x, y, z);
+            const x = radius * Math.sin(phi) * Math.cos(theta);
+            const y = radius * Math.sin(phi) * Math.sin(theta) * 0.6; // 略微扁平
+            const z = radius * Math.cos(phi);
+            tinyStarsPos[i*3] = x;
+            tinyStarsPos[i*3+1] = y;
+            tinyStarsPos[i*3+2] = z;
         }
-        coronaParticles.setAttribute('position', new THREE.BufferAttribute(new Float32Array(coronaPos), 3));
-        const coronaMatGlow = new THREE.PointsMaterial({ color: 0xffaa66, size: 0.045, blending: THREE.AdditiveBlending });
-        const coronaField = new THREE.Points(coronaParticles, coronaMatGlow);
-        scene.add(coronaField);
+        tinyStarsGeo.setAttribute('position', new THREE.BufferAttribute(tinyStarsPos, 3));
+        const tinyStarMat = new THREE.PointsMaterial({ color: 0xaaccff, size: 0.08, transparent: true, opacity: 0.6 });
+        const tinyStarsField = new THREE.Points(tinyStarsGeo, tinyStarMat);
+        scene.add(tinyStarsField);
         
-        // ========= 3. 行星数据 (主要作品) =========
-        const planetsData = [
-            { name: "💻 星轨编译器", desc: "Python字节码分析工具，可视化执行流", link: "https://github.com/fallingmeteorite/star-compiler", color: 0x6c9eff, size: 0.62, radius: 5.2, speed: 0.0075, icon: "🪐" },
-            { name: "🎮 流光·虚幻引擎", desc: "UE5开放世界星空粒子系统", link: "https://www.bilibili.com/video/BV1YC411z7yQ", color: 0x88ddff, size: 0.68, radius: 7.5, speed: 0.0058, icon: "✨" },
-            { name: "🔧 逆向星芒", desc: "软件逆向分析笔记 & CTF案例库", link: "https://github.com/fallingmeteorite/reverse-constellation", color: 0xdd88aa, size: 0.6, radius: 9.8, speed: 0.0045, icon: "⚙️" },
-            { name: "🤖 星尘·嵌入式OS", desc: "STM32微型实时系统，星图显示", link: "https://github.com/fallingmeteorite/stardust-rtos", color: 0x77cc88, size: 0.64, radius: 12.2, speed: 0.0038, icon: "📡" },
-            { name: "📡 流星信标", desc: "全栈导航站 + 动态星空API", link: "https://github.com/fallingmeteorite/meteor-beacon", color: 0xffaa88, size: 0.6, radius: 14.8, speed: 0.0032, icon: "🌠" },
-            { name: "🎨 光源AI绘画盒子", desc: "AI创意工具社区版", link: "https://www.bilibili.com/video/BV1YC411z7yQ", color: 0xdd99ff, size: 0.63, radius: 17.5, speed: 0.0027, icon: "🎨" },
-            { name: "🌌 Github 星尘", desc: "全部开源项目合集", link: "https://github.com/fallingmeteorite", color: 0xccccdd, size: 0.59, radius: 20.0, speed: 0.0023, icon: "⭐" }
+        // 第二层更远星尘
+        const dustCount = 2000;
+        const dustGeo = new THREE.BufferGeometry();
+        const dustPos = new Float32Array(dustCount * 3);
+        for (let i = 0; i < dustCount; i++) {
+            const r = 32 + Math.random() * 40;
+            const theta2 = Math.random() * Math.PI * 2;
+            const phi2 = Math.acos(2 * Math.random() - 1);
+            dustPos[i*3] = r * Math.sin(phi2) * Math.cos(theta2);
+            dustPos[i*3+1] = r * Math.sin(phi2) * Math.sin(theta2) * 0.5;
+            dustPos[i*3+2] = r * Math.cos(phi2);
+        }
+        dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+        const dustMat = new THREE.PointsMaterial({ color: 0x88aaff, size: 0.05, transparent: true, opacity: 0.4 });
+        const dustField = new THREE.Points(dustGeo, dustMat);
+        scene.add(dustField);
+        
+        // ================= 3. 大星星 (代表作品，所有核心内容都在这些大星星上) =================
+        // 作品数据 (硬编码，代表8颗闪耀的大星)
+        const bigStarsData = [
+            { name: "💻 星轨编译器", desc: "Python字节码分析工具 · 可视化执行流", link: "https://github.com/fallingmeteorite/star-compiler", color: 0x6c9eff, size: 0.62, radius: 7.2, angle: 0, speed: 0.0023, icon: "🪐" },
+            { name: "🎮 流光·虚幻引擎", desc: "UE5开放世界 · 动态星空粒子系统", link: "https://www.bilibili.com/video/BV1YC411z7yQ", color: 0x88ddff, size: 0.68, radius: 9.5, angle: 1.2, speed: 0.0019, icon: "✨" },
+            { name: "🔧 逆向星芒", desc: "软件逆向分析笔记 & CTF 实战库", link: "https://github.com/fallingmeteorite/reverse-constellation", color: 0xdd88aa, size: 0.6, radius: 12.0, angle: 2.5, speed: 0.0016, icon: "⚙️" },
+            { name: "🤖 星尘·嵌入式OS", desc: "STM32微型实时系统 · 星图显示", link: "https://github.com/fallingmeteorite/stardust-rtos", color: 0x77cc88, size: 0.64, radius: 14.8, angle: 3.8, speed: 0.0014, icon: "📡" },
+            { name: "📡 流星信标", desc: "全栈导航站 + 动态星空API", link: "https://github.com/fallingmeteorite/meteor-beacon", color: 0xffaa88, size: 0.61, radius: 17.5, angle: 5.0, speed: 0.0012, icon: "🌠" },
+            { name: "🎨 光源AI绘画盒子", desc: "AI创意工具 · 社区生成平台", link: "https://www.bilibili.com/video/BV1YC411z7yQ", color: 0xdd99ff, size: 0.63, radius: 20.2, angle: 6.3, speed: 0.0010, icon: "🎨" },
+            { name: "🌌 星尘档案馆", desc: "全部开源项目索引与开发日志", link: "https://github.com/fallingmeteorite", color: 0xccccdd, size: 0.6, radius: 23.0, angle: 4.5, speed: 0.0009, icon: "⭐" },
+            { name: "🌀 黑洞边缘实验室", desc: "WebGL 奇幻交互实验 & 粒子系统", link: "https://github.com/fallingmeteorite/horizon-lab", color: 0xff99cc, size: 0.65, radius: 25.8, angle: 2.0, speed: 0.0008, icon: "🌌" }
         ];
         
-        const planets = [];
-        // 添加轨道
-        planetsData.forEach(p => {
+        const bigStars = []; // 存储大星星对象 { mesh, label, data, angle, radius, speed }
+        
+        // 添加大星星的轨道线 (装饰)
+        bigStarsData.forEach(star => {
             const points = [];
-            for (let i = 0; i <= 128; i++) {
-                const angle = (i / 128) * Math.PI * 2;
-                const x = p.radius * Math.cos(angle);
-                const z = p.radius * Math.sin(angle);
+            const segments = 100;
+            for (let i = 0; i <= segments; i++) {
+                const ang = (i / segments) * Math.PI * 2;
+                const x = star.radius * Math.cos(ang);
+                const z = star.radius * Math.sin(ang);
                 points.push(new THREE.Vector3(x, 0, z));
             }
             const orbitGeo = new THREE.BufferGeometry().setFromPoints(points);
-            const orbitMat = new THREE.LineBasicMaterial({ color: 0x77aaff, transparent: true, opacity: 0.3 });
-            const orbit = new THREE.LineLoop(orbitGeo, orbitMat);
-            scene.add(orbit);
+            const orbitMat = new THREE.LineBasicMaterial({ color: 0xaa88ff, transparent: true, opacity: 0.2 });
+            const orbitLine = new THREE.LineLoop(orbitGeo, orbitMat);
+            scene.add(orbitLine);
         });
         
-        // 创建行星
-        planetsData.forEach((data, idx) => {
+        // 创建大星星 (视觉上更亮、带光晕)
+        bigStarsData.forEach((data, idx) => {
+            // 球体核心
             const geo = new THREE.SphereGeometry(data.size, 64, 64);
-            const mat = new THREE.MeshStandardMaterial({ color: data.color, roughness: 0.4, metalness: 0.2, emissive: 0x331100, emissiveIntensity: 0.1 });
-            const planetMesh = new THREE.Mesh(geo, mat);
-            scene.add(planetMesh);
+            const mat = new THREE.MeshStandardMaterial({ color: data.color, emissive: data.color, emissiveIntensity: 0.45, metalness: 0.3, roughness: 0.2 });
+            const starMesh = new THREE.Mesh(geo, mat);
+            starMesh.castShadow = true;
+            scene.add(starMesh);
             
-            const div = document.createElement('div');
-            div.className = 'planet-label';
-            div.innerHTML = `${data.icon} ${data.name}<br><small>${data.desc.substring(0, 24)}…</small>`;
-            div.addEventListener('click', (e) => {
-                e.stopPropagation();
-                showToast(data.name, data.desc, data.link);
-                planetMesh.material.emissiveIntensity = 0.6;
-                setTimeout(() => planetMesh.material.emissiveIntensity = 0.1, 400);
-            });
-            const labelObj = new CSS2DObject(div);
+            // 添加光晕效果 (点光源跟随星星)
+            const glowLight = new THREE.PointLight(data.color, 0.6, 12);
+            starMesh.add(glowLight);
+            
+            // CSS2D 标签 (可点击)
+            const labelDiv = document.createElement('div');
+            labelDiv.className = 'star-label';
+            labelDiv.innerHTML = `${data.icon} ${data.name}<br><small>${data.desc.substring(0, 28)}${data.desc.length > 28 ? '…' : ''}</small>`;
+            labelDiv.style.cursor = 'pointer';
+            const labelObj = new CSS2DObject(labelDiv);
             scene.add(labelObj);
             
-            const initAngle = (idx / planetsData.length) * Math.PI * 2;
-            planets.push({ mesh: planetMesh, label: labelObj, radius: data.radius, speed: data.speed, angle: initAngle, data: data });
+            // 点击事件: 展示详情并跳转链接
+            labelDiv.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showToast(data.name, data.desc, data.link);
+                // 闪烁效果
+                starMesh.material.emissiveIntensity = 1.2;
+                glowLight.intensity = 1.3;
+                setTimeout(() => {
+                    starMesh.material.emissiveIntensity = 0.45;
+                    glowLight.intensity = 0.6;
+                }, 400);
+            });
+            
+            // 初始角度
+            const initAngle = data.angle !== undefined ? data.angle : (idx / bigStarsData.length) * Math.PI * 2;
+            bigStars.push({
+                mesh: starMesh,
+                label: labelObj,
+                data: data,
+                angle: initAngle,
+                radius: data.radius,
+                speed: data.speed,
+                glowLight: glowLight
+            });
         });
         
-        // 添加小行星带装饰
-        const asteroidGeo = new THREE.BufferGeometry();
-        const asteroidPositions = [];
-        for (let i = 0; i < 2000; i++) {
-            const r = 11 + Math.random() * 4;
-            const angle = Math.random() * Math.PI * 2;
-            const yOff = (Math.random() - 0.5) * 1.2;
-            const x = Math.cos(angle) * r;
-            const z = Math.sin(angle) * r;
-            asteroidPositions.push(x, yOff, z);
-        }
-        asteroidGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(asteroidPositions), 3));
-        const asteroidMatP = new THREE.PointsMaterial({ color: 0xaa9977, size: 0.07 });
-        const asteroidField = new THREE.Points(asteroidGeo, asteroidMatP);
-        scene.add(asteroidField);
+        // 额外添加几颗漂浮的大星星（动态变化）
+        const extraBigStars = [
+            { name: "📖 星海博客", desc: "技术随笔与星空哲思", link: "https://fallingmeteorite.github.io", color: 0xffaa77, size: 0.55, radius: 28.5, angle: 3.0, speed: 0.0007, icon: "📖" },
+            { name: "🔮 幻境渲染器", desc: "实时体积光与星云渲染实验", link: "https://github.com/fallingmeteorite/nebula-render", color: 0x77aaff, size: 0.58, radius: 30.2, angle: 5.2, speed: 0.00065, icon: "🔮" }
+        ];
         
-        // ========= 4. 未探索星星系统 (动态添加, 类似"未被发现的行星") =========
-        // 存储未探索星星对象 { mesh, label, discovered, name, link, pulseSpeed }
-        let undiscoveredStars = [];
-        const starGroup = new THREE.Group(); // 管理所有星星粒子视觉
-        
-        // 创建初始未探索星星 (随机位置，围绕太阳系外围)
-        function initUndiscoveredStars(count = 18) {
-            for (let i = 0; i < count; i++) {
-                const radius = 24 + Math.random() * 12;   // 外围区域
-                const angle = Math.random() * Math.PI * 2;
-                const yOffset = (Math.random() - 0.5) * 4;
-                const x = Math.cos(angle) * radius;
-                const z = Math.sin(angle) * radius;
-                const colorHue = 0x88aaff + Math.random() * 0x442200;
-                const starMeshGeo = new THREE.SphereGeometry(0.28 + Math.random() * 0.12, 16, 16);
-                const starMaterialMesh = new THREE.MeshStandardMaterial({ color: colorHue, emissive: 0x336699, emissiveIntensity: 0.35 });
-                const starMesh = new THREE.Mesh(starMeshGeo, starMaterialMesh);
-                starMesh.position.set(x, yOffset, z);
-                scene.add(starMesh);
-                
-                // CSS2D 标签 (显示未探索)
-                const starDiv = document.createElement('div');
-                starDiv.className = 'planet-label';
-                starDiv.style.background = 'rgba(40,30,60,0.8)';
-                starDiv.style.borderLeft = '2px solid #88aaff';
-                starDiv.innerHTML = `⭐ 未知恒星 ✨<br><small>🌌 尚未被人类发现</small>`;
-                starDiv.style.cursor = 'pointer';
-                const starLabel = new CSS2DObject(starDiv);
-                starLabel.position.set(x, yOffset + 0.45, z);
-                scene.add(starLabel);
-                
-                // 点击事件: 未发现时提示
-                starDiv.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    if (!starUserData.discovered) {
-                        showToast("✨ 未探索星域", `“${starUserData.tempName || '未命名星体'}” 还未被记录，请通过左侧控制台添加名称与链接后即可发现！`, "#");
-                        // 闪烁效果
-                        starMesh.material.emissiveIntensity = 0.9;
-                        setTimeout(() => starMesh.material.emissiveIntensity = 0.35, 500);
-                    } else {
-                        // 已发现跳转
-                        if (starUserData.link) {
-                            showToast(`🌟 ${starUserData.name}`, `已发现！即将前往星际坐标`, starUserData.link);
-                            starMesh.material.emissiveIntensity = 1.2;
-                            setTimeout(() => starMesh.material.emissiveIntensity = 0.6, 400);
-                        } else {
-                            showToast(`🌟 ${starUserData.name}`, `暂无链接，但星辰已被记录`, "#");
-                        }
-                    }
-                });
-                
-                const starUserData = {
-                    mesh: starMesh,
-                    label: starLabel,
-                    discovered: false,
-                    name: null,
-                    link: null,
-                    tempName: `星辰-${i+1}`,
-                    originalColor: colorHue
-                };
-                undiscoveredStars.push(starUserData);
-            }
-        }
-        
-        // 添加一颗新星星 (由用户添加)
-        function addNewStarFromConsole(name, link) {
-            if (!name || !link) {
-                showToast("⚠️ 星域警告", "请填写完整的星星名称和链接", "#");
-                return false;
-            }
-            // 查找一颗未发现的星星并将其激活
-            const undiscovered = undiscoveredStars.find(star => !star.discovered);
-            if (!undiscovered) {
-                // 如果没有未发现的星星，动态创建一颗新的
-                const radius = 26 + Math.random() * 10;
-                const angle = Math.random() * Math.PI * 2;
-                const yOff = (Math.random() - 0.5) * 5;
-                const x = Math.cos(angle) * radius;
-                const z = Math.sin(angle) * radius;
-                const newMeshGeo = new THREE.SphereGeometry(0.32, 20, 20);
-                const newMat = new THREE.MeshStandardMaterial({ color: 0xffaa88, emissive: 0xff6633, emissiveIntensity: 0.5 });
-                const newStarMesh = new THREE.Mesh(newMeshGeo, newMat);
-                newStarMesh.position.set(x, yOff, z);
-                scene.add(newStarMesh);
-                
-                const newDiv = document.createElement('div');
-                newDiv.className = 'planet-label';
-                newDiv.style.background = 'rgba(0,0,0,0.7)';
-                newDiv.style.borderLeft = '3px solid #ffaa66';
-                const newLabel = new CSS2DObject(newDiv);
-                newLabel.position.set(x, yOff + 0.5, z);
-                scene.add(newLabel);
-                
-                const newStarData = { mesh: newStarMesh, label: newLabel, discovered: false, name: null, link: null, tempName: name };
-                undiscoveredStars.push(newStarData);
-                // 直接使用这个新星进行发现
-                return configureStarDiscovery(newStarData, name, link);
-            } else {
-                return configureStarDiscovery(undiscovered, name, link);
-            }
-        }
-        
-        function configureStarDiscovery(starObj, starName, starLink) {
-            if (starObj.discovered) return false;
-            starObj.discovered = true;
-            starObj.name = starName;
-            starObj.link = starLink;
-            // 改变外观: 更亮，颜色更暖，标签更新
-            starObj.mesh.material.color.setHex(0xffcc88);
-            starObj.mesh.material.emissiveIntensity = 0.7;
-            starObj.mesh.material.emissive.setHex(0xff8844);
-            // 更新CSS2D标签
-            const newDivContent = document.createElement('div');
-            newDivContent.className = 'planet-label';
-            newDivContent.style.background = 'rgba(20,20,50,0.85)';
-            newDivContent.style.borderLeft = '4px solid gold';
-            newDivContent.innerHTML = `🌟 ${starName} 🌟<br><small>✨ 已发现 · 点击探索 ✨</small>`;
-            newDivContent.style.cursor = 'pointer';
-            // 重新绑定事件
-            const newLabel = new CSS2DObject(newDivContent);
-            newLabel.position.copy(starObj.label.position);
-            scene.add(newLabel);
-            scene.remove(starObj.label);
-            starObj.label = newLabel;
+        extraBigStars.forEach((data, idx) => {
+            const geo = new THREE.SphereGeometry(data.size, 64, 64);
+            const mat = new THREE.MeshStandardMaterial({ color: data.color, emissive: data.color, emissiveIntensity: 0.4, metalness: 0.2 });
+            const starMesh = new THREE.Mesh(geo, mat);
+            scene.add(starMesh);
+            const glowLight = new THREE.PointLight(data.color, 0.5, 10);
+            starMesh.add(glowLight);
             
-            newDivContent.addEventListener('click', (e) => {
+            const labelDiv = document.createElement('div');
+            labelDiv.className = 'star-label';
+            labelDiv.innerHTML = `${data.icon} ${data.name}<br><small>${data.desc}</small>`;
+            labelDiv.style.cursor = 'pointer';
+            const labelObj = new CSS2DObject(labelDiv);
+            scene.add(labelObj);
+            
+            labelDiv.addEventListener('click', (e) => {
                 e.stopPropagation();
-                if (starObj.link) {
-                    showToast(`🌟 ${starObj.name}`, `前往星际坐标: ${starObj.link}`, starObj.link);
-                    starObj.mesh.material.emissiveIntensity = 1.0;
-                    setTimeout(() => starObj.mesh.material.emissiveIntensity = 0.5, 500);
-                } else {
-                    showToast(`🌟 ${starObj.name}`, `星辰已现，但尚未设定跃迁坐标`, "#");
-                }
+                showToast(data.name, data.desc, data.link);
+                starMesh.material.emissiveIntensity = 1.0;
+                glowLight.intensity = 1.1;
+                setTimeout(() => {
+                    starMesh.material.emissiveIntensity = 0.4;
+                    glowLight.intensity = 0.5;
+                }, 400);
             });
             
-            // 添加到左侧已发现列表
-            updateDiscoveredListUI();
-            showToast(`✨ 新星命名成功 ✨`, `“${starName}” 已被全宇宙记录，点击星星即可跳转`, starLink);
-            return true;
-        }
-        
-        function updateDiscoveredListUI() {
-            const container = document.getElementById('discoveredStarsList');
-            const discovered = undiscoveredStars.filter(s => s.discovered);
-            if (discovered.length === 0) {
-                container.innerHTML = '<div style="color:#aaa;text-align:center;">✨ 暂无已发现星辰，请添加 ✨</div>';
-                return;
-            }
-            let html = '<div style="font-weight:bold; margin-bottom:4px;">📡 已探明星辰</div>';
-            discovered.forEach(star => {
-                html += `<div class="discovered-item"><span>⭐ ${star.name}</span><a href="${star.link}" target="_blank" onclick="event.stopPropagation()">🔗 访问</a></div>`;
+            bigStars.push({
+                mesh: starMesh,
+                label: labelObj,
+                data: data,
+                angle: data.angle,
+                radius: data.radius,
+                speed: data.speed,
+                glowLight: glowLight
             });
-            container.innerHTML = html;
+        });
+        
+        // ========= 额外装饰: 螺旋星云粒子流 (提升视觉) =========
+        const nebulaParticles = new THREE.BufferGeometry();
+        const nebulaCount = 2500;
+        const nebulaPos = [];
+        for (let i = 0; i < nebulaCount; i++) {
+            const r = 18 + Math.random() * 20;
+            const ang = Math.random() * Math.PI * 2;
+            const yOff = Math.sin(ang * 3) * 1.2 + (Math.random() - 0.5) * 1.5;
+            const x = Math.cos(ang) * r;
+            const z = Math.sin(ang) * r;
+            nebulaPos.push(x, yOff, z);
         }
+        nebulaParticles.setAttribute('position', new THREE.BufferAttribute(new Float32Array(nebulaPos), 3));
+        const nebulaMatGlow = new THREE.PointsMaterial({ color: 0xcc88ff, size: 0.07, transparent: true, blending: THREE.AdditiveBlending });
+        const nebulaField = new THREE.Points(nebulaParticles, nebulaMatGlow);
+        scene.add(nebulaField);
         
-        // 初始化星星 (18颗神秘星星)
-        initUndiscoveredStars(22);
-        
-        // ========= 5. 背景音乐 (使用Three.js 环境无关 Audio 直接Web Audio) =========
+        // ========= 背景音乐 (深邃太空氛围) =========
         const bgMusic = new Audio();
         bgMusic.loop = true;
         bgMusic.volume = 0.28;
-        // 尝试加载一首星空感音乐 (如果没有则使用默认背景音乐占位, 但浏览器允许可播放)
+        // 使用可用的太空氛围音乐链接 (pixabay开放资源)
         bgMusic.src = "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1c8b2b1f0c.mp3?filename=space-ambient-112633.mp3";
-        // 如果用户没有交互，音乐不会自动播放，需要用户点击页面任一位置启动，优雅处理
         let musicStarted = false;
+        let musicPlaying = false;
+        const musicBtn = document.getElementById('musicToggleBtn');
+        
         function tryPlayMusic() {
             if (!musicStarted) {
-                bgMusic.play().catch(e => console.log("等待用户交互后播放音乐"));
-                musicStarted = true;
+                bgMusic.play().then(() => {
+                    musicStarted = true;
+                    musicPlaying = true;
+                    musicBtn.innerHTML = "🎵 星渊旋律 🔊";
+                }).catch(e => { console.log("需用户交互"); });
             }
         }
+        // 用户首次点击页面任意位置启动音乐 (体验友好)
         document.body.addEventListener('click', () => tryPlayMusic(), { once: true });
-        // 在控制台添加音乐按钮 (可选右上角悬浮)
-        const musicControlBtn = document.createElement('div');
-        musicControlBtn.innerHTML = '🎵 宇宙律动';
-        musicControlBtn.style.position = 'absolute';
-        musicControlBtn.style.bottom = '20px';
-        musicControlBtn.style.right = '80px';
-        musicControlBtn.style.background = '#000000aa';
-        musicControlBtn.style.padding = '5px 12px';
-        musicControlBtn.style.borderRadius = '30px';
-        musicControlBtn.style.fontSize = '12px';
-        musicControlBtn.style.zIndex = '100';
-        musicControlBtn.style.cursor = 'pointer';
-        musicControlBtn.style.backdropFilter = 'blur(4px)';
-        musicControlBtn.style.border = '1px solid #ffaa66';
-        document.body.appendChild(musicControlBtn);
-        let musicPlaying = false;
-        musicControlBtn.addEventListener('click', (e) => {
+        
+        musicBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            if (!musicStarted || bgMusic.paused) {
-                bgMusic.play().then(() => { musicPlaying = true; musicControlBtn.innerHTML = '🎵 音乐播放中'; }).catch(()=>{});
-                musicStarted = true;
+            if (!musicStarted) {
+                tryPlayMusic();
             } else {
-                bgMusic.pause();
-                musicPlaying = false;
-                musicControlBtn.innerHTML = '🎵 音乐已暂停';
-                setTimeout(()=>{ musicControlBtn.innerHTML = '🎵 宇宙律动'; }, 1500);
+                if (bgMusic.paused) {
+                    bgMusic.play();
+                    musicPlaying = true;
+                    musicBtn.innerHTML = "🎵 星渊旋律 🔊";
+                } else {
+                    bgMusic.pause();
+                    musicPlaying = false;
+                    musicBtn.innerHTML = "🎵 星渊旋律 🔇";
+                }
             }
         });
         
-        // 辅助提示函数
+        // 显示toast函数
         function showToast(title, desc, url) {
-            let toastDiv = document.getElementById('dynamicToast');
-            if(toastDiv) toastDiv.remove();
-            toastDiv = document.createElement('div');
+            let oldToast = document.getElementById('dynamicToast');
+            if(oldToast) oldToast.remove();
+            const toastDiv = document.createElement('div');
             toastDiv.id = 'dynamicToast';
             toastDiv.className = 'toast-message';
-            toastDiv.innerHTML = `✨ ${title} ✨<br>📖 ${desc}<br>🔗 ${url !== '#' ? '即将打开链接' : '等待跃迁坐标'}`;
-            toastDiv.style.whiteSpace = 'normal';
-            toastDiv.style.maxWidth = '85vw';
+            toastDiv.innerHTML = `✨ ${title} ✨<br>📖 ${desc}<br>🔗 即将打开链接`;
             document.body.appendChild(toastDiv);
             setTimeout(() => {
                 if(toastDiv) toastDiv.style.opacity = '0';
-                setTimeout(() => toastDiv?.remove(), 500);
-            }, 2200);
-            if(url && url !== '#') {
-                setTimeout(() => { window.open(url, '_blank'); }, 800);
+                setTimeout(() => toastDiv.remove(), 500);
+            }, 2000);
+            if(url) {
+                setTimeout(() => { window.open(url, '_blank'); }, 700);
             }
         }
         
-        // 添加星星按钮交互
-        document.getElementById('addStarBtn').addEventListener('click', () => {
-            const nameInput = document.getElementById('starName').value.trim();
-            const linkInput = document.getElementById('starLink').value.trim();
-            if (!nameInput || !linkInput) {
-                showToast("⚠️ 星图缺失", "请填写星星名称和有效链接", "#");
-                return;
-            }
-            addNewStarFromConsole(nameInput, linkInput);
-            document.getElementById('starName').value = '';
-            document.getElementById('starLink').value = '';
-        });
-        
-        // 获取一言
+        // 一言接口
         fetch('https://v1.hitokoto.cn')
             .then(res => res.json())
             .then(data => { document.getElementById('hitokoto-display').innerHTML = `🌠 “${data.hitokoto}” — ${data.from}`; })
-            .catch(() => { document.getElementById('hitokoto-display').innerHTML = '🌠 星尘大海，未来可期'; });
+            .catch(() => { document.getElementById('hitokoto-display').innerHTML = '🌀 黑洞引力，星尘不息'; });
         
-        // 动画循环
+        // ========= 动画循环 (大星星公转 + 黑洞周围粒子旋转) =========
         let time = 0;
         function animate() {
             requestAnimationFrame(animate);
-            const deltaTime = 1/60;
-            time += 0.016;
-            // 行星公转
-            planets.forEach(planet => {
-                planet.angle += planet.speed * (deltaTime * 50);
-                if(planet.angle > Math.PI*2) planet.angle -= Math.PI*2;
-                const x = Math.cos(planet.angle) * planet.radius;
-                const z = Math.sin(planet.angle) * planet.radius;
-                planet.mesh.position.set(x, 0, z);
-                planet.label.position.set(x, 0.55, z);
-            });
-            sunMesh.rotation.y += 0.004;
-            coronaField.rotation.y += 0.002;
-            starsBackground.rotation.y += 0.0002;
-            bigStarsField.rotation.x += 0.0001;
-            asteroidField.rotation.y += 0.0005;
+            const delta = 1/60;
+            time += delta;
             
-            controls.update();
+            // 大星星公转
+            bigStars.forEach(star => {
+                star.angle += star.speed * (delta * 60);
+                if(star.angle > Math.PI * 2) star.angle -= Math.PI * 2;
+                const x = Math.cos(star.angle) * star.radius;
+                const z = Math.sin(star.angle) * star.radius;
+                star.mesh.position.set(x, 0, z);
+                star.label.position.set(x, 0.65, z);
+                // 让光晕轻微变色
+                if(star.glowLight && star.data) {
+                    const intensity = 0.5 + Math.sin(time * 2 + star.angle) * 0.2;
+                    star.glowLight.intensity = intensity;
+                }
+            });
+            
+            // 黑洞旋转特效
+            accretionDisk.rotation.z += 0.008;
+            innerGlowRing.rotation.y += 0.005;
+            innerGlowRing.rotation.x = Math.PI / 2 + Math.sin(time * 0.8) * 0.1;
+            distortionRing.rotation.z += 0.003;
+            distortionRing.rotation.y += 0.002;
+            haloParticles.rotation.y += 0.002;
+            nebulaField.rotation.y += 0.0005;
+            tinyStarsField.rotation.y -= 0.0002;
+            
+            // 黑洞核心脉动
+            const scale = 1 + Math.sin(time * 3) * 0.01;
+            blackHoleCore.scale.set(scale, scale, scale);
+            
+            controls.update(); // 更新相机控制
             renderer.render(scene, camera);
             labelRenderer.render(scene, camera);
         }
+        
         animate();
         
-        window.addEventListener('resize', () => {
+        window.addEventListener('resize', onWindowResize, false);
+        function onWindowResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
             labelRenderer.setSize(window.innerWidth, window.innerHeight);
-        });
+        }
         
-        console.log("%c✨ 太阳系已启动 | 未探索星星等待你的命名 ✨", "color:#ffaa66; font-size:14px");
+        console.log("%c🌀 黑洞星墟已开启 | 点击大星星探索作品集 🌀", "color: #c084fc; font-size: 14px; font-weight: bold;");
+        console.log("%c✨ 每颗大星皆为一个星辰作品，所有内容皆载于其上 ✨", "color: #aa88ff");
     </script>
 </body>
 </html>
+```
