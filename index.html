@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>宇宙大爆炸 · 黑洞深渊 | 空灵之音</title>
+    <title>宇宙大爆炸 · 黑洞深渊 | 空灵之音 · 纯净版</title>
     <style>
         body {
             margin: 0;
@@ -882,46 +882,19 @@
         
         document.getElementById('bigbangTriggerBtn').addEventListener('click', startCompressionAndBang);
         
-        // ========== 空灵背景音乐（Web Audio API + 混响 + 低通滤波）==========
+        // ========== 空灵背景音乐（无混响，纯净空灵） ==========
         let audioCtx = null;
         let currentSource = null;
         let isMusicPlaying = false;
         let musicBuffer = null;
-        let convolver = null;
-        let filter = null;
         let musicGain = null;
-        
-        // 生成一个空灵的混响脉冲响应（指数衰减的噪声，模拟宏大空间）
-        async function createReverbImpulse(duration = 2.5, sampleRate = 44100) {
-            const length = duration * sampleRate;
-            const impulse = new Float32Array(length);
-            for (let i = 0; i < length; i++) {
-                const decay = Math.exp(-i / (sampleRate * 0.8)); // 较长的衰减
-                impulse[i] = (Math.random() * 2 - 1) * decay * 0.8;
-            }
-            const audioBuffer = new AudioBuffer({ numberOfChannels: 1, length: length, sampleRate: sampleRate });
-            audioBuffer.copyToChannel(impulse, 0);
-            return audioBuffer;
-        }
         
         async function initMusic() {
             if (audioCtx) return;
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            // 创建效果节点
-            convolver = audioCtx.createConvolver();
-            const reverbBuffer = await createReverbImpulse(2.8, audioCtx.sampleRate);
-            convolver.buffer = reverbBuffer;
-            
-            filter = audioCtx.createBiquadFilter();
-            filter.type = 'lowpass';
-            filter.frequency.value = 2200;   // 低通，让高频衰减，更空灵
-            filter.Q.value = 0.8;
-            
             musicGain = audioCtx.createGain();
-            musicGain.gain.value = 0.35;      // 音量适中，不掩盖爆炸音效
-            
-            // 连接顺序: source -> convolver -> filter -> gain -> destination
-            // 注意 source 每次播放时重新连接
+            musicGain.gain.value = 0.38;   // 纯净音量，空灵但不嘈杂
+            musicGain.connect(audioCtx.destination);
         }
         
         async function loadAndPlayMusic() {
@@ -929,29 +902,46 @@
             if (audioCtx.state === 'suspended') {
                 await audioCtx.resume();
             }
-            // 如果已有播放中的 source，停止并清理
             if (currentSource) {
                 try { currentSource.stop(); } catch(e) {}
                 currentSource.disconnect();
             }
-            // 加载音频文件
-            const response = await fetch('background_music.mp3');
-            const arrayBuffer = await response.arrayBuffer();
-            musicBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-            
-            // 创建新的 source
-            const source = audioCtx.createBufferSource();
-            source.buffer = musicBuffer;
-            source.loop = true;
-            // 连接节点
-            source.connect(convolver);
-            convolver.connect(filter);
-            filter.connect(musicGain);
-            musicGain.connect(audioCtx.destination);
-            source.start();
-            currentSource = source;
-            isMusicPlaying = true;
-            document.getElementById('musicToggleBtn').innerHTML = '🎵 空灵星渊 🔊';
+            try {
+                const response = await fetch('background_music.mp3');
+                const arrayBuffer = await response.arrayBuffer();
+                musicBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+                const source = audioCtx.createBufferSource();
+                source.buffer = musicBuffer;
+                source.loop = true;
+                // 直接连接至 gain，无混响、无滤波，保留原始空灵质感
+                source.connect(musicGain);
+                source.start();
+                currentSource = source;
+                isMusicPlaying = true;
+                document.getElementById('musicToggleBtn').innerHTML = '🎵 空灵星渊 🔊';
+            } catch(e) {
+                console.log("音乐加载失败，使用备用空灵氛围音效");
+                // 如果音频不存在，生成一个简单的空灵正弦波氛围作为后备
+                const bufferSize = audioCtx.sampleRate * 8;
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    const t = i / audioCtx.sampleRate;
+                    // 柔和的和弦感
+                    const note1 = Math.sin(t * 220 * Math.PI * 2) * 0.3;
+                    const note2 = Math.sin(t * 329.63 * Math.PI * 2) * 0.2;
+                    const note3 = Math.sin(t * 440 * Math.PI * 2) * 0.15;
+                    data[i] = (note1 + note2 + note3) * Math.exp(-t * 0.18) * 0.5;
+                }
+                const source = audioCtx.createBufferSource();
+                source.buffer = buffer;
+                source.loop = true;
+                source.connect(musicGain);
+                source.start();
+                currentSource = source;
+                isMusicPlaying = true;
+                document.getElementById('musicToggleBtn').innerHTML = '🎵 空灵星渊 🔊';
+            }
         }
         
         function pauseMusic() {
@@ -968,7 +958,6 @@
                 isMusicPlaying = true;
                 document.getElementById('musicToggleBtn').innerHTML = '🎵 空灵星渊 🔊';
             } else if (!currentSource) {
-                // 尚未加载过，先加载再播放
                 loadAndPlayMusic().catch(e => console.log("音乐加载失败", e));
             }
         }
