@@ -310,7 +310,7 @@
             return obj;
         }
         
-        // ========== 3. 黑洞极致优化 ==========
+        // ========== 3. 黑洞极致优化（保持不变） ==========
         const blackHoleCore = new THREE.Mesh(
             new THREE.SphereGeometry(2.0, 256, 256),
             new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.01, metalness: 0.99, emissive: 0xcc44ff, emissiveIntensity: 2.2 })
@@ -498,19 +498,16 @@
             return new THREE.Mesh(geom, mat);
         }
         
-        // 增强版 BigStar：支持指定位置参数以实现均匀分布
+        // ========== 大星星：均匀分散 + 开普勒转速（越靠近黑洞越快） ==========
         class BigStar {
-            constructor(data, options = {}) {
+            constructor(data, radius, angle, yOffset) {
                 this.data = data;
-                // 如果传入了指定角度/半径，则使用；否则随机
-                const radius = options.radius !== undefined ? options.radius : (22 + Math.random() * 30);
-                const angle = options.angle !== undefined ? options.angle : (Math.random() * Math.PI * 2);
-                const yOffset = options.yOffset !== undefined ? options.yOffset : ((Math.random() - 0.5) * 3.8);
-                this.radius = radius;
+                this.radius = radius;          // 固定轨道半径
                 this.angle = angle;
                 this.yOffset = yOffset;
-                // 速度与半径适配，使外圈稍慢
-                this.speed = 0.0002 + (45 / (radius + 15)) * 0.00035;
+                // 开普勒定律：角速度与半径平方根成反比，系数使内圈速度明显更快
+                const angularBase = 0.0072;     // 调教系数：半径=25时速度≈0.00144，半径=80时速度≈0.0008，视觉差异显著
+                this.speed = angularBase / Math.sqrt(Math.max(radius, 2.5));
                 this.x = Math.cos(angle) * radius;
                 this.z = Math.sin(angle) * radius;
                 this.y = yOffset;
@@ -540,79 +537,62 @@
             }
         }
         
-        // 1. 先创建作品星星（保留原始随机位置，不改变原有行为）
-        const bigStars = worksData.map(d => new BigStar(d));
-        
-        // 2. 收集已有大星星的角度，生成均匀分布的新增未探索星星
-        const existingAngles = bigStars.map(star => star.angle);
-        existingAngles.sort((a,b) => a - b);
-        
-        // 在圆环上均匀插入新角度的函数（最大化最小间隔）
-        function getUniformAngles(existing, count) {
-            if (existing.length === 0) {
-                // 无现有星星，直接均匀分布
-                const angles = [];
-                for (let i = 0; i < count; i++) angles.push(i * Math.PI * 2 / count);
-                return angles;
-            }
-            // 计算间隙
-            let gaps = [];
-            for (let i = 0; i < existing.length; i++) {
-                const start = existing[i];
-                const end = existing[(i+1) % existing.length];
-                let gap = (end - start + Math.PI * 2) % (Math.PI * 2);
-                gaps.push({ start, end, gap, idx: i });
-            }
-            const newAngles = [];
-            for (let n = 0; n < count; n++) {
-                // 找到最大间隙
-                let bestIdx = 0;
-                for (let i = 1; i < gaps.length; i++) {
-                    if (gaps[i].gap > gaps[bestIdx].gap) bestIdx = i;
-                }
-                const best = gaps[bestIdx];
-                const midAngle = (best.start + best.end) / 2;
-                // 处理跨越 2pi 的情况
-                let newAngle = midAngle;
-                if (best.start > best.end && best.gap > Math.PI) {
-                    newAngle = (best.start + best.end + Math.PI * 2) / 2;
-                    if (newAngle >= Math.PI * 2) newAngle -= Math.PI * 2;
-                }
-                newAngles.push(newAngle);
-                // 更新间隙：将原间隙分割为两个
-                const gap1 = (newAngle - best.start + Math.PI * 2) % (Math.PI * 2);
-                const gap2 = (best.end - newAngle + Math.PI * 2) % (Math.PI * 2);
-                gaps.splice(bestIdx, 1, { start: best.start, end: newAngle, gap: gap1, idx: bestIdx },
-                                     { start: newAngle, end: best.end, gap: gap2, idx: bestIdx });
-            }
-            return newAngles;
-        }
-        
-        // 生成 9 ~ 12 个未探索星星，使整体分布均匀
-        const mysteryCount = 10 + Math.floor(Math.random() * 4); // 10~13 个
-        const newAngles = getUniformAngles(existingAngles, mysteryCount);
-        
-        // 未探索星星数据模板
+        // 生成未探索星星数据
         const mysteryNames = ["🌌 未知星域", "✨ 未探明星辰", "🔭 深空谜团", "❓ 遗失星云", "🌠 待访星球", "⚡ 奥秘之源", "💫 缥缈幻星", "🪐 沉寂世界", "🌀 迷航星尘", "🌙 隐匿卫星", "⭐ 无光星体", "🔮 灵蕴星核", "💎 封存遗迹"];
+        const mysteryCount = 12;  // 固定12个，使总数达到20个，均匀分布更美观
         
-        for (let i = 0; i < mysteryCount; i++) {
-            const angle = newAngles[i];
-            // 半径范围 24~58，让未探索星星分布在内外区域，与作品星交替
-            const radius = 24 + Math.random() * 34;
-            const yOffset = (Math.random() - 0.5) * 4.2;
-            const nameIdx = i % mysteryNames.length;
-            const mysteryData = {
-                name: mysteryNames[nameIdx],
+        // 合并所有大星星数据（作品星 + 未探索星）
+        const allBigStarData = [
+            ...worksData,
+            ...Array.from({ length: mysteryCount }, (_, i) => ({
+                name: mysteryNames[i % mysteryNames.length],
                 desc: "🌠 未被发现 · 等待探索 🌠",
-                link: null,   // 无链接，仅提示
+                link: null,
                 color: 0x99ccff,
                 icon: "❓"
-            };
-            const newStar = new BigStar(mysteryData, { angle, radius, yOffset });
-            bigStars.push(newStar);
+            }))
+        ];
+        const totalBigStars = allBigStarData.length; // 20个左右
+        
+        // 生成均匀角度 (0 到 2PI)
+        const uniformAngles = [];
+        for (let i = 0; i < totalBigStars; i++) {
+            uniformAngles.push((i / totalBigStars) * Math.PI * 2);
+        }
+        // 轻微随机扰动使自然一点 (±0.1 rad)
+        uniformAngles.forEach((ang, idx) => { uniformAngles[idx] = ang + (Math.random() - 0.5) * 0.12; });
+        
+        // 半径范围: 最小28 最大78，使得内外圈都有，视觉分散
+        const minRad = 28, maxRad = 78;
+        const radii = [];
+        for (let i = 0; i < totalBigStars; i++) {
+            // 线性插值 + 随机扰动，保证半径在范围内且相邻星星半径差异大
+            let t = i / (totalBigStars - 1);
+            let rad = minRad + t * (maxRad - minRad);
+            // 添加正弦波动让半径交替，避免同心圆聚集
+            rad += Math.sin(i * 1.8) * 5;
+            rad = Math.min(maxRad, Math.max(minRad, rad));
+            radii.push(rad);
+        }
+        // 随机打乱半径顺序，使相邻角度星星半径错落有致
+        for (let i = radii.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [radii[i], radii[j]] = [radii[j], radii[i]];
         }
         
-        // 小型星星系统（黑洞引力部分，已扩大轨道且转速与半径关联，完全符合要求）
+        // Y轴偏移范围扩大: -3.5 ~ 3.5，立体分散
+        const yOffsets = [];
+        for (let i = 0; i < totalBigStars; i++) {
+            yOffsets.push((Math.random() - 0.5) * 7);
+        }
+        
+        const bigStars = [];
+        for (let i = 0; i < totalBigStars; i++) {
+            const star = new BigStar(allBigStarData[i], radii[i], uniformAngles[i], yOffsets[i]);
+            bigStars.push(star);
+        }
+        
+        // ========== 小型星星系统：扩大轨道 + 开普勒转速（越靠近黑洞越快） ==========
         const STAR_TOTAL = 3800;
         const ATTRACT_RADIUS = 18.8;
         const GRAVITY = 0.00125;
@@ -625,18 +605,19 @@
                     this.rad = customRad;
                 } else {
                     if (this.gravity) {
-                        this.rad = 42 + Math.random() * 48;
+                        this.rad = 42 + Math.random() * 48;   // 扩大外围轨道 42~90
                     } else {
-                        this.rad = 55 + Math.random() * 55;
+                        this.rad = 55 + Math.random() * 55;   // 稳定外围星 55~110
                     }
                 }
                 this.angle = Math.random() * Math.PI * 2;
-                const baseSpeedRef = 0.0018;
+                // 开普勒常量：角速度 = const / sqrt(r)，使得内圈更快
+                const baseSpeedRef = 0.0022;
                 if (this.gravity) {
                     this.angularSpeedConst = baseSpeedRef * Math.sqrt(this.rad);
                     this.speed = this.angularSpeedConst / Math.sqrt(this.rad);
                 } else {
-                    this.speed = baseSpeedRef * Math.sqrt(45) / Math.sqrt(this.rad);
+                    this.speed = baseSpeedRef * Math.sqrt(50) / Math.sqrt(this.rad);
                 }
                 this.yOff = (Math.random() - 0.5) * 3.8;
                 this.x = Math.cos(this.angle) * this.rad;
@@ -659,10 +640,12 @@
                 this.phase = Math.random() * Math.PI * 2;
                 this.rotSpeed = 0.01 + Math.random() * 0.035;
             }
+            
             updateOrbit() {
                 if (this.gravity && this.state === 'orbit') {
+                    // 动态更新速度：半径减小，速度增加 (越靠近黑洞越快)
                     this.speed = this.angularSpeedConst / Math.sqrt(this.rad);
-                    this.speed = Math.min(0.012, Math.max(0.0007, this.speed));
+                    this.speed = Math.min(0.014, Math.max(0.0007, this.speed));
                     this.rad -= GRAVITY;
                     if (this.rad <= ATTRACT_RADIUS) { this.startFall(); return true; }
                     if (this.rad < 30) {
@@ -679,7 +662,8 @@
                 this.mesh.position.set(this.x, this.y, this.z);
                 return true;
             }
-            startFall() { /* 保持不变，复用原逻辑 */ 
+            
+            startFall() {
                 this.state = 'fall';
                 const curAng = Math.atan2(this.z, this.x);
                 let best = 0, minD = Math.PI;
@@ -693,7 +677,8 @@
                 this.spiralStartRad = Math.sqrt(this.x*this.x + this.z*this.z);
                 this.spiral = 0;
             }
-            updateFall() { /* 保持原有坠落逻辑 */ 
+            
+            updateFall() {
                 let delta = 0.028;
                 if (this.spiral > 0.45) delta = 0.045;
                 if (this.spiral > 0.8) delta = 0.072;
@@ -719,6 +704,7 @@
                 else this.mesh.material.color = this.baseColor;
                 return true;
             }
+            
             update() {
                 if (!this.active) return false;
                 this.mesh.rotation.x += this.rotSpeed;
@@ -726,11 +712,12 @@
                 if (this.state === 'orbit') return this.updateOrbit();
                 else return this.updateFall();
             }
+            
             destroy() {
                 this.active = false;
                 scene.remove(this.mesh);
                 if (this.gravity && this.mesh.visible) {
-                    const newOuterRad = 46 + Math.random() * 52;
+                    const newOuterRad = 46 + Math.random() * 52;   // 重生在外围扩大轨道
                     setTimeout(() => { smallStars.push(new SmallStar('falling', newOuterRad)); }, 45);
                 }
             }
@@ -743,7 +730,7 @@
         }
         for (let i = 0; i < 220; i++) smallStars.push(new SmallStar('falling', 28 + Math.random() * 24));
         
-        // 流星类保持不变（略，完整保留原有效果）
+        // ========== 流星特效 ==========
         class Meteor {
             constructor() { this.active = true; this.reset(); }
             reset() {
@@ -793,8 +780,8 @@
         let meteors = [];
         function spawnMeteor() { if (explosionPlayed && meteors.length < 18 && Math.random() < 0.035) meteors.push(new Meteor()); }
         
-        // 爆炸与音乐控制函数（保持原样）
-        function createShockwave(color, size) { /* 原逻辑 */ 
+        // ========== 爆炸特效 & 音乐控制（保持不变，仅保留核心逻辑） ==========
+        function createShockwave(color, size) {
             const ringGeo = new THREE.RingGeometry(0.5, 1.2, 48);
             const ringMat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.9, side: THREE.DoubleSide, blending: THREE.AdditiveBlending });
             const ring = new THREE.Mesh(ringGeo, ringMat);
@@ -810,6 +797,7 @@
             }
             requestAnimationFrame(expand);
         }
+        
         function screenShake(intensity, duration) {
             let originalPos = camera.position.clone();
             let count = 0;
@@ -823,7 +811,8 @@
             }
             shake();
         }
-        function createBigBang() { /* 完全保留原有效果 */ 
+        
+        function createBigBang() {
             const layers = [
                 { count: 3500, color: 0xffaa66, size: 0.42, scaleSpeed: 0.7 },
                 { count: 2500, color: 0xff6644, size: 0.38, scaleSpeed: 0.65 },
@@ -844,6 +833,7 @@
                 scene.add(pts);
                 particlesList.push({ obj: pts, mat: mat, scaleSpeed: layer.scaleSpeed });
             });
+            
             const flash = document.createElement('div');
             flash.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:350;opacity:1;pointer-events:none;transition:opacity 0.4s ease';
             document.body.appendChild(flash);
@@ -940,7 +930,7 @@
         
         document.getElementById('bigbangTriggerBtn').addEventListener('click', startCompressionAndBang);
         
-        // 音乐控制、Toast 辅助函数
+        // 音乐控制与Toast
         let audioCtx = null;
         let currentSource = null;
         let isMusicPlaying = false;
@@ -953,7 +943,7 @@
             musicGain.gain.value = 0.38;
             musicGain.connect(audioCtx.destination);
         }
-        async function loadAndPlayMusic() { /* 原逻辑 */ 
+        async function loadAndPlayMusic() {
             if (!audioCtx) await initMusic();
             if (audioCtx.state === 'suspended') await audioCtx.resume();
             if (currentSource) { try { currentSource.stop(); } catch(e) {} currentSource.disconnect(); }
@@ -1017,6 +1007,7 @@
             bigStars.forEach(s => s.update(time));
             for (let i = smallStars.length-1; i >= 0; i--) if (!smallStars[i].update()) smallStars.splice(i,1);
             for (let i = meteors.length-1; i >= 0; i--) if (!meteors[i].update()) meteors.splice(i,1);
+            
             if (explosionPlayed) {
                 nebulaPoints.rotation.y += 0.00028;
                 vortexPoints.rotation.y -= 0.007;
