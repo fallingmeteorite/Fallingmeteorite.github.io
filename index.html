@@ -537,7 +537,7 @@
         }
         const bigStars = worksData.map(d => new BigStar(d));
         
-        // 小型星星
+        // ===================== 小型星星优化：扩大轨道 + 开普勒转速 =====================
         const STAR_TOTAL = 3800;
         const ATTRACT_RADIUS = 18.8;
         const GRAVITY = 0.00125;
@@ -546,10 +546,28 @@
             constructor(type, customRad = null) {
                 this.type = type;
                 this.gravity = (type !== 'orbit-only');
-                this.rad = customRad !== null ? customRad : (this.gravity ? 25 + Math.random() * 29 : 31 + Math.random() * 33);
+                // 扩大星星轨道范围：引力星星半径范围 42~90，稳定星半径范围 55~110
+                if (customRad !== null) {
+                    this.rad = customRad;
+                } else {
+                    if (this.gravity) {
+                        this.rad = 42 + Math.random() * 48;   // 扩大外围轨道：最小42，最大90
+                    } else {
+                        this.rad = 55 + Math.random() * 55;   // 稳定外围星 55~110
+                    }
+                }
                 this.angle = Math.random() * Math.PI * 2;
-                this.speed = 0.0005 + Math.random() * 0.0019;
-                this.yOff = (Math.random() - 0.5) * 3.5;
+                // 依据开普勒定律：角速度与半径平方根成反比，基准速度系数确保动态范围美观
+                const baseSpeedRef = 0.0018;
+                if (this.gravity) {
+                    // 动态速度存储基准系数，以便在轨道上实时更新
+                    this.angularSpeedConst = baseSpeedRef * Math.sqrt(this.rad);
+                    this.speed = this.angularSpeedConst / Math.sqrt(this.rad);
+                } else {
+                    // 非引力星星，固定轨道半径，速度恒定且与半径匹配(外圈更慢)
+                    this.speed = baseSpeedRef * Math.sqrt(45) / Math.sqrt(this.rad);
+                }
+                this.yOff = (Math.random() - 0.5) * 3.8;
                 this.x = Math.cos(this.angle) * this.rad;
                 this.z = Math.sin(this.angle) * this.rad;
                 this.y = this.yOff + Math.sin(this.angle * 2) * 0.45;
@@ -570,23 +588,32 @@
                 this.phase = Math.random() * Math.PI * 2;
                 this.rotSpeed = 0.01 + Math.random() * 0.035;
             }
+            
             updateOrbit() {
                 if (this.gravity && this.state === 'orbit') {
+                    // 实时更新角速度：越靠近黑洞转速越快（开普勒效应）
+                    this.speed = this.angularSpeedConst / Math.sqrt(this.rad);
+                    // 限制速度范围，避免过快或过慢
+                    this.speed = Math.min(0.012, Math.max(0.0007, this.speed));
+                    
                     this.rad -= GRAVITY;
                     if (this.rad <= ATTRACT_RADIUS) { this.startFall(); return true; }
-                    if (this.rad < 28) this.speed = 0.0020 + (30 - this.rad) * 0.0003;
+                    if (this.rad < 30) {
+                        // 接近黑洞时增强发光
+                        const intens = 1.0 + (32 - this.rad) * 0.12;
+                        this.mesh.material.emissiveIntensity = Math.min(2.8, intens);
+                    } else {
+                        this.mesh.material.emissiveIntensity = this.gravity ? 0.95 : 0.7;
+                    }
                 }
                 this.angle += this.speed;
                 this.x = Math.cos(this.angle) * this.rad;
                 this.z = Math.sin(this.angle) * this.rad;
                 this.y = this.yOff + Math.sin(this.angle * 2) * 0.42;
                 this.mesh.position.set(this.x, this.y, this.z);
-                if (this.gravity && this.rad < 30) {
-                    const intens = 1.0 + (32 - this.rad) * 0.12;
-                    this.mesh.material.emissiveIntensity = Math.min(2.5, intens);
-                } else this.mesh.material.emissiveIntensity = this.gravity ? 0.95 : 0.7;
                 return true;
             }
+            
             startFall() {
                 this.state = 'fall';
                 const curAng = Math.atan2(this.z, this.x);
@@ -601,6 +628,7 @@
                 this.spiralStartRad = Math.sqrt(this.x*this.x + this.z*this.z);
                 this.spiral = 0;
             }
+            
             updateFall() {
                 let delta = 0.028;
                 if (this.spiral > 0.45) delta = 0.045;
@@ -627,6 +655,7 @@
                 else this.mesh.material.color = this.baseColor;
                 return true;
             }
+            
             update() {
                 if (!this.active) return false;
                 this.mesh.rotation.x += this.rotSpeed;
@@ -634,23 +663,30 @@
                 if (this.state === 'orbit') return this.updateOrbit();
                 else return this.updateFall();
             }
+            
             destroy() {
                 this.active = false;
                 scene.remove(this.mesh);
                 if (this.gravity && this.mesh.visible) {
-                    setTimeout(() => { smallStars.push(new SmallStar('falling', 34 + Math.random() * 25)); }, 45);
+                    // 重生在外围扩大后的轨道，保持星星数量恒定且轨道范围扩大
+                    const newOuterRad = 46 + Math.random() * 52;   // 扩大轨道范围 46~98
+                    setTimeout(() => { 
+                        smallStars.push(new SmallStar('falling', newOuterRad)); 
+                    }, 45);
                 }
             }
         }
         
         let smallStars = [];
+        // 主星群：扩大轨道范围 (引力星比例保持72%)
         for (let i = 0; i < STAR_TOTAL; i++) {
             const type = Math.random() < 0.72 ? 'falling' : 'orbit-only';
             smallStars.push(new SmallStar(type));
         }
-        for (let i = 0; i < 220; i++) smallStars.push(new SmallStar('falling', 16.5 + Math.random() * 6.5));
+        // 内圈过渡星群适度扩大范围，但仍保证视觉坠入感 (扩大至 28~52)
+        for (let i = 0; i < 220; i++) smallStars.push(new SmallStar('falling', 28 + Math.random() * 24));
         
-        // 流星
+        // 流星特效类保持不变
         class Meteor {
             constructor() { this.active = true; this.reset(); }
             reset() {
@@ -882,7 +918,7 @@
         
         document.getElementById('bigbangTriggerBtn').addEventListener('click', startCompressionAndBang);
         
-        // ========== 空灵背景音乐（无混响，纯净空灵） ==========
+        // ========== 空灵背景音乐 ==========
         let audioCtx = null;
         let currentSource = null;
         let isMusicPlaying = false;
@@ -893,7 +929,7 @@
             if (audioCtx) return;
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             musicGain = audioCtx.createGain();
-            musicGain.gain.value = 0.38;   // 纯净音量，空灵但不嘈杂
+            musicGain.gain.value = 0.38;
             musicGain.connect(audioCtx.destination);
         }
         
@@ -913,21 +949,17 @@
                 const source = audioCtx.createBufferSource();
                 source.buffer = musicBuffer;
                 source.loop = true;
-                // 直接连接至 gain，无混响、无滤波，保留原始空灵质感
                 source.connect(musicGain);
                 source.start();
                 currentSource = source;
                 isMusicPlaying = true;
                 document.getElementById('musicToggleBtn').innerHTML = '🎵 空灵星渊 🔊';
             } catch(e) {
-                console.log("音乐加载失败，使用备用空灵氛围音效");
-                // 如果音频不存在，生成一个简单的空灵正弦波氛围作为后备
                 const bufferSize = audioCtx.sampleRate * 8;
                 const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
                 const data = buffer.getChannelData(0);
                 for (let i = 0; i < bufferSize; i++) {
                     const t = i / audioCtx.sampleRate;
-                    // 柔和的和弦感
                     const note1 = Math.sin(t * 220 * Math.PI * 2) * 0.3;
                     const note2 = Math.sin(t * 329.63 * Math.PI * 2) * 0.2;
                     const note3 = Math.sin(t * 440 * Math.PI * 2) * 0.15;
